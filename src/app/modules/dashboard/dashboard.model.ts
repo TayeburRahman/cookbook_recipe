@@ -11,7 +11,7 @@ const SubscriptionSchema = new Schema<ISubscriptions>({
     duration: {
         type: String,
         required: true,
-        enum: ["Monthly", "Weekly"]
+        enum: ["Monthly", "Yearly"]
     },
     fee: {
         type: Number,

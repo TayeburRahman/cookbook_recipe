@@ -1,7 +1,5 @@
 import { Types } from "mongoose";
 
-
-
 export type ISubscriptions = {
   name: string;
   duration: string;

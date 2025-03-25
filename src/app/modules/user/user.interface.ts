@@ -23,4 +23,6 @@ export type IUser = Document & {
   weight: string;
   hight: string;
   activety_lavel: string;
+  duration_time: Date;
+  subscription_status: string;
 }

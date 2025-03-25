@@ -1,12 +1,10 @@
 import bcrypt from "bcrypt";
 import cron from "node-cron";
 import httpStatus from "http-status";
-
 import ApiError from "../../../errors/ApiError";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
 import { logger } from "../../../shared/logger";
 import Auth from "./auth.model";
-
 import sendEmail from "../../../utils/sendEmail";
 import { ENUM_USER_ROLE } from "../../../enums/user";
 import { sendResetEmail } from "./sendResetMails";

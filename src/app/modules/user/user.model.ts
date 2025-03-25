@@ -1,7 +1,6 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 import { IUser } from "./user.interface";
-
-
+import { ENUM_MEAL_TYPE } from "../../../enums/user";
 
 const UserSchema = new Schema<IUser>(
   {
@@ -41,7 +40,7 @@ const UserSchema = new Schema<IUser>(
     mail_types: {
       type: String,
       default: 'None',
-      enum: ["None", "Breakfasts", "Lunches and Dinners", "Desserts", "Snacks", "Sides"]
+      enum: ENUM_MEAL_TYPE,
     },
     relevant_dielary: {
       type: String,
@@ -66,6 +65,14 @@ const UserSchema = new Schema<IUser>(
     amount: {
       type: Number,
       default: 0,
+    },
+    duration_time: {
+      type: Date,
+    },
+    subscription_status: {
+      type: String,
+      enum: ["Subscriber", "None"],
+      default: "None",
     },
     status: {
       type: String,

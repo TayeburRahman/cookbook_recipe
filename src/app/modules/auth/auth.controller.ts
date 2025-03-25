@@ -11,7 +11,7 @@ const registrationAccount = catchAsync(async (req: Request, res: Response) => {
   const message =
     role === "USER"
       ? "Please check your email for the activation OTP code."
-      : "Your account is awaiting admin approval.";
+      : "Account register sucessfully.";
 
   sendResponse(res, {
     statusCode: 200,

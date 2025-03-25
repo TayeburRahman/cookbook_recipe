@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Request } from 'express';
 import multer from 'multer';
+import fs from 'fs';
 
 export const uploadFile = () => {
   const storage = multer.diskStorage({
@@ -35,6 +36,10 @@ export const uploadFile = () => {
       } else {
         //@ts-ignore
         cb(new Error('Invalid file type'));
+      }
+
+      if (!fs.existsSync(uploadPath)) {
+        fs.mkdirSync(uploadPath, { recursive: true });
       }
     },
     filename: function (req, file, cb) {
