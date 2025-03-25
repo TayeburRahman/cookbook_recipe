@@ -10,8 +10,12 @@ const transactionSchema = new Schema<ITransaction>({
     },
     userId: {
         type: Types.ObjectId,
-        refPath: 'User',
+        ref: 'User',
         required: true,
+    },
+    userEmail: {
+        type: String,
+        required: true
     },
     amount: {
         type: Number

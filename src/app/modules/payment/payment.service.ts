@@ -11,6 +11,8 @@ const stripe = require("stripe")(config.stripe.stripe_secret_key);
 const DOMAIN_URL = process.env.SERVER_PASS_UI_LINK;
 import cron from "node-cron";
 import { logger } from "../../../shared/logger";
+import QueryBuilder from "../../../builder/QueryBuilder";
+import { populate } from "dotenv";
 
 cron.schedule("0 0 */12 * * *", async () => {
     try {
@@ -149,8 +151,6 @@ const stripeCheckAndUpdateStatusSuccess = async (req: any) => {
 
         await user.save();
 
-        console.log("==", user)
-
         return { status: "success", result: newTransaction };
 
     } catch (error: any) {
@@ -159,9 +159,43 @@ const stripeCheckAndUpdateStatusSuccess = async (req: any) => {
     }
 };
 
+// ======================================
+
+
+const getAllTransactions = async (query: any) => {
+    const { page, limit, searchTerm } = query;
+
+    if (query?.searchTerm) {
+        delete query.page;
+    }
+    const transationQuery = new QueryBuilder(Transaction.find()
+        .populate({
+            path: "userId",
+            select: "name email profile_image",
+        })
+        .populate({
+            path: "subscriptionId",
+            select: "name",
+        })
+        , query)
+        .search(["transactionId", "userEmail"])
+        .filter()
+        .sort()
+        .paginate()
+        .fields()
+
+    const result = await transationQuery.modelQuery;
+    const meta = await transationQuery.countTotal();
+
+    console.log(result)
+
+    return { result, meta };
+
+};
 
 
 export const PaymentServices = {
     createCheckoutSessionStripe,
-    stripeCheckAndUpdateStatusSuccess
+    stripeCheckAndUpdateStatusSuccess,
+    getAllTransactions
 }

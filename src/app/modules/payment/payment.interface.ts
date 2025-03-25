@@ -7,4 +7,5 @@ export interface ITransaction extends Document {
     transactionId: string;
     paymentStatus: string;
     paymentDetails: any;
+    userEmail: string;
 }

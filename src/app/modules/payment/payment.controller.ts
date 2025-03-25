@@ -26,8 +26,22 @@ const stripeCheckAndUpdateStatusSuccess = catchAsync(async (req: Request, res: R
 });
 
 
+const getAllTransactions = catchAsync(async (req: Request, res: Response) => {
+    const result = await PaymentServices.getAllTransactions(req.query);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Get Successfully",
+        data: result,
+    });
+});
+
+
+
 
 export const PaymentController = {
     createCheckoutSessionStripe,
-    stripeCheckAndUpdateStatusSuccess
+    stripeCheckAndUpdateStatusSuccess,
+    getAllTransactions
 }
