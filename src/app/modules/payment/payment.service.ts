@@ -12,7 +12,6 @@ const DOMAIN_URL = process.env.SERVER_PASS_UI_LINK;
 import cron from "node-cron";
 import { logger } from "../../../shared/logger";
 import QueryBuilder from "../../../builder/QueryBuilder";
-import { populate } from "dotenv";
 
 cron.schedule("0 0 */12 * * *", async () => {
     try {
@@ -160,8 +159,6 @@ const stripeCheckAndUpdateStatusSuccess = async (req: any) => {
 };
 
 // ======================================
-
-
 const getAllTransactions = async (query: any) => {
     const { page, limit, searchTerm } = query;
 
@@ -186,9 +183,7 @@ const getAllTransactions = async (query: any) => {
 
     const result = await transationQuery.modelQuery;
     const meta = await transationQuery.countTotal();
-
-    console.log(result)
-
+    // console.log(result)
     return { result, meta };
 
 };

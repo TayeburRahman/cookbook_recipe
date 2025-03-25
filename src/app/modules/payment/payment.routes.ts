@@ -9,11 +9,9 @@ router.post('/create_checkout_session',
     auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
     PaymentController.createCheckoutSessionStripe);
 router.get('/stripe-webhooks',
-    // auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
     PaymentController.stripeCheckAndUpdateStatusSuccess);
 router.get('/get-transaction',
     auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
-    PaymentController.getAllTransactions)
-
+    PaymentController.getAllTransactions);
 
 export const PaymentRoutes = router;
