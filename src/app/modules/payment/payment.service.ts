@@ -12,7 +12,7 @@ const DOMAIN_URL = process.env.SERVER_PASS_UI_LINK;
 import cron from "node-cron";
 import { logger } from "../../../shared/logger";
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("0 0 */12 * * *", async () => {
     try {
         const now = new Date();
         const result = await User.updateMany(
@@ -24,7 +24,7 @@ cron.schedule("* * * * *", async () => {
                 $set: { subscription_status: "Expired" },
             }
         );
-
+        console.log("********************************************************=======================================================================###################################################**************************************************************************")
         if (result.modifiedCount > 0) {
             logger.info(`Removed activation codes from ${result.modifiedCount} expired inactive users`);
         }
@@ -93,8 +93,6 @@ const stripeCheckAndUpdateStatusSuccess = async (req: any) => {
     if (!sessionId) {
         return { status: "failed", message: "Missing session ID in the request." };
     }
-
-    console.log("===========", sessionId)
 
     try {
         const session = await stripe.checkout.sessions.retrieve(sessionId);

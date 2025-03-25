@@ -71,7 +71,7 @@ const UserSchema = new Schema<IUser>(
     },
     subscription_status: {
       type: String,
-      enum: ["Subscriber", "None"],
+      enum: ["Active", "None", "Expired"],
       default: "None",
     },
     status: {
