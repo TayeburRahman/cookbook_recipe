@@ -5,7 +5,7 @@ import catchAsync from "../../../shared/catchasync";
 import { IReqUser } from "../auth/auth.interface";
 
 const updateProfile = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.updateProfile(req as any);
+  const result = await UserService.updateMyProfile(req as any);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -25,7 +25,7 @@ const getProfile = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteMyAccount = catchAsync(async (req: Request, res: Response) => {
-  await UserService.deleteMyAccount(req.body);
+  await UserService.deleteUSerAccount(req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -38,4 +38,4 @@ export const UserController = {
   getProfile,
   updateProfile,
 };
- 
+
