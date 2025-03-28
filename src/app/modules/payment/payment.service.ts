@@ -188,7 +188,6 @@ const getAllTransactions = async (query: any) => {
 
 };
 
-
 export const PaymentServices = {
     createCheckoutSessionStripe,
     stripeCheckAndUpdateStatusSuccess,

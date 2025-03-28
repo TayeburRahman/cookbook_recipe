@@ -10,7 +10,7 @@ interface IRequest extends Request {
     userId: string;
     authId: string;
   };
-}
+};
 
 const updateProfile = async (req: IRequest): Promise<IAdmin | null> => {
   const { files } = req as any;
@@ -95,4 +95,4 @@ export const AdminService = {
   deleteMyAccount,
 };
 
- 
+
