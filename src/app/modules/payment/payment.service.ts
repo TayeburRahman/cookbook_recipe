@@ -7,11 +7,12 @@ import { Subscription } from "../dashboard/dashboard.model";
 import config from "../../../config";
 import { ISubscriptions } from "../dashboard/dsashbaord.interface";
 import { Transaction } from "./payment.model";
-const stripe = require("stripe")(config.stripe.stripe_secret_key);
-const DOMAIN_URL = process.env.SERVER_PASS_UI_LINK;
 import cron from "node-cron";
 import { logger } from "../../../shared/logger";
 import QueryBuilder from "../../../builder/QueryBuilder";
+
+const stripe = require("stripe")(config.stripe.stripe_secret_key);
+const DOMAIN_URL = process.env.SERVER_PASS_UI_LINK;
 
 cron.schedule("0 0 */12 * * *", async () => {
     try {

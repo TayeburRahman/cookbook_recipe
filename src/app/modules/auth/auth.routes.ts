@@ -11,7 +11,6 @@ const router = express.Router();
 router.post("/register",
   uploadFile(),
   AuthController.registrationAccount)
-
 router.post("/login", AuthController.loginAccount)
 router.post("/activate-user", AuthController.activateAccount)
 router.post("/active-resend", AuthController.resendCodeActivationAccount)
@@ -28,12 +27,12 @@ router.patch("/change-password",
   ),
   AuthController.changePassword
 )
+
 router.delete("/delete-account", AuthController.deleteMyAccount)
 router.patch("/block", AuthController.blockUnblockAuthUser)
 
 //------ User Router ---------------
 router.get("/profile", auth(ENUM_USER_ROLE.USER), UserController.getProfile)
-
 
 //------ Admin Router ---------------
 router.get(
@@ -52,7 +51,5 @@ router.delete(
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   AdminController.deleteMyAccount
 );
-
-
 
 export const AuthRoutes = router;

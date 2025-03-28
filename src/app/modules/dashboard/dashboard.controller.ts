@@ -123,8 +123,7 @@ const deleteRecipe: RequestHandler = catchAsync(
       message: `Delate sucessfully`,
       data: result,
     });
-  },)
-
+  });
 
 export const DashboardController = {
   getAllUser,
