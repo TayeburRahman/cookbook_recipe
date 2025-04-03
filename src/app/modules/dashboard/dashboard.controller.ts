@@ -5,6 +5,7 @@ import { DashbaordService } from './dashboard.service';
 import { ISubscriptions } from './dsashbaord.interface';
 import { Subscription } from './dashboard.model';
 import { IReqUser } from '../auth/auth.interface';
+import { Types } from 'mongoose';
 
 const getAllUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
@@ -138,6 +139,17 @@ const getMyRecipes: RequestHandler = catchAsync(
     });
   });
 
+const getRecipeDetails: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.params.id
+    const result = await DashbaordService.getRecipeDetails(id as any);
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: `Delate sucessfully`,
+      data: result,
+    });
+  });
 
 
 export const DashboardController = {
@@ -150,5 +162,6 @@ export const DashboardController = {
   createRecipes,
   updateRecipes,
   deleteRecipe,
-  getMyRecipes
+  getMyRecipes,
+  getRecipeDetails
 };

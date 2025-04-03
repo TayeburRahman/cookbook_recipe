@@ -43,6 +43,8 @@ router.get('/my_all_recipe',
   auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   DashboardController.getMyRecipes,
 );
-
+router.get('/get_recipe_details/:id',
+  DashboardController.getRecipeDetails,
+);
 
 export const DashboardRoutes = router;

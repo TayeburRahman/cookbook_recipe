@@ -147,6 +147,14 @@ const getMyRecipes = async (user: IReqUser) => {
     return result;
 };
 
+const getRecipeDetails = async (id: Types.ObjectId) => {
+    const result = await Recipe.findById(id);
+    if (!result) {
+        throw new ApiError(404, "Not find recipe!")
+    }
+    return result;
+};
+
 
 export const DashbaordService = {
     getAllUser,
@@ -157,6 +165,6 @@ export const DashbaordService = {
     createRecipes,
     updateRecipes,
     deleteRecipe,
-    getMyRecipes
-
+    getMyRecipes,
+    getRecipeDetails
 };
