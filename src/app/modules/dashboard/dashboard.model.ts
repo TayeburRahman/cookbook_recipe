@@ -63,6 +63,7 @@ const nutritionalSchema = new Schema<INutritional>({
     protein: { type: Number, required: true },
     carbs: { type: Number, required: true },
     fat: { type: Number, required: true },
+    fiber: { type: Number, required: true }
 })
 
 const RecipeSchema = new Schema<IRecipe>({
@@ -70,11 +71,11 @@ const RecipeSchema = new Schema<IRecipe>({
         type: Schema.Types.ObjectId,
         ref: "Auth"
     },
-    name: {
-        type: String,
+    image: {
+        type: [String],
         required: true
     },
-    duration: {
+    name: {
         type: String,
         required: true
     },
@@ -92,30 +93,40 @@ const RecipeSchema = new Schema<IRecipe>({
     },
     category: {
         type: String,
-        required: true
+        required: true,
+        enum: ['breakfast', 'lunches-and-dinners', 'desserts', 'snacks', 'sides'],
     },
-    image: {
+    holiday_recipes: {
         type: String,
-        required: true
     },
-    meal_type: {
+    oils: {
         type: String,
-        enum: ['breakfasts', 'lunches-and-dinners', 'desserts', 'snacks', 'sides'],
-        required: true
+        enum: ['oil_free', 'with_oil']
     },
-    temperature: {
+    serving_temperature: {
         type: String,
-        enum: ["Cold", "Hot"],
-        required: true
+        enum: ['Cold', 'Hot']
     },
-    flavor_type: {
+    flavor: {
         type: String,
-        enum: ["Sweet", "Savory"],
-        required: true
+        enum: ['Sweet', 'Savory']
     },
-    cuisine_profiles: {
+    weight_and_muscle: {
         type: String,
-        enum: ["African", "American", "Asian", "Caribbean", "Chinese", "Cuban", "East-African", "Ethiopian", "European", "French", "German", "Greek", "Indian", "Irish", "Israeli", "Italian", "Jamaican", "Japanese", "Korean", "Latin-American", "Mediterranean", "Mexican", "Middle-Eastern", "Moroccan", "North-African", "Persian", "Peruvian", "Puerto-Rican", "Russian", "Spanish", "Tex-Mex", "Thai", "Vietnamese", "West-African"],
+        enum: ['weight_loss', 'muscle_gain']
+    },
+    whole_food_type: {
+        type: String,
+        enum: ['plant_based', 'whole_food', "paleo"]
+    },
+    serving_size: {
+        type: Number,
+    },
+    prep_time: {
+        type: Number
+    },
+    recipe_tips: {
+        type: String
     },
     kid_approved: {
         type: Boolean,
@@ -128,13 +139,7 @@ const RecipeSchema = new Schema<IRecipe>({
     ratting: {
         type: Number,
         required: true,
-        default: 0,
-    },
-    serving_size: {
-        type: String,
-    },
-    time: {
-        type: String,
+        default: 5,
     },
     fevorite: {
         type: [Schema.Types.ObjectId],
@@ -150,3 +155,6 @@ const Comment: Model<IComment> = mongoose.model<IComment>('Comment', CommentSche
 const Review: Model<IReview> = mongoose.model<IReview>('Review', ReviewSchema);
 // const
 export { Subscription, Recipe, Comment, Review };
+
+
+// enum: ["African", "American", "Asian", "Caribbean", "Chinese", "Cuban", "East-African", "Ethiopian", "European", "French", "German", "Greek", "Indian", "Irish", "Israeli", "Italian", "Jamaican", "Japanese", "Korean", "Latin-American", "Mediterranean", "Mexican", "Middle-Eastern", "Moroccan", "North-African", "Persian", "Peruvian", "Puerto-Rican", "Russian", "Spanish", "Tex-Mex", "Thai", "Vietnamese", "West-African"],

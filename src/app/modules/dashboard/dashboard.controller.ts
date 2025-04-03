@@ -75,12 +75,13 @@ const getAllSubscription: RequestHandler = catchAsync(
 const getAllRecipes: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const query = req.query as any;
-    // const result = await DashbaordService.getAllRecipes(query as any);
+    const body = req.body;
+    const result = await DashbaordService.getAllRecipes(query as any, body as any);
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Get all user!`,
-      // data: result,
+      message: `Get all recipes sucessfully!`,
+      data: result,
     });
   },
 );
@@ -125,6 +126,20 @@ const deleteRecipe: RequestHandler = catchAsync(
     });
   });
 
+const getMyRecipes: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const user = req.user
+    const result = await DashbaordService.getMyRecipes(user as IReqUser);
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: `Delate sucessfully`,
+      data: result,
+    });
+  });
+
+
+
 export const DashboardController = {
   getAllUser,
   createSubscriptions,
@@ -134,5 +149,6 @@ export const DashboardController = {
   getAllRecipes,
   createRecipes,
   updateRecipes,
-  deleteRecipe
+  deleteRecipe,
+  getMyRecipes
 };

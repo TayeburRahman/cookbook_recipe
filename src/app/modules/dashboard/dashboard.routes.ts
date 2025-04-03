@@ -36,9 +36,13 @@ router.patch('/update_recipe/:id',
 router.delete('/delete_recipe/:id',
   DashboardController.deleteRecipe,
 );
+router.get('/get_all_recipe',
+  DashboardController.getAllRecipes,
+);
+router.get('/my_all_recipe',
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.getMyRecipes,
+);
 
-// router.get('/get_recipe',
-// DashboardController.getAllSubscription,
-// );
 
 export const DashboardRoutes = router;

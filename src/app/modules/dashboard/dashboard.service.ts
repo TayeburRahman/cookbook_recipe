@@ -5,6 +5,7 @@ import { IReqUser } from "../auth/auth.interface";
 import User from "../user/user.model";
 import { Recipe, Subscription } from "./dashboard.model";
 import { IRecipe, ISubscriptions } from "./dsashbaord.interface";
+import { IUser } from "../user/user.interface";
 
 const getAllUser = async (query: any) => {
     const { page, limit, searchTerm } = query;
@@ -65,15 +66,28 @@ const deleteSubscription = async (id: string) => {
 };
 
 // ====================================
-const getAllRecipes = async (query: any) => {
+const getAllRecipes = async (query: any, payload: any) => {
     const { page, limit, searchTerm } = query;
+    const { prep_time_start, prep_time_end, serving_size_start, serving_size_end } = payload;
+
+    // console.log(prep_time_start, prep_time_end, serving_size_start, serving_size_end)
 
     if (query?.searchTerm) {
         delete query.page;
     }
-    const userQuery = new QueryBuilder(User.find()
+
+    let filterQuery: any = {};
+    if (prep_time_start && prep_time_end) {
+        filterQuery.prep_time = { $gte: Number(prep_time_start), $lte: Number(prep_time_end) };
+    }
+
+    if (serving_size_start && serving_size_end) {
+        filterQuery.serving_size = { $gte: Number(serving_size_start), $lte: Number(serving_size_end) };
+    }
+
+    const userQuery = new QueryBuilder(Recipe.find(filterQuery)
         , query)
-        .search(["name", "email"])
+        .search(["name", "category"])
         .filter()
         .sort()
         .paginate()
@@ -127,6 +141,12 @@ const deleteRecipe = async (id: string) => {
     }
 };
 
+const getMyRecipes = async (user: IReqUser) => {
+    const { authId } = user;
+    const result = await Recipe.find({ creator: authId });
+    return result;
+};
+
 
 export const DashbaordService = {
     getAllUser,
@@ -136,6 +156,7 @@ export const DashbaordService = {
     getAllRecipes,
     createRecipes,
     updateRecipes,
-    deleteRecipe
+    deleteRecipe,
+    getMyRecipes
 
 };

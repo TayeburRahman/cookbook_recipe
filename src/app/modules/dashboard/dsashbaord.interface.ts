@@ -26,7 +26,7 @@ export interface IRecipe extends Document {
   instructions: string;
   nutritional: INutritional;
   category: string;
-  image: string;
+  image: string[];
   meal_type: string;
   temperature: string;
   flavor_type: string;
@@ -34,9 +34,17 @@ export interface IRecipe extends Document {
   kid_approved: boolean;
   no_weekend_prep: boolean;
   time: string;
-  serving_size: String;
+  serving_size: number;
   ratting: number;
   fevorite: Types.ObjectId[];
+  holiday_recipes: string;
+  oils: string;
+  serving_temperature: string;
+  flavor: string;
+  weight_and_muscle: string;
+  whole_food_type: string;
+  prep_time: number
+  recipe_tips: string;
 }
 
 export interface IReview extends Document {
