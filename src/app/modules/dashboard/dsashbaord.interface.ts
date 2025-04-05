@@ -60,6 +60,10 @@ export interface IComment extends Document {
   text: string;
 }
 
+export type IAdds = {
+  image: string;
+  url: string;
+};
 
 // export interface IComment extends Document {
 //   userId: Types.ObjectId;

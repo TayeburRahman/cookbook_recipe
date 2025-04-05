@@ -2,7 +2,7 @@ import { Request, RequestHandler, Response } from 'express';
 import sendResponse from '../../../shared/sendResponse';
 import catchAsync from '../../../shared/catchasync';
 import { DashbaordService } from './dashboard.service';
-import { ISubscriptions } from './dsashbaord.interface';
+import { IAdds, ISubscriptions } from './dsashbaord.interface';
 import { Subscription } from './dashboard.model';
 import { IReqUser } from '../auth/auth.interface';
 
@@ -163,6 +163,84 @@ const getRecipesForYou: RequestHandler = catchAsync(
     });
   });
 
+const addsInsertIntoDB = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.addsInsertIntoDB(req.files, req.body);
+  sendResponse<IAdds>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Adds create successfully',
+    data: result,
+  });
+});
+
+const updateAdds = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.updateAdds(req);
+  sendResponse<IAdds>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Adds update successfully',
+    data: result,
+  });
+});
+
+const deleteAdds = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.deleteAdds(req.params.id);
+  sendResponse<IAdds>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Adds delete successfully',
+    data: result,
+  });
+});
+
+const allAdds = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.allAdds(req.query);
+  sendResponse<IAdds[]>(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Adds Retrieved successfully',
+    meta: result.meta,
+    data: result.data,
+  });
+});
+// ===========================
+const addFaq = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.addFaq(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successfully create!',
+    data: result,
+  });
+});
+const updateFaq = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.updateFaq(req);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successfully Update!',
+    data: result,
+  });
+});
+const deleteFaq = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.deleteFaq(req);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successfully Delete!',
+    data: result,
+  });
+});
+const getFaq = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.getFaq();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successfully get!',
+    data: result,
+  });
+});
+
 export const DashboardController = {
   getAllUser,
   createSubscriptions,
@@ -175,5 +253,13 @@ export const DashboardController = {
   deleteRecipe,
   getMyRecipes,
   getRecipeDetails,
-  getRecipesForYou
+  getRecipesForYou,
+  addsInsertIntoDB,
+  updateAdds,
+  deleteAdds,
+  allAdds,
+  getFaq,
+  deleteFaq,
+  updateFaq,
+  addFaq
 };

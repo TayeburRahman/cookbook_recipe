@@ -3,8 +3,8 @@ import QueryBuilder from "../../../builder/QueryBuilder";
 import ApiError from "../../../errors/ApiError";
 import { IReqUser } from "../auth/auth.interface";
 import User from "../user/user.model";
-import { Recipe, Subscription } from "./dashboard.model";
-import { IRecipe, ISubscriptions } from "./dsashbaord.interface";
+import { Adds, Recipe, Subscription } from "./dashboard.model";
+import { IAdds, IRecipe, ISubscriptions } from "./dsashbaord.interface";
 import { IUser } from "../user/user.interface";
 
 const getAllUser = async (query: any) => {
@@ -167,7 +167,71 @@ const getRecipesForYou = async (user: IReqUser) => {
 
     return recipes;
 };
+// ===================================
+const addsInsertIntoDB = async (files: any, payload: IAdds) => {
+    if (!files?.image) {
+        throw new ApiError(400, 'File is missing');
+    }
 
+    if (files?.image) {
+        payload.image = `/images/image/${files.image[0].filename}`;
+    }
+
+    return await Adds.create(payload);
+};
+
+const allAdds = async (query: Record<string, unknown>) => {
+    const addsQuery = new QueryBuilder(Adds.find(), query)
+        .search([])
+        .filter()
+        .sort()
+        .paginate()
+        .fields();
+
+    const result = await addsQuery.modelQuery;
+    const meta = await addsQuery.countTotal();
+
+    return {
+        meta,
+        data: result,
+    };
+};
+
+const updateAdds = async (req: any) => {
+    const { files } = req as any;
+    const id = req.params.id;
+    const { ...AddsData } = req.body;
+
+    console.log("AddsData", AddsData)
+
+    if (files && files.image) {
+        AddsData.image = `/images/image/${files.image[0].filename}`;
+    }
+
+    const isExist = await Adds.findOne({ _id: id });
+
+    if (!isExist) {
+        throw new ApiError(404, 'Adds not found !');
+    }
+
+    const result = await Adds.findOneAndUpdate(
+        { _id: id },
+        { ...AddsData },
+        {
+            new: true,
+        },
+    );
+    console.log("result", result)
+    return result;
+};
+
+const deleteAdds = async (id: string) => {
+    const isExist = await Adds.findOne({ _id: id });
+    if (!isExist) {
+        throw new ApiError(404, 'Adds not found !');
+    }
+    return await Adds.findByIdAndDelete(id);
+};
 
 export const DashbaordService = {
     getAllUser,
@@ -180,5 +244,9 @@ export const DashbaordService = {
     deleteRecipe,
     getMyRecipes,
     getRecipeDetails,
-    getRecipesForYou
+    getRecipesForYou,
+    addsInsertIntoDB,
+    allAdds,
+    updateAdds,
+    deleteAdds
 };

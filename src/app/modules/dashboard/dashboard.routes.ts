@@ -2,6 +2,7 @@ import express from 'express';
 import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import { DashboardController } from './dashboard.controller';
+import { uploadFile } from '../../middlewares/fileUploader';
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.delete('/delete_subscriptions/:id',
 router.get('/get_all_subscriptions',
   DashboardController.getAllSubscription,
 );
-// -----------------------------------
+// =========================================
 router.post('/create_recipe',
   auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   DashboardController.createRecipes,
@@ -49,6 +50,47 @@ router.get('/recipe_for_you',
 );
 router.get('/get_recipe_details/:id',
   DashboardController.getRecipeDetails,
+);
+// ==================================================
+router.post('/create-adds',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  uploadFile(),
+  DashboardController.addsInsertIntoDB,
+);
+router.get(
+  '/all-adds',
+  DashboardController.allAdds,
+);
+router.patch(
+  '/edit-adds/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  uploadFile(),
+  DashboardController.updateAdds,
+);
+router.delete(
+  '/delete-adds/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.deleteAdds,
+);
+// ========================
+router.post('/add-faqs',
+  DashboardController.addFaq,
+);
+router.patch('/update-faqs/:id',
+  DashboardController.updateFaq,
+);
+router.delete('/delete-faqs/:id',
+  DashboardController.deleteFaq,
+);
+router.get('/get-faqs',
+  DashboardController.getFaq,
+);
+
+
+
+// =================================================
+router.get('/get_recipe_details/:id',
+  DashboardController.getAllSubscription,
 );
 
 export const DashboardRoutes = router;

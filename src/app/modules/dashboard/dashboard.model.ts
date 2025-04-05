@@ -1,5 +1,5 @@
 import mongoose, { Model, Schema, Types } from "mongoose";
-import { IComment, INutritional, IRecipe, IReview, ISubscriptions } from "./dsashbaord.interface";
+import { IAdds, IComment, INutritional, IRecipe, IReview, ISubscriptions } from "./dsashbaord.interface";
 import { string } from "zod";
 
 
@@ -147,14 +147,28 @@ const RecipeSchema = new Schema<IRecipe>({
         default: [],
     }
 });
-// const 
+
+const addsSchema = new Schema<IAdds>(
+    {
+        url: {
+            type: String,
+            required: true,
+        },
+        image: {
+            type: String,
+            required: true,
+        },
+    }
+);
+
 
 const Subscription: Model<ISubscriptions> = mongoose.model<ISubscriptions>('Subscription', SubscriptionSchema);
 const Recipe: Model<IRecipe> = mongoose.model<IRecipe>('Recipe', RecipeSchema);
 const Comment: Model<IComment> = mongoose.model<IComment>('Comment', CommentSchema);
 const Review: Model<IReview> = mongoose.model<IReview>('Review', ReviewSchema);
-// const
-export { Subscription, Recipe, Comment, Review };
+const Adds: Model<IAdds> = mongoose.model<IAdds>('Adds', addsSchema);
+
+export { Subscription, Recipe, Comment, Review, Adds };
 
 
 // enum: ["African", "American", "Asian", "Caribbean", "Chinese", "Cuban", "East-African", "Ethiopian", "European", "French", "German", "Greek", "Indian", "Irish", "Israeli", "Italian", "Jamaican", "Japanese", "Korean", "Latin-American", "Mediterranean", "Mexican", "Middle-Eastern", "Moroccan", "North-African", "Persian", "Peruvian", "Puerto-Rican", "Russian", "Spanish", "Tex-Mex", "Thai", "Vietnamese", "West-African"],
