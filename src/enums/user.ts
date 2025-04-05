@@ -18,10 +18,12 @@ export enum ENUM_SOCKET_EVENT {
 };
 
 export enum ENUM_MEAL_TYPE {
-  NONE = "None",
-  BREAKFASTS = "Breakfasts",
-  LUNCHES_AND_DINNERS = "Lunches and Dinners",
-  DESSERTS = "Desserts",
-  SNACKS = "Snacks",
-  SIDES = "Sides",
+  NONE = "none",
+  BREAKFASTS = "breakfast",
+  LUNCHES_AND_DINNERS = "lunches-and-dinners",
+  DESSERTS = "desserts",
+  SNACKS = "snacks",
+  SIDES = "sides",
 }
+
+// 'breakfast', 'lunches-and-dinners', 'desserts', 'snacks', 'sides'

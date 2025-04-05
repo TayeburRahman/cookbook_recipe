@@ -38,13 +38,19 @@ const UserSchema = new Schema<IUser>(
       default: null,
     },
     mail_types: {
-      type: String,
-      default: 'None',
+      type: [String],
+      default: ['None'],
       enum: ENUM_MEAL_TYPE,
     },
     relevant_dielary: {
-      type: String,
+      type: [String],
       default: null,
+      enum: ['Gluten-Free', 'Vegan', 'Vegetarian', 'Keto', 'Paleo'],
+    },
+    helgth_goal: {
+      type: [String],
+      enum: ["weight_loss", "muscle_gain", "maintain_weight"],
+      required: true
     },
     age: {
       type: String,

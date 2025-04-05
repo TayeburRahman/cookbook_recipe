@@ -151,6 +151,19 @@ const getRecipeDetails: RequestHandler = catchAsync(
     });
   });
 
+const getRecipesForYou: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.params.id
+    const user = req.user;
+    const result = await DashbaordService.getRecipesForYou(user as IReqUser);
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: `Delate sucessfully`,
+      data: result,
+    });
+  });
+
 
 export const DashboardController = {
   getAllUser,
@@ -163,5 +176,6 @@ export const DashboardController = {
   updateRecipes,
   deleteRecipe,
   getMyRecipes,
-  getRecipeDetails
+  getRecipeDetails,
+  getRecipesForYou
 };

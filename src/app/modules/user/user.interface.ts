@@ -17,12 +17,13 @@ export type IUser = Document & {
   status: "active" | "deactivate";
   createdAt?: Date;
   updatedAt?: Date;
-  mail_types: string;
-  relevant_dielary: string;
+  mail_types: string[];
+  relevant_dielary: string[];
   age: string;
   weight: string;
   hight: string;
   activety_lavel: string;
   duration_time: Date;
   subscription_status: string;
+  helgth_goal: [String]
 }

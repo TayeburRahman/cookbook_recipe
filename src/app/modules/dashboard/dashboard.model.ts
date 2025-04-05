@@ -113,7 +113,7 @@ const RecipeSchema = new Schema<IRecipe>({
     },
     weight_and_muscle: {
         type: String,
-        enum: ['weight_loss', 'muscle_gain']
+        enum: ['weight_loss', 'muscle_gain', 'maintain_weight']
     },
     whole_food_type: {
         type: String,
