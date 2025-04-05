@@ -156,13 +156,18 @@ const getRecipeDetails = async (id: Types.ObjectId) => {
 };
 
 const getRecipesForYou = async (user: IReqUser) => {
-    const { userId, authId } = user;
-    // const result = await Recipe.findById(id);
-    // if (!result) {
-    // throw new ApiError(404, "Not find recipe!")
-    // }
-    // return result;
+    const { userId } = user;
+
+    const userDb = await User.findById(userId).select("helgth_goal") as IUser;
+    if (!userDb) return [];
+
+    const recipes = await Recipe.find({
+        weight_and_muscle: { $in: userDb.helgth_goal }
+    });
+
+    return recipes;
 };
+
 
 export const DashbaordService = {
     getAllUser,

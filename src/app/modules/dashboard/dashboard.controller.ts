@@ -5,7 +5,6 @@ import { DashbaordService } from './dashboard.service';
 import { ISubscriptions } from './dsashbaord.interface';
 import { Subscription } from './dashboard.model';
 import { IReqUser } from '../auth/auth.interface';
-import { Types } from 'mongoose';
 
 const getAllUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
@@ -71,8 +70,8 @@ const getAllSubscription: RequestHandler = catchAsync(
     });
   },
 );
-//   ===============================================================
 
+// ===============================================================
 const getAllRecipes: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const query = req.query as any;
@@ -163,7 +162,6 @@ const getRecipesForYou: RequestHandler = catchAsync(
       data: result,
     });
   });
-
 
 export const DashboardController = {
   getAllUser,
