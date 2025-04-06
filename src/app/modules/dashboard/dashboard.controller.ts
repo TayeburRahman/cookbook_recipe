@@ -1,7 +1,7 @@
 import { Request, RequestHandler, Response } from 'express';
 import sendResponse from '../../../shared/sendResponse';
 import catchAsync from '../../../shared/catchasync';
-import { DashbaordService } from './dashboard.service';
+import { DashboardService } from './dashboard.service';
 import { IAdds, ISubscriptions } from './dsashbaord.interface';
 import { Subscription } from './dashboard.model';
 import { IReqUser } from '../auth/auth.interface';
@@ -10,7 +10,7 @@ import { IReqUser } from '../auth/auth.interface';
 
 const totalCount: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const result = await DashbaordService.totalCount();
+    const result = await DashboardService.totalCount();
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -24,7 +24,7 @@ const getMonthlySubscriptionGrowth: RequestHandler = catchAsync(
     const year = req.query.year
       ? parseInt(req.query.year as string, 10)
       : undefined;
-    const result = await DashbaordService.getMonthlySubscriptionGrowth(year);
+    const result = await DashboardService.getMonthlySubscriptionGrowth(year);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -39,7 +39,7 @@ const getMonthlyUserGrowth: RequestHandler = catchAsync(
     const year = req.query.year
       ? parseInt(req.query.year as string, 10)
       : undefined;
-    const result = await DashbaordService.getMonthlyUserGrowth(year);
+    const result = await DashboardService.getMonthlyUserGrowth(year);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -53,7 +53,7 @@ const getMonthlyUserGrowth: RequestHandler = catchAsync(
 const getAllUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const query = req.query as any;
-    const result = await DashbaordService.getAllUser(query as any);
+    const result = await DashboardService.getAllUser(query as any);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -66,7 +66,7 @@ const getAllUser: RequestHandler = catchAsync(
 const createSubscriptions: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const body = req.body as any;
-    const result = await DashbaordService.createSubscriptions(body as any);
+    const result = await DashboardService.createSubscriptions(body as any);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -80,7 +80,7 @@ const updateSubscription: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const body = req.body as ISubscriptions;
     const id = req.params.id
-    const result = await DashbaordService.updateSubscription(id as string, body as ISubscriptions);
+    const result = await DashboardService.updateSubscription(id as string, body as ISubscriptions);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -93,7 +93,7 @@ const updateSubscription: RequestHandler = catchAsync(
 const deleteSubscription: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id
-    const result = await DashbaordService.deleteSubscription(id as string);
+    const result = await DashboardService.deleteSubscription(id as string);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -120,7 +120,8 @@ const getAllRecipes: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const query = req.query as any;
     const body = req.body;
-    const result = await DashbaordService.getAllRecipes(query as any, body as any);
+    const user = req.user as IReqUser;
+    const result = await DashboardService.getAllRecipes(user, query as any, body as any);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -134,7 +135,7 @@ const createRecipes: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const body = req.body as any;
     const user = req.user as IReqUser;
-    const result = await DashbaordService.createRecipes(body as any, user);
+    const result = await DashboardService.createRecipes(body as any, user);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -148,7 +149,7 @@ const updateRecipes: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const body = req.body as ISubscriptions;
     const id = req.params.id
-    const result = await DashbaordService.updateRecipes(id as string, body as ISubscriptions);
+    const result = await DashboardService.updateRecipes(id as string, body as ISubscriptions);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -161,7 +162,7 @@ const updateRecipes: RequestHandler = catchAsync(
 const deleteRecipe: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id
-    const result = await DashbaordService.deleteRecipe(id as string);
+    const result = await DashboardService.deleteRecipe(id as string);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -173,7 +174,7 @@ const deleteRecipe: RequestHandler = catchAsync(
 const getMyRecipes: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const user = req.user
-    const result = await DashbaordService.getMyRecipes(user as IReqUser);
+    const result = await DashboardService.getMyRecipes(user as IReqUser);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -185,7 +186,7 @@ const getMyRecipes: RequestHandler = catchAsync(
 const getRecipeDetails: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id
-    const result = await DashbaordService.getRecipeDetails(id as any);
+    const result = await DashboardService.getRecipeDetails(id as any);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -198,7 +199,7 @@ const getRecipesForYou: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const id = req.params.id
     const user = req.user;
-    const result = await DashbaordService.getRecipesForYou(user as IReqUser);
+    const result = await DashboardService.getRecipesForYou(user as IReqUser);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -208,7 +209,7 @@ const getRecipesForYou: RequestHandler = catchAsync(
   });
 
 const addsInsertIntoDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.addsInsertIntoDB(req.files, req.body);
+  const result = await DashboardService.addsInsertIntoDB(req.files, req.body);
   sendResponse<IAdds>(res, {
     statusCode: 200,
     success: true,
@@ -218,7 +219,7 @@ const addsInsertIntoDB = catchAsync(async (req: Request, res: Response) => {
 });
 
 const updateAdds = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.updateAdds(req);
+  const result = await DashboardService.updateAdds(req);
   sendResponse<IAdds>(res, {
     statusCode: 200,
     success: true,
@@ -228,7 +229,7 @@ const updateAdds = catchAsync(async (req: Request, res: Response) => {
 });
 
 const deleteAdds = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.deleteAdds(req.params.id);
+  const result = await DashboardService.deleteAdds(req.params.id);
   sendResponse<IAdds>(res, {
     statusCode: 200,
     success: true,
@@ -238,7 +239,7 @@ const deleteAdds = catchAsync(async (req: Request, res: Response) => {
 });
 
 const allAdds = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.allAdds(req.query);
+  const result = await DashboardService.allAdds(req.query);
   sendResponse<IAdds[]>(res, {
     statusCode: 200,
     success: true,
@@ -249,7 +250,7 @@ const allAdds = catchAsync(async (req: Request, res: Response) => {
 });
 // ===========================
 const addFaq = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.addFaq(req.body);
+  const result = await DashboardService.addFaq(req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -258,7 +259,7 @@ const addFaq = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const updateFaq = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.updateFaq(req);
+  const result = await DashboardService.updateFaq(req);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -267,7 +268,7 @@ const updateFaq = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const deleteFaq = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.deleteFaq(req);
+  const result = await DashboardService.deleteFaq(req);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -276,7 +277,7 @@ const deleteFaq = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getFaq = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.getFaq();
+  const result = await DashboardService.getFaq();
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -286,7 +287,7 @@ const getFaq = catchAsync(async (req: Request, res: Response) => {
 });
 
 const addTermsConditions = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.addTermsConditions(req.body);
+  const result = await DashboardService.addTermsConditions(req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -295,7 +296,7 @@ const addTermsConditions = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getTermsConditions = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.getTermsConditions();
+  const result = await DashboardService.getTermsConditions();
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -304,7 +305,7 @@ const getTermsConditions = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const addPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.addPrivacyPolicy(req.body);
+  const result = await DashboardService.addPrivacyPolicy(req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -313,7 +314,7 @@ const addPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashbaordService.getPrivacyPolicy();
+  const result = await DashboardService.getPrivacyPolicy();
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -324,7 +325,7 @@ const getPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
 // ================================
 const sendMessageSupport = catchAsync(async (req: Request, res: Response) => {
   const user = req.user as IReqUser;
-  const result = await DashbaordService.sendMessageSupport(user, req.body);
+  const result = await DashboardService.sendMessageSupport(user, req.body);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -336,7 +337,7 @@ const sendMessageSupport = catchAsync(async (req: Request, res: Response) => {
 const getAllMessagesSupport = catchAsync(async (req: Request, res: Response) => {
   const user = req.user as IReqUser;
   const query = req.query;
-  const result = await DashbaordService.getAllMessagesSupport(query);
+  const result = await DashboardService.getAllMessagesSupport(query);
   sendResponse(res, {
     statusCode: 200,
     success: true,
@@ -345,6 +346,28 @@ const getAllMessagesSupport = catchAsync(async (req: Request, res: Response) => 
   });
 });
 
+const toggleFavorite = catchAsync(async (req: Request, res: Response) => {
+  const { authId } = req.user as IReqUser;
+  const recipeId = req.params.recipeId;
+  const result = await DashboardService.addRemoveFavorites(authId as any, recipeId as any);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: result.message,
+    data: result,
+  });
+});
+
+const getUserFavorites = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IReqUser;
+  const result = await DashboardService.getUserFavorites(user);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
 
 export const DashboardController = {
   getAllUser,
@@ -375,6 +398,8 @@ export const DashboardController = {
   getAllMessagesSupport,
   totalCount,
   getMonthlySubscriptionGrowth,
-  getMonthlyUserGrowth
+  getMonthlyUserGrowth,
+  toggleFavorite,
+  getUserFavorites
 
 };

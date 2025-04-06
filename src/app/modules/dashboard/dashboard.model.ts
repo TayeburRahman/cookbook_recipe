@@ -141,9 +141,9 @@ const RecipeSchema = new Schema<IRecipe>({
         required: true,
         default: 5,
     },
-    fevorite: {
+    favorites: {
         type: [Schema.Types.ObjectId],
-        ref: 'User',
+        ref: 'Auth',
         default: [],
     }
 });

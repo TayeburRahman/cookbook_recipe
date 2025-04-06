@@ -36,7 +36,7 @@ export interface IRecipe extends Document {
   time: string;
   serving_size: number;
   ratting: number;
-  fevorite: Types.ObjectId[];
+  favorites: Types.ObjectId[];
   holiday_recipes: string;
   oils: string;
   serving_temperature: string;

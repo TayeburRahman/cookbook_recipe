@@ -54,6 +54,7 @@ router.delete('/delete_recipe/:id',
   DashboardController.deleteRecipe,
 );
 router.get('/get_all_recipe',
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   DashboardController.getAllRecipes,
 );
 router.get('/my_all_recipe',
@@ -128,5 +129,15 @@ router.get('/get-message-support',
 router.get('/get_recipe_details/:id',
   DashboardController.getAllSubscription,
 );
+router.patch('/toggle_favorite/:recipeId',
+  auth(ENUM_USER_ROLE.USER),
+  DashboardController.toggleFavorite
+);
+
+router.get('/get_user_favorites',
+  auth(ENUM_USER_ROLE.USER),
+  DashboardController.getUserFavorites
+);
+
 
 export const DashboardRoutes = router;

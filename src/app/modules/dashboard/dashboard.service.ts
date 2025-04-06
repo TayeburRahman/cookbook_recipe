@@ -209,6 +209,7 @@ const getAllUser = async (query: any) => {
     return { result, meta };
 
 };
+
 // =Subscriptions =================================
 const createSubscriptions = async (payload: ISubscriptions) => {
     try {
@@ -246,11 +247,11 @@ const deleteSubscription = async (id: string) => {
 };
 
 // ====================================
-const getAllRecipes = async (query: any, payload: any) => {
+const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
     const { page, limit, searchTerm } = query;
+    const { authId } = user;
+    console.log("authId", authId)
     const { prep_time_start, prep_time_end, serving_size_start, serving_size_end } = payload;
-
-    // console.log(prep_time_start, prep_time_end, serving_size_start, serving_size_end)
 
     if (query?.searchTerm) {
         delete query.page;
@@ -266,21 +267,32 @@ const getAllRecipes = async (query: any, payload: any) => {
     }
 
     const userQuery = new QueryBuilder(Recipe.find(filterQuery)
+        // .populate("category", "name")
+        .select("_id name category image prep_time serving_size oils ratting favorites")
         , query)
         .search(["name", "category"])
         .filter()
         .sort()
         .paginate()
-        .fields()
+        .fields();
 
-    const result = await userQuery.modelQuery;
+    let result = await userQuery.modelQuery.lean();
+
+    result = result.map(recipe => {
+        // @ts-ignore
+        const isFavorited = recipe.favorites.some((id: any) => id.toString() === authId.toString());
+        return {
+            ...recipe,
+            favorite: isFavorited
+        };
+    });
+
+
     const meta = await userQuery.countTotal();
 
-    console.log(result)
-
     return { result, meta };
-
 };
+
 
 const createRecipes = async (payload: IRecipe, user: IReqUser) => {
     try {
@@ -499,8 +511,40 @@ const getAllMessagesSupport = async (query: any) => {
 };
 
 // ========================
+const addRemoveFavorites = async (authId: Types.ObjectId, recipeId: Types.ObjectId) => {
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+        throw new ApiError(404, "Recipe not found");
+    }
 
-export const DashbaordService = {
+    const isFavorited = recipe.favorites.includes(authId);
+
+    if (isFavorited) {
+        recipe.favorites = recipe.favorites.filter(id => id.toString() !== authId.toString());
+    } else {
+        recipe.favorites.push(authId);
+    }
+
+    await recipe.save();
+    return { message: isFavorited ? "Removed from favorites" : "Added to favorites" };
+};
+
+const getUserFavorites = async (user: IReqUser) => {
+    const authId = user.authId;
+
+    const recipes = await Recipe.find({ favorites: authId }).select("_id name category image prep_time serving_size oils ratting favorites").lean();
+
+    const updatedRecipes = recipes.map(recipe => ({
+        ...recipe,
+        favorite: true
+    }));
+
+    return { recipes: updatedRecipes };
+};
+
+
+
+export const DashboardService = {
     totalCount,
     getAllUser,
     createSubscriptions,
@@ -528,5 +572,7 @@ export const DashbaordService = {
     sendMessageSupport,
     getAllMessagesSupport,
     getMonthlySubscriptionGrowth,
-    getMonthlyUserGrowth
+    getMonthlyUserGrowth,
+    addRemoveFavorites,
+    getUserFavorites
 };
