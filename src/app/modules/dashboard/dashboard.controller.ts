@@ -6,6 +6,50 @@ import { IAdds, ISubscriptions } from './dsashbaord.interface';
 import { Subscription } from './dashboard.model';
 import { IReqUser } from '../auth/auth.interface';
 
+
+
+const totalCount: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const result = await DashbaordService.totalCount();
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: `Get all count sucess!`,
+      data: result,
+    });
+  },
+);
+const getMonthlySubscriptionGrowth: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const year = req.query.year
+      ? parseInt(req.query.year as string, 10)
+      : undefined;
+    const result = await DashbaordService.getMonthlySubscriptionGrowth(year);
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: `Get all count sucess!`,
+      data: result,
+    });
+  },
+);
+
+const getMonthlyUserGrowth: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const year = req.query.year
+      ? parseInt(req.query.year as string, 10)
+      : undefined;
+    const result = await DashbaordService.getMonthlyUserGrowth(year);
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: `Get all count sucess!`,
+      data: result,
+    });
+  },
+);
+
+
 const getAllUser: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const query = req.query as any;
@@ -241,6 +285,67 @@ const getFaq = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const addTermsConditions = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.addTermsConditions(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
+const getTermsConditions = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.getTermsConditions();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
+const addPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.addPrivacyPolicy(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
+const getPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashbaordService.getPrivacyPolicy();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
+// ================================
+const sendMessageSupport = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IReqUser;
+  const result = await DashbaordService.sendMessageSupport(user, req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
+
+const getAllMessagesSupport = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IReqUser;
+  const query = req.query;
+  const result = await DashbaordService.getAllMessagesSupport(query);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
+
+
 export const DashboardController = {
   getAllUser,
   createSubscriptions,
@@ -261,5 +366,15 @@ export const DashboardController = {
   getFaq,
   deleteFaq,
   updateFaq,
-  addFaq
+  addFaq,
+  addTermsConditions,
+  getTermsConditions,
+  addPrivacyPolicy,
+  getPrivacyPolicy,
+  sendMessageSupport,
+  getAllMessagesSupport,
+  totalCount,
+  getMonthlySubscriptionGrowth,
+  getMonthlyUserGrowth
+
 };

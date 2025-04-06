@@ -6,6 +6,22 @@ import { uploadFile } from '../../middlewares/fileUploader';
 
 const router = express.Router();
 
+// =============================
+
+router.get('/get_total_count',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.totalCount,
+);
+router.get('/get_subscription_growth',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.getMonthlySubscriptionGrowth,
+);
+router.get('/get_user_growth',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.getMonthlyUserGrowth,
+);
+
+// =============================
 router.get('/get_all_user',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   DashboardController.getAllUser,
@@ -85,8 +101,28 @@ router.delete('/delete-faqs/:id',
 router.get('/get-faqs',
   DashboardController.getFaq,
 );
+router.post('/addupdate-termsConditions',
+  DashboardController.addTermsConditions,
+);
+router.get('/get-rules',
+  DashboardController.getTermsConditions,
+);
 
-
+router.post('/addupdate-privacy-policy',
+  DashboardController.addPrivacyPolicy,
+);
+router.get('/get-privacy-policy',
+  DashboardController.getPrivacyPolicy,
+);
+// ================================
+router.post('/send-message-support',
+  auth(ENUM_USER_ROLE.USER),
+  DashboardController.sendMessageSupport,
+);
+router.get('/get-message-support',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  DashboardController.getAllMessagesSupport,
+);
 
 // =================================================
 router.get('/get_recipe_details/:id',

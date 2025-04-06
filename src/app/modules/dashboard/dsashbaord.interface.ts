@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { Schema, Types } from "mongoose";
 
 export type ISubscriptions = {
   name: string;
@@ -64,6 +64,14 @@ export type IAdds = {
   image: string;
   url: string;
 };
+
+export type IContactSupport = {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  user: Types.ObjectId;
+}
 
 // export interface IComment extends Document {
 //   userId: Types.ObjectId;
