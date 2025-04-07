@@ -293,7 +293,6 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
     return { result, meta };
 };
 
-
 const createRecipes = async (payload: IRecipe, user: IReqUser) => {
     try {
         const authId = user.authId as any;
@@ -532,7 +531,9 @@ const addRemoveFavorites = async (authId: Types.ObjectId, recipeId: Types.Object
 const getUserFavorites = async (user: IReqUser) => {
     const authId = user.authId;
 
-    const recipes = await Recipe.find({ favorites: authId }).select("_id name category image prep_time serving_size oils ratting favorites").lean();
+    const recipes = await Recipe.find({ favorites: authId })
+        .select("_id name category image prep_time serving_size oils ratting favorites")
+        .lean();
 
     const updatedRecipes = recipes.map(recipe => ({
         ...recipe,

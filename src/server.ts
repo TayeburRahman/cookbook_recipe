@@ -21,8 +21,8 @@ async function main() {
     const port =
       typeof config.port === 'number' ? config.port : Number(config.port);
     server = app.listen(port, config.base_url as string, () => {
-      // logger.info(`Listening on port http://${config.base_url}:${config.port}`);
-      logger.info(`Listening on port http://127.0.0.1:5001`);
+      logger.info(`Listening on port http://${config.base_url}:${config.port}`);
+      // logger.info(`Listening on port http://127.0.0.1:5001`);
     });
 
     const socketIO = new Server(server, {
