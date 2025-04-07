@@ -1,20 +1,41 @@
+import cron from "node-cron";
+import { logger } from "../../../shared/logger";
+import { MealPlanWeek } from "./mealplan.model";
 
-import httpStatus from "http-status";
-import ApiError from "../../../errors/ApiError";
-import { jwtHelpers } from "../../../helpers/jwtHelpers";
-// import { ActivationPayload } from "./";
-import config from "../../../config";
-import User from "../user/user.model";
-import Admin from "../admin/admin.model";
-import { Types } from "mongoose";
+// cron.schedule("* * * * *", async () => {
+//     try {
+//         const now = new Date();
+//         const result = await MealPlanWeek.updateMany(
+//             {
+//                 isActive: false,
+//                 expirationTime: { $lte: now },
+//                 activationCode: { $ne: null },
+//             },
+//             {
+//                 $unset: { activationCode: "" },
+//             }
+//         );
 
-const activateAccount = async (payload: ActivationPayload) => {
+//         if (result.modifiedCount > 0) {
+//             logger.info(`Removed activation codes from ${result.modifiedCount} expired inactive users`);
+//         }
+//     } catch (error) {
+//         logger.error("Error removing activation codes from expired users:", error);
+//     }
+// });
 
-};
 
 
 
-export const mService = {
+
+
+// const activateAccount = async (payload: ActivationPayload) => {
+
+// };
+
+
+
+export const MealService = {
     // activateAccount
 };
 

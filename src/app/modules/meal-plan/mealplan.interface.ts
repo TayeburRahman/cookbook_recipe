@@ -1,15 +1,24 @@
 import { Document, Schema, Types } from "mongoose";
 
 interface IDay {
-    day: number;
+    day: string;
     recipes: Types.ObjectId[];
 }
-
-interface IWeek extends Document {
+interface IMealPlanWeek extends Document {
+    user: Schema.Types.ObjectId;
     startDate: Date;
     endDate: Date;
-    days: IDay[];
+    data: IDay[];
     createdAt: Date;
+    types: string;
+}
+interface IMealPlanCustom extends Document {
+    user: Schema.Types.ObjectId;
+    name: string;
+    data: IDay[];
+    createdAt: Date;
+    types: string;
 }
 
-export { IDay, IWeek };
+
+export { IDay, IMealPlanWeek, IMealPlanCustom };
