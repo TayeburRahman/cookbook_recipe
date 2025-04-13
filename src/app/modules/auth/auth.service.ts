@@ -16,6 +16,8 @@ import config from "../../../config";
 import User from "../user/user.model";
 import Admin from "../admin/admin.model";
 import { Types } from "mongoose";
+import { MealService } from "../meal-plan/mealplan.service";
+import { MealPlanWeek } from "../meal-plan/mealplan.model";
 
 const registrationAccount = async (payload: IAuth, files: any) => {
   const { role, password, confirmPassword, email, ...other } = payload;
@@ -119,6 +121,17 @@ const activateAccount = async (payload: ActivationPayload) => {
   if (existAuth.activationCode !== activation_code) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Code didn't match!");
   }
+  const authId = existAuth?._id
+
+  const existPlan = await MealPlanWeek.find({ user: authId })
+  if (!existPlan.length) {
+    const data = await MealService.activateAccountCreateDefaultPlane(authId)
+    console.log('data', data)
+    if (!data?.status) {
+      throw new ApiError(400, "Server error, please try again later.")
+    }
+  }
+
   const user = await Auth.findOneAndUpdate(
     { email: userEmail },
     { isActive: true },
@@ -159,7 +172,7 @@ const activateAccount = async (payload: ActivationPayload) => {
   return {
     accessToken,
     refreshToken,
-    user,
+    // user,
   };
 };
 

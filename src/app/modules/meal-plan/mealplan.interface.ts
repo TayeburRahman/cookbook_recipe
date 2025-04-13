@@ -6,6 +6,7 @@ interface IDay {
 }
 interface IMealPlanWeek extends Document {
     user: Schema.Types.ObjectId;
+    name: string;
     startDate: Date;
     endDate: Date;
     data: IDay[];

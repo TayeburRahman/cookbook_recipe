@@ -4,6 +4,7 @@ import { MessageRoutes } from '../modules/messages/message.routes';
 import { NotificationRoutes } from '../modules/notifications/notifications.routes';
 import { DashboardRoutes } from '../modules/dashboard/dashboard.routes';
 import { PaymentRoutes } from '../modules/payment/payment.routes';
+import { MealPlanRoutes } from '../modules/meal-plan/mealplan.routes';
 
 const router = express.Router();
 
@@ -14,6 +15,10 @@ const moduleRoutes = [
     route: AuthRoutes,
   },
   // -- done
+  {
+    path: '/meal_plan',
+    route: MealPlanRoutes,
+  },
   {
     path: '/message',
     route: MessageRoutes,

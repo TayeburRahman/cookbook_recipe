@@ -16,26 +16,21 @@ const daySchema = new Schema<IDay>({
   }]
 });
 
-const MealPlanCustomSchema = new Schema<IMealPlanCustom>({
+
+const MealPlanWeekSchema = new Schema<IMealPlanWeek>({
   user: { type: Types.ObjectId, ref: "Auth" },
-  name: { type: String, required: true },
+  name: { type: String },
+  startDate: { type: Date },
+  endDate: { type: Date },
   data: [daySchema],
   types: {
     type: String,
-    enum: ['custom', 'featured'],
+    enum: ['week', 'custom', 'featured'],
   },
   createdAt: { type: Date, default: Date.now },
 });
 
-const MealPlanWeekSchema = new Schema<IMealPlanWeek>({
-  user: { type: Types.ObjectId, ref: "Auth" },
-  startDate: { type: Date, required: true },
-  endDate: { type: Date, required: true },
-  data: [daySchema],
-  createdAt: { type: Date, default: Date.now },
-});
-
 const MealPlanWeek: Model<IMealPlanWeek> = mongoose.model<IMealPlanWeek>('MealPlanWeek', MealPlanWeekSchema);
-const MealPlanCustom: Model<IMealPlanCustom> = mongoose.model<IMealPlanCustom>('IMealPlanCustom', MealPlanCustomSchema);
 
-export { MealPlanWeek, MealPlanCustom };
+
+export { MealPlanWeek };
