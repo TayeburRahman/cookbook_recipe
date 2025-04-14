@@ -166,15 +166,27 @@ const addPlaneRecipes = async (query: {
 };
 
 const getMealPlanById = async (id: string) => {
+    if (!id) {
+        throw new ApiError(400, 'Invalid Meal Plan ID');
+    }
+
     const plan = await MealPlanWeek.findById(id)
         .populate({
             path: 'data.recipes.recipe',
-            select: '-ingredients',
-        });
+            select: 'name duration nutritional category image meal_type temperature ratting time',
+        })
+        .lean();
 
     if (!plan) {
         throw new ApiError(404, 'Meal Plan not found!');
     }
+
+    // @ts-ignore
+    plan.data = plan.data.map(day => ({
+        ...day,
+        // @ts-ignore
+        recipes: day.recipes.map(({ ingredients, ...rest }) => rest),
+    }));
 
     return plan;
 };
@@ -210,6 +222,105 @@ const deleteCustomMealPlan = async (id: string) => {
 };
 
 
+const swapPlanRecipes = async (query: {
+    removeId: string;
+    newId: string;
+    day: string;
+    planId: string;
+}) => {
+    const { removeId, newId, day, planId } = query;
+
+    if (!removeId || !newId || !day || !planId) {
+        throw new ApiError(400, "All query filed are required!")
+    }
+
+    try {
+        const plan = await MealPlanWeek.findById(planId);
+
+        if (!plan) {
+            throw new ApiError(400, 'Meal plan not found');
+        }
+
+        const newRecipes = await Recipe.findById(newId);
+
+        if (!newRecipes) {
+            throw new ApiError(400, 'New recipe plan not found!');
+        }
+
+        const targetDay = plan.data.find(d => d.day === day);
+
+        if (!targetDay) {
+            throw new ApiError(400, `Day '${day}' not found in the plan`);
+        }
+
+        const recipeIndex = targetDay.recipes.findIndex(r =>
+            //@ts-ignore
+            r.recipe.toString() === removeId
+        );
+
+        if (recipeIndex === -1) {
+            throw new Error('Recipe to remove not found');
+        }
+
+        //@ts-ignore
+        targetDay?.recipes[recipeIndex].recipe = newId;
+
+        //@ts-ignore
+        targetDay.recipes[recipeIndex].ingredients = newRecipes?.ingredients?.map(ingredient => ({
+            ingredient,
+            buy: false
+        }));
+
+        await plan.save();
+
+        return plan;
+
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error.message || 'Something went wrong',
+        };
+    }
+};
+
+const removePlanRecipes = async (
+    query: {
+        removeId: string;
+        day: string;
+        planId: string;
+    }
+) => {
+    const { removeId, day, planId } = query;
+    if (!removeId || !day || !planId) {
+        throw new ApiError(400, "All query fields are required!");
+    }
+    try {
+        const plan = await MealPlanWeek.findById(planId);
+        if (!plan) {
+            throw new ApiError(404, "Meal plan not found");
+        }
+
+        const dayData = plan.data.find((d) => d.day === day);
+        if (!dayData) {
+            throw new ApiError(404, `Day "${day}" not found in the meal plan`);
+        }
+
+        dayData.recipes = dayData.recipes.filter(
+            // @ts-ignore
+            (recipe) => recipe.recipe?.toString() !== removeId
+        );
+
+        await plan.save();
+        return plan;
+    } catch (error: any) {
+        return {
+            success: false,
+            message: error.message || "Something went wrong",
+        };
+    }
+};
+
+
 
 export const MealService = {
     addPlaneRecipes,
@@ -218,5 +329,7 @@ export const MealService = {
     createCustomPlane,
     getCustomMealPlan,
     getFeaturedMealPlan,
-    deleteCustomMealPlan
+    deleteCustomMealPlan,
+    swapPlanRecipes,
+    removePlanRecipes
 };

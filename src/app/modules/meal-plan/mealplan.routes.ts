@@ -41,6 +41,18 @@ router.delete(
     MealPlanController.deleteCustomMealPlan,
 );
 
+router.patch(
+    '/swap_plane_recipe',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.swapPlanRecipes,
+);
+
+router.delete(
+    '/remove_plan_recipes',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.removePlanRecipes,
+);
+
 
 
 

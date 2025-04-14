@@ -77,6 +77,38 @@ const deleteCustomMealPlan = catchAsync(async (req: Request, res: Response) => {
 });
 
 
+const swapPlanRecipes = catchAsync(async (req: Request, res: Response) => {
+    const query = req.query as {
+        removeId: string;
+        newId: string;
+        day: string;
+        planId: string;
+    };
+    const result = await MealService.swapPlanRecipes(query);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        data: result,
+        message: 'Recipe swapped successfully'
+    });
+});
+
+const removePlanRecipes = catchAsync(async (req: Request, res: Response) => {
+    const query = req.query as {
+        removeId: string;
+        day: string;
+        planId: string;
+    };
+    const result = await MealService.removePlanRecipes(query);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        data: result,
+        message: 'Remove swapped successfully'
+    });
+});
+
+
 
 
 export const MealPlanController = {
@@ -85,5 +117,7 @@ export const MealPlanController = {
     createCustomPlane,
     getCustomMealPlan,
     getFeaturedMealPlan,
-    deleteCustomMealPlan
+    deleteCustomMealPlan,
+    swapPlanRecipes,
+    removePlanRecipes
 };
