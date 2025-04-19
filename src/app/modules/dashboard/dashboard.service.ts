@@ -1,13 +1,14 @@
 import { Types } from "mongoose";
 import QueryBuilder from "../../../builder/QueryBuilder";
 import ApiError from "../../../errors/ApiError";
-import { IReqUser } from "../auth/auth.interface";
+import { IRegistration, IReqUser } from "../auth/auth.interface";
 import User from "../user/user.model";
 import { Adds, ContactSupport, Faq, PrivacyPolicy, Recipe, Subscription, TermsConditions } from "./dashboard.model";
 import { IAdds, IContactSupport, IRecipe, ISubscriptions } from "./dsashbaord.interface";
 import { IUser } from "../user/user.interface";
 import { logger } from "../../../shared/logger";
 import { Transaction } from "../payment/payment.model";
+import httpStatus from "http-status";
 
 // ===========================================
 const getYearRange = (year: any) => {
@@ -542,7 +543,7 @@ const getUserFavorites = async (user: IReqUser) => {
 
     return { recipes: updatedRecipes };
 };
-
+// =======================================
 
 
 export const DashboardService = {

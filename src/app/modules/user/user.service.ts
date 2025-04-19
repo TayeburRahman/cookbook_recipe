@@ -57,6 +57,7 @@ const updateMyProfile = async (req: RequestData): Promise<IUser> => {
 
 const getProfile = async (user: { userId: string }): Promise<IUser> => {
   const { userId } = user;
+  console.log("=========", user)
   const result = await User.findById(userId).populate("authId");
   if (!result) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");

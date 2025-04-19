@@ -58,7 +58,7 @@ export const registrationSuccessEmailBody = (userData: any) => `
         <h1>${userData?.activationCode}</h1>
         <p>Please enter this code on the activation page within the next 5 minutes.</p>
         <p>If you didn't register for ${config.app_name} App, please ignore this email.</p>
-        <p>If you have any questions, please contact us at <a href="mailto:yeasinarafat1734@gmail.com">yeasinarafat1734@gmail.com</a>.</p>
+        <p>If you have any questions, please contact us at <a href="mailto:tayebrayhan101@gmail.com">tayebrayhan101@gmail.com</a>.</p>
       </div>
     </body>
   </html>

@@ -53,6 +53,12 @@ router.delete(
     MealPlanController.removePlanRecipes,
 );
 
+router.get(
+    '/get_weekly_plane',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.getWeeklyMealPlan,
+);
+
 
 
 

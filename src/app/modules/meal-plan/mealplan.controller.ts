@@ -108,6 +108,17 @@ const removePlanRecipes = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getWeeklyMealPlan = catchAsync(async (req: Request, res: Response) => {
+    const user = req.user;
+    const result = await MealService.getWeeklyMealPlan(user as IReqUser);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        data: result,
+        message: "Get Successfully!",
+    });
+});
+
 
 
 
@@ -119,5 +130,6 @@ export const MealPlanController = {
     getFeaturedMealPlan,
     deleteCustomMealPlan,
     swapPlanRecipes,
-    removePlanRecipes
+    removePlanRecipes,
+    getWeeklyMealPlan
 };

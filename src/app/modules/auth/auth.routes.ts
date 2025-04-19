@@ -33,15 +33,19 @@ router.patch("/block", AuthController.blockUnblockAuthUser)
 
 //------ User Router ---------------
 router.get("/profile", auth(ENUM_USER_ROLE.USER), UserController.getProfile)
+router.patch("/edit-profile", auth(ENUM_USER_ROLE.USER),
+  uploadFile(),
+  UserController.updateProfile
+);
 
 //------ Admin Router ---------------
 router.get(
-  "/profile",
+  "/admin-profile",
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   AdminController.myProfile
 );
 router.patch(
-  "/edit-profile",
+  "/edit-admin-profile",
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   uploadFile(),
   AdminController.updateProfile

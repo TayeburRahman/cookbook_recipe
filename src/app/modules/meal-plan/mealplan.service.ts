@@ -22,6 +22,31 @@ const getWeekDates = (currentDate: Date) => {
     return { startDateThisWeek, endDateThisWeek, startDateNextWeek, endDateNextWeek };
 };
 
+const createUpcomingWeekPlan = async (authId: any) => {
+    const { startDateNextWeek, endDateNextWeek } = getWeekDates(new Date());
+
+    const daysData = [
+        { day: "Day-1", recipes: [] },
+        { day: "Day-2", recipes: [] },
+        { day: "Day-3", recipes: [] },
+        { day: "Day-4", recipes: [] },
+        { day: "Day-5", recipes: [] },
+        { day: "Day-6", recipes: [] },
+        { day: "Day-7", recipes: [] },
+    ];
+
+    const newPlan = {
+        types: 'week',
+        user: authId,
+        startDate: startDateNextWeek,
+        endDate: endDateNextWeek,
+        data: daysData,
+    };
+
+    await MealPlanWeek.create(newPlan);
+};
+
+
 const activateAccountCreateDefaultPlane = async (authId: any) => {
     try {
         if (!authId) {
@@ -205,6 +230,69 @@ const getFeaturedMealPlan = async (user: IReqUser) => {
     return plan;
 };
 
+const getWeekStartDate = (date: Date) => {
+    const day = date.getDay();
+    const sunday = new Date(date);
+    sunday.setHours(0, 0, 0, 0);
+    sunday.setDate(date.getDate() - day);
+    return sunday;
+};
+const normalizeDate = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+};
+
+const getWeeklyMealPlan = async (user: IReqUser) => {
+    const { authId } = user;
+    const currentDate = new Date();
+    const { startDateNextWeek, startDateThisWeek } = getWeekDates(currentDate);
+    const currentWeekStart = startDateThisWeek;
+
+    const normalizedNextWeekStart = normalizeDate(startDateNextWeek);
+
+    try {
+        let plans = await MealPlanWeek.find({ user: authId, types: 'week' }).lean();
+
+        const hasUpcomingWeek = plans.some(plan => {
+            const planStartNormalized = normalizeDate(new Date(plan.startDate));
+            return planStartNormalized.getTime() === normalizedNextWeekStart.getTime();
+        });
+
+        if (!hasUpcomingWeek) {
+            await createUpcomingWeekPlan(authId);
+            plans = await MealPlanWeek.find({ user: authId, types: 'week' }).lean();
+        }
+
+        const enrichedPlans = plans.map(plan => {
+            const planStart = getWeekStartDate(new Date(plan.startDate));
+            const diffInMs = currentWeekStart.getTime() - planStart.getTime();
+            const diffInWeeks = Math.floor(diffInMs / (7 * 24 * 60 * 60 * 1000));
+
+            let week_name = '';
+            if (diffInWeeks === 0) {
+                week_name = 'This week';
+            } else if (diffInWeeks === -1) {
+                week_name = 'Upcoming week';
+            } else if (diffInWeeks > 0) {
+                week_name = `${diffInWeeks + 1}th week`;
+            } else {
+                week_name = `Future week (${Math.abs(diffInWeeks) - 1} weeks ahead)`;
+            }
+
+            // @ts-ignore
+            delete plan.data;
+
+            return { ...plan, week_name };
+        });
+
+        return { status: true, plans: enrichedPlans.reverse() };
+    } catch (error) {
+        console.error('Error fetching or creating weekly meal plans:', error);
+        return { status: false, message: 'Error fetching plans' };
+    }
+};
+
+
+
 const deleteCustomMealPlan = async (id: string) => {
 
     if (!id) {
@@ -331,5 +419,6 @@ export const MealService = {
     getFeaturedMealPlan,
     deleteCustomMealPlan,
     swapPlanRecipes,
-    removePlanRecipes
+    removePlanRecipes,
+    getWeeklyMealPlan
 };

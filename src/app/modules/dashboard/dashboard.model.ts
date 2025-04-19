@@ -94,7 +94,7 @@ const RecipeSchema = new Schema<IRecipe>({
     category: {
         type: String,
         required: true,
-        enum: ['breakfast', 'lunches-and-dinners', 'desserts', 'snacks', 'sides'],
+        enum: ['breakfast', 'lunches-and-dinners', 'appetizers', 'salads', 'soups', 'desserts', 'smoothies/shakes', 'salad-dressings', 'jams/marmalades', 'sides'],
     },
     holiday_recipes: {
         type: String,
