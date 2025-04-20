@@ -46,7 +46,6 @@ const createUpcomingWeekPlan = async (authId: any) => {
     await MealPlanWeek.create(newPlan);
 };
 
-
 const activateAccountCreateDefaultPlane = async (authId: any) => {
     try {
         if (!authId) {
@@ -237,6 +236,7 @@ const getWeekStartDate = (date: Date) => {
     sunday.setDate(date.getDate() - day);
     return sunday;
 };
+
 const normalizeDate = (date: Date) => {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
@@ -291,8 +291,6 @@ const getWeeklyMealPlan = async (user: IReqUser) => {
     }
 };
 
-
-
 const deleteCustomMealPlan = async (id: string) => {
 
     if (!id) {
@@ -308,7 +306,6 @@ const deleteCustomMealPlan = async (id: string) => {
     const result = await MealPlanWeek.findByIdAndDelete(id)
     return result;
 };
-
 
 const swapPlanRecipes = async (query: {
     removeId: string;
