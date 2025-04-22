@@ -405,6 +405,62 @@ const removePlanRecipes = async (
     }
 };
 
+const getGroceryList = async (id: string) => {
+    if (!id) {
+        throw new ApiError(400, 'Invalid Meal Plan ID');
+    }
+
+    const plan = await MealPlanWeek.findById(id)
+        .populate({
+            path: 'data.recipes.recipe',
+            select: 'name image',
+        })
+        .select("user data")
+        .lean();
+
+    if (!plan) {
+        throw new ApiError(404, 'Meal Plan not found!');
+    }
+
+    return plan;
+};
+
+const toggleIngredientBuyStatus = async (ingredientId: string) => {
+    if (!ingredientId) {
+        throw new ApiError(400, 'Invalid Ingredient ID');
+    }
+
+    const plan = await MealPlanWeek.findOne({ 'data.recipes.ingredients._id': ingredientId });
+
+    if (!plan) {
+        throw new ApiError(404, 'Meal Plan containing this ingredient was not found');
+    }
+
+    let updated = false;
+
+    for (const day of plan.data) {
+        for (const recipe of day.recipes) {
+            // @ts-ignore
+            for (const ingredient of recipe.ingredients) {
+                if (ingredient._id.toString() === ingredientId) {
+                    ingredient.buy = !ingredient.buy;
+                    updated = true;
+                    break;
+                }
+            }
+            if (updated) break;
+        }
+        if (updated) break;
+    }
+
+    if (updated) {
+        await plan.save();
+        return { message: 'Buy status update successfully' };
+    } else {
+        throw new ApiError(404, 'Ingredient not found in any recipe');
+    }
+};
+
 
 
 export const MealService = {
@@ -417,5 +473,7 @@ export const MealService = {
     deleteCustomMealPlan,
     swapPlanRecipes,
     removePlanRecipes,
-    getWeeklyMealPlan
+    getWeeklyMealPlan,
+    getGroceryList,
+    toggleIngredientBuyStatus
 };

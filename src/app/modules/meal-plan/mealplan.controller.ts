@@ -119,7 +119,27 @@ const getWeeklyMealPlan = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const getGroceryList = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await MealService.getGroceryList(id as string);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        data: result,
+        message: "Get Successfully!",
+    });
+});
 
+const toggleIngredientBuyStatus = catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const result = await MealService.toggleIngredientBuyStatus(id as string);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        data: result,
+        message: "Update Successfully!",
+    });
+});
 
 
 export const MealPlanController = {
@@ -131,5 +151,7 @@ export const MealPlanController = {
     deleteCustomMealPlan,
     swapPlanRecipes,
     removePlanRecipes,
-    getWeeklyMealPlan
+    getWeeklyMealPlan,
+    getGroceryList,
+    toggleIngredientBuyStatus
 };

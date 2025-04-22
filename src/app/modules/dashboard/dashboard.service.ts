@@ -9,6 +9,7 @@ import { IUser } from "../user/user.interface";
 import { logger } from "../../../shared/logger";
 import { Transaction } from "../payment/payment.model";
 import httpStatus from "http-status";
+import { populate } from "dotenv";
 
 // ===========================================
 const getYearRange = (year: any) => {
@@ -194,8 +195,10 @@ const getAllUser = async (query: any) => {
     if (query?.searchTerm) {
         delete query.page;
     }
-    const userQuery = new QueryBuilder(User.find()
-        , query)
+    const userQuery = new QueryBuilder(User.find().populate({
+        path: 'authId',
+        select: 'is_block isActive role'
+    }), query)
         .search(["name", "email"])
         .filter()
         .sort()

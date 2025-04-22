@@ -25,5 +25,5 @@ export type IUser = Document & {
   activety_lavel: string;
   duration_time: Date;
   subscription_status: string;
-  helgth_goal: [String]
+  helgth_goal: String
 }

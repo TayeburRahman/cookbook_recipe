@@ -35,6 +35,13 @@ const updateMyProfile = async (req: RequestData): Promise<IUser> => {
 
   const updatedData = { ...data };
 
+  if (updatedData?.relevant_dielary?.length) {
+    updatedData.relevant_dielary = JSON.parse(updatedData.relevant_dielary)
+  }
+  if (updatedData?.mail_types?.length) {
+    updatedData.mail_types = JSON.parse(updatedData.mail_types)
+  }
+
   const [, updateUser] = await Promise.all([
     Auth.findByIdAndUpdate(
       authId,

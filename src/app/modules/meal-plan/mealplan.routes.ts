@@ -58,7 +58,17 @@ router.get(
     auth(ENUM_USER_ROLE.USER),
     MealPlanController.getWeeklyMealPlan,
 );
-
+// =Grocery List====================
+router.get(
+    '/get_grocery_list/:id',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.getGroceryList,
+);
+router.patch(
+    '/toggle_ingredient_buy_status/:id',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.toggleIngredientBuyStatus,
+);
 
 
 

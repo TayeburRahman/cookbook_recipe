@@ -21,9 +21,15 @@ export enum ENUM_MEAL_TYPE {
   NONE = "none",
   BREAKFASTS = "breakfast",
   LUNCHES_AND_DINNERS = "lunches-and-dinners",
+  APPETIZERS = "appetizers",
+  SALADS = "salads",
+  SOUPS = "soups",
   DESSERTS = "desserts",
-  SNACKS = "snacks",
+  SMOOTHIES_SHAKES = "smoothies/shakes",
+  SALAD_DRESSINGS = "salad-dressings",
+  JAMS_MARMALADES = "jams/marmalades",
   SIDES = "sides",
 }
+
 
 // 'breakfast', 'lunches-and-dinners', 'desserts', 'snacks', 'sides'

@@ -48,7 +48,7 @@ const UserSchema = new Schema<IUser>(
       enum: ['Gluten-Free', 'Vegan', 'Vegetarian', 'Keto', 'Paleo'],
     },
     helgth_goal: {
-      type: [String],
+      type: String,
       enum: ["weight_loss", "muscle_gain", "maintain_weight"],
       required: true
     },

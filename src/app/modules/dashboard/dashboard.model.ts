@@ -72,7 +72,7 @@ const RecipeSchema = new Schema<IRecipe>({
         ref: "Auth"
     },
     image: {
-        type: [String],
+        type: String,
         required: true
     },
     name: {

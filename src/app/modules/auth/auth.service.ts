@@ -51,6 +51,8 @@ const registrationAccount = async (payload: IAuth, files: any) => {
     profile_image = `/images/profile/${files.profile_image[0].filename}`;
   }
 
+  console.log("payload", payload)
+
   const { activationCode } = createActivationToken();
   const auth = {
     role,
@@ -90,7 +92,12 @@ const registrationAccount = async (payload: IAuth, files: any) => {
   other.email = email;
   other.profile_image = profile_image;
 
-  console.log("Account", auth)
+  if (other?.relevant_dielary?.length) {
+    other.relevant_dielary = JSON.parse(other.relevant_dielary)
+  }
+  if (other?.mail_types?.length) {
+    other.mail_types = JSON.parse(other.mail_types)
+  }
 
   // Role-based user creation
   let result;
@@ -101,9 +108,9 @@ const registrationAccount = async (payload: IAuth, files: any) => {
     case ENUM_USER_ROLE.ADMIN:
       result = await Admin.create(other);
       break;
-    case ENUM_USER_ROLE.RECIPE_CREATOR:
-      result = await Admin.create(other);
-      break;
+    // case ENUM_USER_ROLE.RECIPE_CREATOR:
+    //   result = await Admin.create(other);
+    //   break;
     default:
       throw new ApiError(400, "Invalid role provided!");
   }
