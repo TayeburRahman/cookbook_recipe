@@ -62,6 +62,15 @@ const UserSchema = new Schema<IUser>(
     hight: {
       type: String,
     },
+    location: {
+      type: String,
+      default: ''
+    },
+    gender: {
+      type: String,
+      default: 'Male',
+      enum: ["Male", 'Female', 'Other']
+    },
     activety_lavel: {
       type: String,
     },

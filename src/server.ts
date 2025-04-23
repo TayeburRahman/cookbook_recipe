@@ -5,7 +5,6 @@ import { Server } from 'socket.io';
 import { app } from './app';
 import config from './config/index';
 import { errorLogger, logger } from './shared/logger';
-import socket from './socket/socket';
 
 process.on('uncaughtException', error => {
   errorLogger.error(error);
@@ -24,18 +23,6 @@ async function main() {
       logger.info(`Listening on port http://${config.base_url}:${config.port}`);
       // logger.info(`Listening on port http://127.0.0.1:5001`);
     });
-
-    const socketIO = new Server(server, {
-      pingTimeout: 60000,
-      cors: {
-        origin: '*',
-      },
-    });
-
-    socket(socketIO);
-
-    //@ts-ignore
-    global.io = socketIO;
   } catch (error) {
     errorLogger.error(error);
     throw error;
