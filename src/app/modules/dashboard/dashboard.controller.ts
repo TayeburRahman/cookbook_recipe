@@ -2,7 +2,7 @@ import { Request, RequestHandler, Response } from 'express';
 import sendResponse from '../../../shared/sendResponse';
 import catchAsync from '../../../shared/catchasync';
 import { DashboardService } from './dashboard.service';
-import { IAdds, ISubscriptions } from './dsashbaord.interface';
+import { IAdds, IRecipe, ISubscriptions } from './dsashbaord.interface';
 import { Subscription } from './dashboard.model';
 import { IReqUser } from '../auth/auth.interface';
 
@@ -135,11 +135,11 @@ const createRecipes: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const body = req.body as any;
     const user = req.user as IReqUser;
-    const result = await DashboardService.createRecipes(body as any, user);
+    const result = await DashboardService.createRecipes(req.files, body as any, user);
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Create Sucessfully!`,
+      message: `Create Successfully!`,
       data: result,
     });
   },
@@ -147,9 +147,11 @@ const createRecipes: RequestHandler = catchAsync(
 
 const updateRecipes: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const body = req.body as ISubscriptions;
+    const payload = req.body as IRecipe;
+    const files = req.files;
+    const user = req.user;
     const id = req.params.id
-    const result = await DashboardService.updateRecipes(id as string, body as ISubscriptions);
+    const result = await DashboardService.updateRecipes(id as string, files as any, user as any, payload as IRecipe);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -178,7 +180,7 @@ const getMyRecipes: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Delate sucessfully`,
+      message: `Get My Recipes successfully`,
       data: result,
     });
   });

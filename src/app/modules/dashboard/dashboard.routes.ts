@@ -47,6 +47,7 @@ router.post('/create_recipe',
   DashboardController.createRecipes,
 );
 router.patch('/update_recipe/:id',
+  uploadFile(),
   auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   DashboardController.updateRecipes,
 );

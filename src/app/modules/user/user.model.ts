@@ -19,6 +19,7 @@ const UserSchema = new Schema<IUser>(
     },
     profile_image: {
       type: String,
+      required: true,
       default: null,
     },
     phone_number: {

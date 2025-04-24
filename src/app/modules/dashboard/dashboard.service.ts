@@ -284,7 +284,7 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
 
     result = result.map(recipe => {
         // @ts-ignore
-        const isFavorited = recipe.favorites.some((id: any) => id.toString() === authId.toString());
+        const isFavorited = recipe?.favorites?.some((id: any) => id.toString() === authId.toString());
         return {
             ...recipe,
             favorite: isFavorited
@@ -297,14 +297,35 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
     return { result, meta };
 };
 
-const createRecipes = async (payload: IRecipe, user: IReqUser) => {
+const createRecipes = async (files: any, payload: IRecipe, user: IReqUser) => {
     try {
         const authId = user.authId as any;
+        if (!files?.image) {
+            throw new ApiError(404, 'Image are not found!')
+        }
+        if (files?.image) {
+            payload.image = `/images/image/${files.image[0].filename}`;
+        }
+
+
         if (!authId) {
             throw new ApiError(404, 'User login unauthorized!');
         }
         payload.creator = authId;
+
+        if (payload?.ingredients) {
+            // @ts-ignore
+            payload.ingredients = JSON.parse(payload?.ingredients);
+        }
+        if (payload?.nutritional) {
+            // @ts-ignore
+            payload.nutritional = JSON.parse(payload?.nutritional);
+        }
+
+        console.log("payload", payload)
+
         const recipe = new Recipe(payload);
+
         await recipe.save();
         return recipe;
     } catch (error: any) {
@@ -312,8 +333,25 @@ const createRecipes = async (payload: IRecipe, user: IReqUser) => {
     }
 };
 
-const updateRecipes = async (id: string, payload: Partial<ISubscriptions>) => {
+const updateRecipes = async (id: string, files: any, user: any, payload: IRecipe) => {
     try {
+        if (!files?.image) {
+            throw new ApiError(404, 'Image are not found!')
+        }
+        if (files?.image) {
+            payload.image = `/images/image/${files.image[0].filename}`;
+        }
+
+        if (payload?.ingredients) {
+            // @ts-ignore
+            payload.ingredients = JSON.parse(payload?.ingredients);
+        }
+        if (payload?.nutritional) {
+            // @ts-ignore
+            payload.nutritional = JSON.parse(payload?.nutritional);
+        }
+
+        console.log("payload", payload)
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, payload, { new: true });
         if (!updatedRecipe) {
             throw new ApiError(404, 'Subscription not found');
@@ -358,7 +396,7 @@ const getRecipesForYou = async (user: IReqUser) => {
 
     const recipes = await Recipe.find({
         weight_and_muscle: { $in: userDb.helgth_goal }
-    });
+    }).select("_id name category image prep_time serving_size oils ratting favorites")
 
     return recipes;
 };
@@ -457,6 +495,7 @@ const deleteFaq = async (req: any) => {
 const getFaq = async () => {
     return await Faq.find();
 };
+
 // ==============
 const addTermsConditions = async (payload: any) => {
     const checkIsExist = await TermsConditions.findOne();
@@ -470,6 +509,7 @@ const addTermsConditions = async (payload: any) => {
         return await TermsConditions.create(payload);
     }
 };
+
 const getTermsConditions = async () => {
     return await TermsConditions.findOne();
 };
@@ -490,6 +530,7 @@ const addPrivacyPolicy = async (payload: any) => {
 const getPrivacyPolicy = async () => {
     return await PrivacyPolicy.findOne();
 };
+
 // =================
 const sendMessageSupport = async (user: IReqUser, payload: IContactSupport) => {
     return await ContactSupport.create({ ...payload, user: user?.userId });

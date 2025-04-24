@@ -65,16 +65,6 @@ const registrationAccount = async (payload: IAuth, files: any) => {
     isActive: false
   };
 
-  if (role === "USER") {
-    sendEmail({
-      email: auth.email,
-      subject: "Activate Your Account",
-      html: registrationSuccessEmailBody({
-        user: { name: auth.name },
-        activationCode,
-      }),
-    }).catch((error) => console.error("Failed to send email:", error.message));
-  }
 
   let createAuth;
   if (role === ENUM_USER_ROLE.ADMIN || role === ENUM_USER_ROLE.SUPER_ADMIN) {
@@ -86,6 +76,19 @@ const registrationAccount = async (payload: IAuth, files: any) => {
 
   if (!createAuth) {
     throw new ApiError(500, "Failed to create auth account");
+  }
+
+  console.log('activationCode', activationCode)
+
+  if (role === "USER") {
+    sendEmail({
+      email: auth.email,
+      subject: "Activate Your Account",
+      html: registrationSuccessEmailBody({
+        user: { name: auth.name },
+        activationCode,
+      }),
+    }).catch((error) => console.error("Failed to send email:", error.message));
   }
 
   other.authId = createAuth._id;
