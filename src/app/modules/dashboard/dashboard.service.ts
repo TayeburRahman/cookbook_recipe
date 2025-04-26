@@ -252,7 +252,7 @@ const deleteSubscription = async (id: string) => {
 
 // ====================================
 const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
-    const { page, limit, searchTerm } = query;
+
     const { authId } = user;
     console.log("authId", authId)
     const { prep_time_start, prep_time_end, serving_size_start, serving_size_end } = payload;
@@ -269,6 +269,8 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
     if (serving_size_start && serving_size_end) {
         filterQuery.serving_size = { $gte: Number(serving_size_start), $lte: Number(serving_size_end) };
     }
+
+    console.log("==========", filterQuery)
 
     const userQuery = new QueryBuilder(Recipe.find(filterQuery)
         // .populate("category", "name")

@@ -125,9 +125,6 @@ const RecipeSchema = new Schema<IRecipe>({
     prep_time: {
         type: Number
     },
-    recipe_tips: {
-        type: String
-    },
     kid_approved: {
         type: Boolean,
         default: false
@@ -138,13 +135,16 @@ const RecipeSchema = new Schema<IRecipe>({
     },
     ratting: {
         type: Number,
-        required: true,
         default: 5,
     },
     favorites: {
         type: [Schema.Types.ObjectId],
         ref: 'Auth',
         default: [],
+    },
+    prep: {
+        type: String,
+        require: true,
     }
 });
 

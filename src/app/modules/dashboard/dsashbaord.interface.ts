@@ -45,6 +45,7 @@ export interface IRecipe extends Document {
   whole_food_type: string;
   prep_time: number
   recipe_tips: string;
+  prep: string;
 }
 
 export interface IReview extends Document {
