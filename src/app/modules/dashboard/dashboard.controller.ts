@@ -169,7 +169,7 @@ const deleteRecipe: RequestHandler = catchAsync(
       statusCode: 200,
       success: true,
       message: `Delate sucessfully`,
-      data: result,
+      data: null,
     });
   });
 

@@ -134,7 +134,6 @@ router.patch('/toggle_favorite/:recipeId',
   auth(ENUM_USER_ROLE.USER),
   DashboardController.toggleFavorite
 );
-
 router.get('/get_user_favorites',
   auth(ENUM_USER_ROLE.USER),
   DashboardController.getUserFavorites

@@ -146,7 +146,7 @@ const RecipeSchema = new Schema<IRecipe>({
         type: String,
         require: true,
     }
-});
+}, { timestamps: true });
 
 const addsSchema = new Schema<IAdds>(
     {
@@ -225,7 +225,6 @@ const Faq = mongoose.model('Faq', faqSchema);
 const TermsConditions = mongoose.model('TermsConditions', termsAndConditionsSchema);
 const PrivacyPolicy = mongoose.model('PrivacyPolicy', privacyPolicySchema);
 const ContactSupport: Model<IContactSupport> = mongoose.model<IContactSupport>('ContactSupport', contactSupportSchema);
-
 
 export { Subscription, Recipe, Comment, Review, Adds, Faq, TermsConditions, PrivacyPolicy, ContactSupport };
 

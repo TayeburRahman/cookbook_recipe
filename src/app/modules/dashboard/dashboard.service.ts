@@ -1,15 +1,13 @@
 import { Types } from "mongoose";
 import QueryBuilder from "../../../builder/QueryBuilder";
 import ApiError from "../../../errors/ApiError";
-import { IRegistration, IReqUser } from "../auth/auth.interface";
+import { IReqUser } from "../auth/auth.interface";
 import User from "../user/user.model";
 import { Adds, ContactSupport, Faq, PrivacyPolicy, Recipe, Subscription, TermsConditions } from "./dashboard.model";
 import { IAdds, IContactSupport, IRecipe, ISubscriptions } from "./dsashbaord.interface";
 import { IUser } from "../user/user.interface";
 import { logger } from "../../../shared/logger";
 import { Transaction } from "../payment/payment.model";
-import httpStatus from "http-status";
-import { populate } from "dotenv";
 
 // ===========================================
 const getYearRange = (year: any) => {
@@ -305,33 +303,34 @@ const createRecipes = async (files: any, payload: IRecipe, user: IReqUser) => {
         if (!files?.image) {
             throw new ApiError(404, 'Image are not found!')
         }
+
         if (files?.image) {
             payload.image = `/images/image/${files.image[0].filename}`;
         }
 
-
         if (!authId) {
             throw new ApiError(404, 'User login unauthorized!');
         }
+
         payload.creator = authId;
 
         if (payload?.ingredients) {
             // @ts-ignore
             payload.ingredients = JSON.parse(payload?.ingredients);
         }
+        console.log('========ingredients', payload?.ingredients)
         if (payload?.nutritional) {
             // @ts-ignore
             payload.nutritional = JSON.parse(payload?.nutritional);
         }
 
-        console.log("payload", payload)
-
         const recipe = new Recipe(payload);
 
         await recipe.save();
+
         return recipe;
     } catch (error: any) {
-        throw new ApiError(400, `Error creating subscription: ${error.message}`);
+        throw new ApiError(400, `Error Creating Recipes: ${error.message}`);
     }
 };
 
@@ -378,7 +377,7 @@ const deleteRecipe = async (id: string) => {
 
 const getMyRecipes = async (user: IReqUser) => {
     const { authId } = user;
-    const result = await Recipe.find({ creator: authId });
+    const result = await Recipe.find({ creator: authId }).sort({ createdAt: -1 });
     return result;
 };
 
