@@ -250,32 +250,36 @@ const deleteSubscription = async (id: string) => {
 
 // ====================================
 const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
-
     const { authId } = user;
-    console.log("authId", authId)
-    const { prep_time_start, prep_time_end, serving_size_start, serving_size_end } = payload;
 
     if (query?.searchTerm) {
         delete query.page;
     }
 
     let filterQuery: any = {};
-    if (prep_time_start && prep_time_end) {
-        filterQuery.prep_time = { $gte: Number(prep_time_start), $lte: Number(prep_time_end) };
+
+    if (query?.prep_time_start && query?.prep_time_end) {
+        const start = Number(query.prep_time_start);
+        const end = Number(query.prep_time_end);
+        if (!isNaN(start) && !isNaN(end)) {
+            filterQuery.prep_time = { $gte: start, $lte: end };
+        }
     }
 
-    if (serving_size_start && serving_size_end) {
-        filterQuery.serving_size = { $gte: Number(serving_size_start), $lte: Number(serving_size_end) };
+    if (query?.serving_size_start && query?.serving_size_end) {
+        const start = Number(query.serving_size_start);
+        const end = Number(query.serving_size_end);
+        if (!isNaN(start) && !isNaN(end)) {
+            filterQuery.serving_size = { $gte: start, $lte: end };
+        }
     }
 
-    console.log("==========", filterQuery)
-
-    const userQuery = new QueryBuilder(Recipe.find(filterQuery)
-        // .populate("category", "name")
-        .select("_id name category image prep_time serving_size oils ratting favorites")
-        , query)
+    const userQuery = new QueryBuilder(
+        Recipe.find(filterQuery)
+            .select("_id name category image prep_time serving_size oils ratting favorites"),
+        query
+    )
         .search(["name", "category"])
-        .filter()
         .sort()
         .paginate()
         .fields();
@@ -290,7 +294,6 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
             favorite: isFavorited
         };
     });
-
 
     const meta = await userQuery.countTotal();
 
