@@ -35,7 +35,7 @@ const NotificationSchema = new Schema<INotification>({
   title: { type: String },
   message: { type: String },
   renderId: { type: String },
-  isSeen: { type: Boolean },
+  seen: { type: Boolean },
   createdAt: { type: Date, default: Date.now },
 });
 

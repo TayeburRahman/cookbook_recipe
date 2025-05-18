@@ -2,6 +2,7 @@ import ApiError from "../../../errors/ApiError";
 import { IReqUser } from "../auth/auth.interface";
 import { Recipe } from "../dashboard/dashboard.model";
 import { MealPlanWeek } from "./mealplan.model";
+import { NotificationService } from "./notification.service";
 
 const getWeekDates = (currentDate: Date) => {
     const currentDayOfWeek = currentDate.getDay();
@@ -45,7 +46,12 @@ const createUpcomingWeekPlan = async (authId: any) => {
 
     await MealPlanWeek.create(newPlan);
 
-    // notifications
+    await NotificationService.sendNotification({
+        title: "Your Upcoming Meal Plan is Ready!",
+        message: "We've created your meal plan for the upcoming week. You can view and customize it anytime.",
+        user: authId
+    });
+
 };
 
 const activateAccountCreateDefaultPlane = async (authId: any) => {

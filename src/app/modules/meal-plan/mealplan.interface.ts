@@ -24,7 +24,7 @@ interface INotification extends Document {
     user: Schema.Types.ObjectId;
     title: string;
     message: string;
-    isSeen: boolean;
+    seen: boolean;
     createdAt: Date;
     renderId: Schema.Types.ObjectId;
 }

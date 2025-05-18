@@ -18,6 +18,7 @@ import Admin from "../admin/admin.model";
 import { Types } from "mongoose";
 import { MealService } from "../meal-plan/mealplan.service";
 import { MealPlanWeek } from "../meal-plan/mealplan.model";
+import { NotificationService } from "../meal-plan/notification.service";
 
 const registrationAccount = async (payload: IAuth, files: any) => {
   const { role, password, confirmPassword, email, ...other } = payload;
@@ -165,6 +166,11 @@ const activateAccount = async (payload: ActivationPayload) => {
   }
 
   // notifications
+  await NotificationService.sendNotification({
+    title: "Account Activated Successfully",
+    message: "Welcome aboard! Your account has been activated and is now ready to use.",
+    user: user?._id
+  })
 
   const accessToken = jwtHelpers.createToken(
     {
@@ -618,19 +624,3 @@ export const AuthService = {
   deleteMyAccount,
   blockUnblockAuthUser
 };
-
-// await NotificationService.sendNotification({
-//   title: {
-//     eng: "Important Notice from Administrator",
-//     span: "Aviso Importante del Administrador"
-//   },
-//   message: {
-//     eng: "We have made some updates to improve your experience.",
-//     span: "Hemos realizado algunas actualizaciones para mejorar tu experiencia."
-//   },
-//   user: userId,
-//   userType: 'User',
-//   getId: null,
-//   notice: message,
-//   types: 'notice',
-// });

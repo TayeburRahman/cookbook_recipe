@@ -10,6 +10,7 @@ import { Transaction } from "./payment.model";
 import cron from "node-cron";
 import { logger } from "../../../shared/logger";
 import QueryBuilder from "../../../builder/QueryBuilder";
+import { NotificationService } from "../meal-plan/notification.service";
 
 const stripe = require("stripe")(config.stripe.stripe_secret_key);
 const DOMAIN_URL = process.env.SERVER_PASS_UI_LINK;
@@ -83,8 +84,6 @@ const createCheckoutSessionStripe = async (req: any) => {
             ]
         })
 
-        // notifications
-
         return { url: session.url };
 
     } catch (error: any) {
@@ -94,7 +93,6 @@ const createCheckoutSessionStripe = async (req: any) => {
 
 const stripeCheckAndUpdateStatusSuccess = async (req: any) => {
     const sessionId = req.query.session_id;
-    console.log("===========", sessionId)
 
     if (!sessionId) {
         return { status: "failed", message: "Missing session ID in the request." };
@@ -154,6 +152,14 @@ const stripeCheckAndUpdateStatusSuccess = async (req: any) => {
         }
 
         await user.save();
+
+        // notifications
+        await NotificationService.sendNotification({
+            title: "Subscription Activated Successfully!",
+            message: "Thank you for your payment. Your subscription is now active and ready to use.",
+            user: user?.authId
+        });
+
 
         return { status: "success", result: newTransaction };
 

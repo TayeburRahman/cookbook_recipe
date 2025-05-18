@@ -34,13 +34,11 @@ router.get(
     auth(ENUM_USER_ROLE.USER),
     MealPlanController.getFeaturedMealPlan,
 );
-
 router.delete(
     '/delete_custom_plane/:id',
     auth(ENUM_USER_ROLE.USER),
     MealPlanController.deleteCustomMealPlan,
 );
-
 router.patch(
     '/swap_plane_recipe',
     auth(ENUM_USER_ROLE.USER),
@@ -52,12 +50,12 @@ router.delete(
     auth(ENUM_USER_ROLE.USER),
     MealPlanController.removePlanRecipes,
 );
-
 router.get(
     '/get_weekly_plane',
     auth(ENUM_USER_ROLE.USER),
     MealPlanController.getWeeklyMealPlan,
 );
+
 // =Grocery List====================
 router.get(
     '/get_grocery_list/:id',
@@ -70,6 +68,18 @@ router.patch(
     MealPlanController.toggleIngredientBuyStatus,
 );
 
+// =======================
+router.get(
+    '/get_notifications',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.getUserNotifications,
+);
+
+router.patch(
+    '/seen_notifications',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.seenNotifications,
+);
 
 
 

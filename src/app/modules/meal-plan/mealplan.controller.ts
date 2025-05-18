@@ -3,6 +3,7 @@ import catchAsync from '../../../shared/catchasync';
 import sendResponse from '../../../shared/sendResponse';
 import { IReqUser } from '../auth/auth.interface';
 import { MealService } from './mealplan.service';
+import { NotificationService } from './notification.service';
 
 const addMealPlan = catchAsync(async (req: Request, res: Response) => {
     const query = req.query as {
@@ -141,6 +142,26 @@ const toggleIngredientBuyStatus = catchAsync(async (req: Request, res: Response)
     });
 });
 
+const seenNotifications = catchAsync(async (req, res) => {
+    const result = await NotificationService.seenNotifications(req);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Notification update successfully",
+        data: result,
+    });
+});
+
+const getUserNotifications = catchAsync(async (req, res) => {
+    const user = req.user;
+    const result = await NotificationService.getUserNotifications(user as IReqUser);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Notification retrieved successfully",
+        data: result,
+    });
+});
 
 export const MealPlanController = {
     addMealPlan,
@@ -153,5 +174,7 @@ export const MealPlanController = {
     removePlanRecipes,
     getWeeklyMealPlan,
     getGroceryList,
-    toggleIngredientBuyStatus
+    toggleIngredientBuyStatus,
+    seenNotifications,
+    getUserNotifications
 };
