@@ -45,6 +45,7 @@ const createCheckoutSessionStripe = async (req: any) => {
         }
 
         const user = await User.findById(userId) as IUser;
+        console.log("========", role)
         if (!user) {
             throw new ApiError(httpStatus.NOT_FOUND, 'User not found.');
         }
@@ -82,6 +83,8 @@ const createCheckoutSessionStripe = async (req: any) => {
             ]
         })
 
+        // notifications
+
         return { url: session.url };
 
     } catch (error: any) {
@@ -91,6 +94,7 @@ const createCheckoutSessionStripe = async (req: any) => {
 
 const stripeCheckAndUpdateStatusSuccess = async (req: any) => {
     const sessionId = req.query.session_id;
+    console.log("===========", sessionId)
 
     if (!sessionId) {
         return { status: "failed", message: "Missing session ID in the request." };

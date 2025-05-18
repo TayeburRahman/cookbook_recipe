@@ -20,6 +20,14 @@ interface IMealPlanCustom extends Document {
     createdAt: Date;
     types: string;
 }
+interface INotification extends Document {
+    user: Schema.Types.ObjectId;
+    title: string;
+    message: string;
+    isSeen: boolean;
+    createdAt: Date;
+    renderId: Schema.Types.ObjectId;
+}
 
 
-export { IDay, IMealPlanWeek, IMealPlanCustom };
+export { IDay, IMealPlanWeek, IMealPlanCustom, INotification };

@@ -164,6 +164,8 @@ const activateAccount = async (payload: ActivationPayload) => {
     throw new ApiError(400, "Invalid role provided!");
   }
 
+  // notifications
+
   const accessToken = jwtHelpers.createToken(
     {
       authId: existAuth._id,
@@ -617,3 +619,18 @@ export const AuthService = {
   blockUnblockAuthUser
 };
 
+// await NotificationService.sendNotification({
+//   title: {
+//     eng: "Important Notice from Administrator",
+//     span: "Aviso Importante del Administrador"
+//   },
+//   message: {
+//     eng: "We have made some updates to improve your experience.",
+//     span: "Hemos realizado algunas actualizaciones para mejorar tu experiencia."
+//   },
+//   user: userId,
+//   userType: 'User',
+//   getId: null,
+//   notice: message,
+//   types: 'notice',
+// });

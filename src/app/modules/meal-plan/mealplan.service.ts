@@ -44,6 +44,8 @@ const createUpcomingWeekPlan = async (authId: any) => {
     };
 
     await MealPlanWeek.create(newPlan);
+
+    // notifications
 };
 
 const activateAccountCreateDefaultPlane = async (authId: any) => {
@@ -460,8 +462,6 @@ const toggleIngredientBuyStatus = async (ingredientId: string) => {
         throw new ApiError(404, 'Ingredient not found in any recipe');
     }
 };
-
-
 
 export const MealService = {
     addPlaneRecipes,
