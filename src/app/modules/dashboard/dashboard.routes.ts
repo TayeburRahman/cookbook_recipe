@@ -127,9 +127,9 @@ router.get('/get-message-support',
 );
 
 // =================================================
-router.get('/get_recipe_details/:id',
-  DashboardController.getAllSubscription,
-);
+// router.get('/get_recipe_details/:id',
+//   DashboardController.getAllSubscription,
+// );
 router.patch('/toggle_favorite/:recipeId',
   auth(ENUM_USER_ROLE.USER),
   DashboardController.toggleFavorite

@@ -142,6 +142,9 @@ const RecipeSchema = new Schema<IRecipe>({
         ref: 'Auth',
         default: [],
     },
+    recipe_tips: {
+        type: String,
+    },
     prep: {
         type: String,
         require: true,

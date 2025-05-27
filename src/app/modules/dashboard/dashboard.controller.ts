@@ -108,7 +108,7 @@ const getAllSubscription: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Delate sucessfully`,
+      message: `Get successfully`,
       data: result,
     });
   },
@@ -191,7 +191,7 @@ const getRecipeDetails: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Delate sucessfully`,
+      message: `Get Recipes successfully`,
       data: result,
     });
   });
