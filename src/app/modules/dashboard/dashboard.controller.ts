@@ -7,7 +7,6 @@ import { Subscription } from './dashboard.model';
 import { IReqUser } from '../auth/auth.interface';
 
 
-
 const totalCount: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const result = await DashboardService.totalCount();
@@ -70,7 +69,7 @@ const createSubscriptions: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Create Sucessfully!`,
+      message: `Create Successfully!`,
       data: result,
     });
   },
@@ -84,7 +83,7 @@ const updateSubscription: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Update Sucessfully!`,
+      message: `Update Successfully!`,
       data: result,
     });
   },
@@ -97,7 +96,7 @@ const deleteSubscription: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Delate sucessfully`,
+      message: `Delate successfully`,
       data: result,
     });
   },
@@ -125,7 +124,7 @@ const getAllRecipes: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Get all recipes sucessfully!`,
+      message: `Get all recipes successfully!`,
       data: result,
     });
   },
@@ -155,7 +154,7 @@ const updateRecipes: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Update Sucessfully!`,
+      message: `Update Successfully!`,
       data: result,
     });
   },
@@ -168,7 +167,7 @@ const deleteRecipe: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Delate sucessfully`,
+      message: `Delate successfully`,
       data: null,
     });
   });
@@ -205,7 +204,7 @@ const getRecipesForYou: RequestHandler = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Delate sucessfully`,
+      message: `Get successfully`,
       data: result,
     });
   });
@@ -269,6 +268,7 @@ const updateFaq = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const deleteFaq = catchAsync(async (req: Request, res: Response) => {
   const result = await DashboardService.deleteFaq(req);
   sendResponse(res, {
@@ -278,6 +278,7 @@ const deleteFaq = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const getFaq = catchAsync(async (req: Request, res: Response) => {
   const result = await DashboardService.getFaq();
   sendResponse(res, {
@@ -297,6 +298,7 @@ const addTermsConditions = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const getTermsConditions = catchAsync(async (req: Request, res: Response) => {
   const result = await DashboardService.getTermsConditions();
   sendResponse(res, {
@@ -306,6 +308,7 @@ const getTermsConditions = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const addPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
   const result = await DashboardService.addPrivacyPolicy(req.body);
   sendResponse(res, {
@@ -315,6 +318,7 @@ const addPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const getPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
   const result = await DashboardService.getPrivacyPolicy();
   sendResponse(res, {
@@ -325,6 +329,7 @@ const getPrivacyPolicy = catchAsync(async (req: Request, res: Response) => {
   });
 });
 // ================================
+
 const sendMessageSupport = catchAsync(async (req: Request, res: Response) => {
   const user = req.user as IReqUser;
   const result = await DashboardService.sendMessageSupport(user, req.body);

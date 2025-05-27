@@ -128,6 +128,7 @@ const stripeCheckAndUpdateStatusSuccess = async (req: any) => {
             amount: amount,
             paymentStatus: "Completed",
             transactionId: session.payment_intent,
+            userEmail: session.customer_email,
             paymentDetails: {
                 email: session.customer_email,
                 payId: sessionId,

@@ -81,16 +81,6 @@ const registrationAccount = async (payload: IAuth, files: any) => {
 
   console.log('activationCode', activationCode)
 
-  if (role === "USER") {
-    sendEmail({
-      email: auth.email,
-      subject: "Activate Your Account",
-      html: registrationSuccessEmailBody({
-        user: { name: auth.name },
-        activationCode,
-      }),
-    }).catch((error) => console.error("Failed to send email:", error.message));
-  }
 
   other.authId = createAuth._id;
   other.email = email;
@@ -117,6 +107,17 @@ const registrationAccount = async (payload: IAuth, files: any) => {
     //   break;
     default:
       throw new ApiError(400, "Invalid role provided!");
+  }
+
+  if (role === "USER") {
+    sendEmail({
+      email: auth.email,
+      subject: "Activate Your Account",
+      html: registrationSuccessEmailBody({
+        user: { name: auth.name },
+        activationCode,
+      }),
+    }).catch((error) => console.error("Failed to send email:", error.message));
   }
 
   return { result, role, message: "Account created successfully!" };
