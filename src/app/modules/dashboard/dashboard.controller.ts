@@ -376,6 +376,21 @@ const getUserFavorites = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const createReviews = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user as IReqUser;
+  const payload = req.body;
+  console.log('======', payload)
+  const result = await DashboardService.createReviews(user, payload);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Reviews send successfully',
+    data: result,
+  });
+});
+
+
+
 export const DashboardController = {
   getAllUser,
   createSubscriptions,
@@ -407,6 +422,6 @@ export const DashboardController = {
   getMonthlySubscriptionGrowth,
   getMonthlyUserGrowth,
   toggleFavorite,
-  getUserFavorites
-
+  getUserFavorites,
+  createReviews
 };

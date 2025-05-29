@@ -46,7 +46,12 @@ const ReviewSchema = new Schema<IReview>({
         ref: "User",
         required: true,
     },
-    review: {
+    recipeId: {
+        type: Schema.Types.ObjectId,
+        ref: "Recipe",
+        required: true,
+    },
+    ratting: {
         type: Number,
         required: true,
         min: 1,
@@ -72,8 +77,7 @@ const RecipeSchema = new Schema<IRecipe>({
         ref: "Auth"
     },
     image: {
-        type: String,
-        required: true
+        type: String
     },
     name: {
         type: String,

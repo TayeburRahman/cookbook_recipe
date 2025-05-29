@@ -138,6 +138,14 @@ router.get('/get_user_favorites',
   auth(ENUM_USER_ROLE.USER),
   DashboardController.getUserFavorites
 );
+// =Reviews=================
+router.post('/review/send',
+  auth(ENUM_USER_ROLE.USER),
+  DashboardController.createReviews)
+
+router.post('/review/get/:id',
+  auth(ENUM_USER_ROLE.USER),
+  DashboardController.createRecipes)
 
 
 export const DashboardRoutes = router;

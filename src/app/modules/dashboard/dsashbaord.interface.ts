@@ -50,7 +50,8 @@ export interface IRecipe extends Document {
 
 export interface IReview extends Document {
   userId: Types.ObjectId;
-  review: number;
+  recipeId: Types.ObjectId;
+  ratting: number;
   feedback: string;
 }
 

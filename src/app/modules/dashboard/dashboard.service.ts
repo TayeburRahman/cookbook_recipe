@@ -3,8 +3,8 @@ import QueryBuilder from "../../../builder/QueryBuilder";
 import ApiError from "../../../errors/ApiError";
 import { IReqUser } from "../auth/auth.interface";
 import User from "../user/user.model";
-import { Adds, ContactSupport, Faq, PrivacyPolicy, Recipe, Subscription, TermsConditions } from "./dashboard.model";
-import { IAdds, IContactSupport, IRecipe, ISubscriptions } from "./dsashbaord.interface";
+import { Adds, ContactSupport, Faq, PrivacyPolicy, Recipe, Review, Subscription, TermsConditions } from "./dashboard.model";
+import { IAdds, IContactSupport, IRecipe, IReview, ISubscriptions } from "./dsashbaord.interface";
 import { IUser } from "../user/user.interface";
 import { logger } from "../../../shared/logger";
 import { Transaction } from "../payment/payment.model";
@@ -591,8 +591,32 @@ const getUserFavorites = async (user: IReqUser) => {
 
     return { recipes: updatedRecipes };
 };
-// =======================================
+// Reviews======================================
+const createReviews = async (user: IReqUser, payload: IReview) => {
+    try {
+        const { userId } = user;
+        const { recipeId, ratting, feedback } = payload;
+        const recipe = await Recipe.findById(recipeId)
+        if (!recipe) {
+            throw new ApiError(404, "Recipe not found!")
+        }
+        const review = await Review.create({ ratting, feedback, recipeId, userId });
+        if (!review) {
+            throw new ApiError(404, "Review not create!")
+        }
+        const allReviews = await Review.find({ recipeId });
+        const totalRating = allReviews.reduce((acc, curr) => acc + curr.ratting, 0);
+        const avgRating = totalRating / allReviews.length;
 
+        recipe.ratting = avgRating;
+        await recipe.save();
+        return review;
+
+    } catch (error: any) {
+        throw new ApiError(400, `Error creating subscription: ${error.message}`);
+    }
+
+};
 
 export const DashboardService = {
     totalCount,
@@ -624,5 +648,6 @@ export const DashboardService = {
     getMonthlySubscriptionGrowth,
     getMonthlyUserGrowth,
     addRemoveFavorites,
-    getUserFavorites
+    getUserFavorites,
+    createReviews
 };
