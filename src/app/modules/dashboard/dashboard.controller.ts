@@ -388,7 +388,17 @@ const createReviews = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
-
+const getRecipesReview = catchAsync(async (req: Request, res: Response) => {
+  const recipeId = req.params.id as string;
+  console.log('======', recipeId)
+  const result = await DashboardService.getRecipesReview(recipeId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Reviews send successfully',
+    data: result,
+  });
+});
 
 
 export const DashboardController = {
@@ -423,5 +433,6 @@ export const DashboardController = {
   getMonthlyUserGrowth,
   toggleFavorite,
   getUserFavorites,
-  createReviews
+  createReviews,
+  getRecipesReview
 };

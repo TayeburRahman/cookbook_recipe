@@ -618,6 +618,18 @@ const createReviews = async (user: IReqUser, payload: IReview) => {
 
 };
 
+const getRecipesReview = async (recipeId: string) => {
+    if (!recipeId) {
+        throw new ApiError(400, `Recipe ID is missing.`);
+    }
+    const review = await Review.find({ recipeId }).populate({
+        path: "userId",
+        select: "name email profile_image"
+    })
+    return review
+};
+
+
 export const DashboardService = {
     totalCount,
     getAllUser,
@@ -649,5 +661,6 @@ export const DashboardService = {
     getMonthlyUserGrowth,
     addRemoveFavorites,
     getUserFavorites,
-    createReviews
+    createReviews,
+    getRecipesReview
 };

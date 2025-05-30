@@ -205,7 +205,7 @@ const getMealPlanById = async (id: string) => {
     const plan = await MealPlanWeek.findById(id)
         .populate({
             path: 'data.recipes.recipe',
-            select: 'name duration nutritional category image meal_type temperature ratting time',
+            select: 'name duration nutritional category image meal_type temperature ratting time prep',
         })
         .lean();
 

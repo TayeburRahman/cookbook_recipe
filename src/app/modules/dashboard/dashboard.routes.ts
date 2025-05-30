@@ -143,9 +143,9 @@ router.post('/review/send',
   auth(ENUM_USER_ROLE.USER),
   DashboardController.createReviews)
 
-router.post('/review/get/:id',
+router.get('/review/get/:id',
   auth(ENUM_USER_ROLE.USER),
-  DashboardController.createRecipes)
+  DashboardController.getRecipesReview)
 
 
 export const DashboardRoutes = router;
