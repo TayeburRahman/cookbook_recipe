@@ -252,12 +252,9 @@ const deleteSubscription = async (id: string) => {
 const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
     const { authId } = user;
 
-    if (query?.searchTerm) {
-        delete query.page;
-    }
-
     let filterQuery: any = {};
 
+    // Range filters
     if (query?.prep_time_start && query?.prep_time_end) {
         const start = Number(query.prep_time_start);
         const end = Number(query.prep_time_end);
@@ -274,9 +271,19 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
         }
     }
 
+    // Dynamic filters (like category, weight_and_muscle etc.)
+    const allowedFilters = ["category", "weight_and_muscle", "oils"];
+    allowedFilters.forEach((key) => {
+        if (query[key]) {
+            filterQuery[key] = query[key];
+        }
+    });
+
+    console.log("filterQuery:", filterQuery);
+
     const userQuery = new QueryBuilder(
         Recipe.find(filterQuery)
-            .select("_id name category image prep_time serving_size oils ratting favorites"),
+            .select("_id name category image prep_time serving_size oils ratting favorites weight_and_muscle"),
         query
     )
         .search(["name", "category"])
@@ -299,6 +306,7 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
 
     return { result, meta };
 };
+
 
 const createRecipes = async (files: any, payload: IRecipe, user: IReqUser) => {
     try {

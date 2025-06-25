@@ -397,7 +397,14 @@ const removePlanRecipes = async (
         if (!dayData) {
             throw new ApiError(404, `Day "${day}" not found in the meal plan`);
         }
-
+        const checkExist = dayData.recipes.filter(
+            // @ts-ignore
+            (recipe) => recipe.recipe?.toString() === removeId
+        );
+        console.log("========", checkExist)
+        if (!checkExist.length) {
+            throw new ApiError(404, "Already remove this recipe in this plan");
+        }
         dayData.recipes = dayData.recipes.filter(
             // @ts-ignore
             (recipe) => recipe.recipe?.toString() !== removeId

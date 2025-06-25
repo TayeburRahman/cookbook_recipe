@@ -61,7 +61,7 @@ const ReviewSchema = new Schema<IReview>({
         type: String,
         required: true,
     },
-});
+}, { timestamps: true });
 
 const nutritionalSchema = new Schema<INutritional>({
     calories: { type: Number, required: true },

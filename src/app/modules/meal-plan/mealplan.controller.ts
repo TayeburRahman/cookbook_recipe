@@ -100,6 +100,7 @@ const removePlanRecipes = catchAsync(async (req: Request, res: Response) => {
         day: string;
         planId: string;
     };
+    console.log("=", query)
     const result = await MealService.removePlanRecipes(query);
     sendResponse(res, {
         statusCode: 200,

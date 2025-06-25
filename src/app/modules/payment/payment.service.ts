@@ -46,7 +46,6 @@ const createCheckoutSessionStripe = async (req: any) => {
         }
 
         const user = await User.findById(userId) as IUser;
-        console.log("========", role)
         if (!user) {
             throw new ApiError(httpStatus.NOT_FOUND, 'User not found.');
         }
