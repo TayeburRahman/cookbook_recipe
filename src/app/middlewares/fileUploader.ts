@@ -2,86 +2,66 @@
 import { Request } from 'express';
 import multer from 'multer';
 import fs from 'fs';
+import path from 'path';
 
 export const uploadFile = () => {
   const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      let uploadPath = '';
+      const fieldFolders: Record<string, string> = {
+        profile_image: 'uploads/images/profile',
+        cover_image: 'uploads/images/profile',
+        product_img: 'uploads/images/products',
+        image: 'uploads/images/image',
+        message_img: 'uploads/images/message',
+        video: 'uploads/video',
+        video_thumbnail: 'uploads/thumbnails/video',
+        thumbnail: 'uploads/thumbnails',
+        document: 'uploads/documents',
+      };
 
-      if (
-        file.fieldname === 'cover_image' ||
-        file.fieldname === 'profile_image'
-      ) {
-        uploadPath = 'uploads/images/profile';
-      } else if (file.fieldname === 'product_img') {
-        uploadPath = 'uploads/images/products';
-      } else if (file.fieldname === 'image') {
-        uploadPath = 'uploads/images/image';
-      } else if (file.fieldname === 'message_img') {
-        uploadPath = 'uploads/images/message';
-      } else if (file.fieldname === 'video') {
-        uploadPath = 'uploads/video';
-      } else {
-        uploadPath = 'uploads';
-      }
+      const uploadPath = fieldFolders[file.fieldname] || 'uploads/others';
 
-      if (
-        file.mimetype === 'image/jpeg' ||
-        file.mimetype === 'image/png' ||
-        file.mimetype === 'image/jpg' ||
-        // file.mimetype === 'image/webp' ||
-        file.mimetype === 'video/mp4'
-      ) {
-        cb(null, uploadPath);
-      } else {
-        //@ts-ignore
-        cb(new Error('Invalid file type'));
-      }
-
+      // Create folder if not exists
       if (!fs.existsSync(uploadPath)) {
         fs.mkdirSync(uploadPath, { recursive: true });
       }
+
+      cb(null, uploadPath);
     },
+
     filename: function (req, file, cb) {
-      const name = Date.now() + '-' + file.originalname;
-      cb(null, name);
+      const uniqueName = `${Date.now()}-${file.originalname}`;
+      cb(null, uniqueName);
     },
   });
 
-  const fileFilter = (req: Request, file: any, cb: any) => {
-    const allowedFieldnames = [
-      'image',
-      'profile_image',
-      'cover_image',
-      'product_img',
-      'video',
-      'thumbnail',
-      'video_thumbnail',
-      'message_img',
-    ];
+  const allowedFieldnames = [
+    'image',
+    'profile_image',
+    'cover_image',
+    'product_img',
+    'video',
+    'thumbnail',
+    'video_thumbnail',
+    'message_img',
+    'document',
+  ];
 
-    if (file.fieldname === undefined) {
-      cb(null, true);
-    } else if (allowedFieldnames.includes(file.fieldname)) {
-      if (
-        file.mimetype === 'image/jpeg' ||
-        file.mimetype === 'image/png' ||
-        file.mimetype === 'image/jpg' ||
-        file.mimetype === 'image/webp' ||
-        file.mimetype === 'video/mp4'
-      ) {
-        cb(null, true);
-      } else {
-        cb(new Error('Invalid file type'));
-      }
-    } else {
-      cb(new Error('Invalid fieldname'));
+  const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+    if (!allowedFieldnames.includes(file.fieldname)) {
+      return cb(new Error(`Field "${file.fieldname}" is not allowed`));
     }
+
+    // Allow all file types
+    cb(null, true);
   };
 
   const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter,
+    storage,
+    fileFilter,
+    limits: {
+      fileSize: 50 * 1024 * 1024,
+    },
   }).fields([
     { name: 'image', maxCount: 30 },
     { name: 'product_img', maxCount: 10 },
@@ -91,6 +71,7 @@ export const uploadFile = () => {
     { name: 'video_thumbnail', maxCount: 1 },
     { name: 'thumbnail', maxCount: 1 },
     { name: 'message_img', maxCount: 10 },
+    { name: 'document', maxCount: 5 },
   ]);
 
   return upload;

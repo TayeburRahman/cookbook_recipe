@@ -307,7 +307,6 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
     return { result, meta };
 };
 
-
 const createRecipes = async (files: any, payload: IRecipe, user: IReqUser) => {
     try {
         const authId = user.authId as any;
@@ -412,6 +411,7 @@ const getRecipesForYou = async (user: IReqUser) => {
 
     return recipes;
 };
+
 // ===================================
 const addsInsertIntoDB = async (files: any, payload: IAdds) => {
     if (!files?.image) {
@@ -500,10 +500,12 @@ const updateFaq = async (req: any) => {
 
     return result
 };
+
 const deleteFaq = async (req: any) => {
     const id = req.params.id
     return await Faq.findByIdAndDelete(id);
 };
+
 const getFaq = async () => {
     return await Faq.find();
 };
@@ -599,6 +601,7 @@ const getUserFavorites = async (user: IReqUser) => {
 
     return { recipes: updatedRecipes };
 };
+
 // Reviews======================================
 const createReviews = async (user: IReqUser, payload: IReview) => {
     try {

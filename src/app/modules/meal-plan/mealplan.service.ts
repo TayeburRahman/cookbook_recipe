@@ -428,7 +428,7 @@ const getGroceryList = async (id: string) => {
     const plan = await MealPlanWeek.findById(id)
         .populate({
             path: 'data.recipes.recipe',
-            select: 'name image',
+            select: 'name image category',
         })
         .select("user data")
         .lean();
