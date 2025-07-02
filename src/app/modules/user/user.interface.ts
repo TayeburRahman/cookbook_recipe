@@ -28,4 +28,5 @@ export type IUser = Document & {
   helgth_goal: String,
   location: string;
   gender: string;
+  subscription_free: boolean;
 }

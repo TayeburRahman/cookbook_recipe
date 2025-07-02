@@ -9,8 +9,9 @@ import { UserController } from '../user/user.controller';
 const router = express.Router();
 //------ Auth Route -----------------
 router.post("/register",
-  uploadFile(),
+  // uploadFile(),
   AuthController.registrationAccount)
+
 router.post("/login", AuthController.loginAccount)
 router.post("/activate-user", AuthController.activateAccount)
 router.post("/active-resend", AuthController.resendCodeActivationAccount)
@@ -30,6 +31,13 @@ router.patch("/change-password",
 
 router.delete("/delete-account", AuthController.deleteMyAccount)
 router.patch("/block", AuthController.blockUnblockAuthUser)
+
+router.get("/check_profile_info",
+  auth(
+    ENUM_USER_ROLE.USER
+  ),
+  UserController.checkTheUserInfo)
+
 
 //------ User Router ---------------
 router.get("/profile", auth(ENUM_USER_ROLE.USER), UserController.getProfile)

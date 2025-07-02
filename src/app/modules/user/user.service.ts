@@ -5,6 +5,7 @@ import { RequestData } from "../../../interfaces/common";
 import Auth from "../auth/auth.model";
 import { IUser } from "./user.interface";
 import User from "./user.model";
+import { IReqUser } from "../auth/auth.interface";
 
 const updateMyProfile = async (req: RequestData): Promise<IUser> => {
   const { files, body: data } = req;
@@ -97,9 +98,39 @@ const deleteUSerAccount = async (payload: { email: string; password: string; }):
   await Auth.deleteOne({ email });
 };
 
+const checkTheUserInfo = async (user: IReqUser) => {
+  const { userId } = user;
+
+  if (!userId) {
+    return { status: false, message: "User ID missing." };
+  }
+
+  const existingUser = await User.findById(userId).lean();
+
+  if (!existingUser) {
+    return { status: false, message: "User not found." };
+  }
+
+  const { relevant_dielary, mail_types, profile_image } = existingUser;
+
+  const isProfileComplete =
+    Array.isArray(relevant_dielary) &&
+    relevant_dielary.length > 0 &&
+    Array.isArray(mail_types) &&
+    mail_types.length > 0 &&
+    profile_image !== null &&
+    profile_image !== "";
+
+  return {
+    status: isProfileComplete,
+    message: isProfileComplete ? "Complete" : "Incomplete",
+  };
+};
+
 export const UserService = {
   getProfile,
   deleteUSerAccount,
   updateMyProfile,
+  checkTheUserInfo
 };
 

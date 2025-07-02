@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import catchAsync from "../../../shared/catchasync";
 import sendResponse from "../../../shared/sendResponse";
 import { PaymentServices } from "./payment.service";
+import { IReqUser } from "../auth/auth.interface";
 
 const createCheckoutSessionStripe = catchAsync(async (req: Request, res: Response) => {
     const result = await PaymentServices.createCheckoutSessionStripe(req);
@@ -37,11 +38,22 @@ const getAllTransactions = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const createFreePlan = catchAsync(async (req: Request, res: Response) => {
+    const result = await PaymentServices.createFreePlan(req.user as IReqUser, req.params.planId);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Free Plan Active Successfully",
+        data: result,
+    });
+});
 
 
 
 export const PaymentController = {
     createCheckoutSessionStripe,
     stripeCheckAndUpdateStatusSuccess,
-    getAllTransactions
+    getAllTransactions,
+    createFreePlan
 }

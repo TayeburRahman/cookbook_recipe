@@ -168,7 +168,47 @@ const stripeCheckAndUpdateStatusSuccess = async (req: any) => {
         return { status: "failed", message: "Payment execution failed", error: error.message };
     }
 };
+// =====================
+const createFreePlan = async (user: IReqUser, planId: string) => {
+    const { userId } = user;
 
+    if (!userId) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'User not authorized.');
+    }
+
+    try {
+        const existingUser = await User.findById(userId) as IUser;
+        if (!existingUser) {
+            throw new ApiError(httpStatus.NOT_FOUND, 'User not found. Please log in again.');
+        }
+
+        const subscription = await Subscription.findById(planId) as ISubscriptions;
+        if (!subscription || subscription.duration !== "Free") {
+            throw new ApiError(httpStatus.UNAUTHORIZED, 'Invalid or non-free subscription plan.');
+        }
+
+        if (existingUser.subscription_free) {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Free plan already activated.');
+        }
+
+        const expiryDate = new Date();
+        expiryDate.setDate(expiryDate.getDate() + 14);
+
+        existingUser.duration_time = expiryDate;
+        existingUser.subscription_status = "Active";
+        existingUser.subscription_free = true;
+
+        await existingUser.save();
+
+        return {
+            message: "Free subscription activated for 14 days.",
+            result: existingUser,
+        };
+    } catch (error: any) {
+        console.error("Error creating free plan:", error);
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Server Error Please try again later!');
+    }
+};
 // ======================================
 const getAllTransactions = async (query: any) => {
     const { page, limit, searchTerm } = query;
@@ -202,5 +242,6 @@ const getAllTransactions = async (query: any) => {
 export const PaymentServices = {
     createCheckoutSessionStripe,
     stripeCheckAndUpdateStatusSuccess,
-    getAllTransactions
+    getAllTransactions,
+    createFreePlan
 }

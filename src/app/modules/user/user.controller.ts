@@ -33,9 +33,20 @@ const deleteMyAccount = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const checkTheUserInfo = catchAsync(async (req: Request, res: Response) => {
+  await UserService.checkTheUserInfo(req.user as IReqUser);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Get Successfully!",
+  });
+});
+
+
 export const UserController = {
   deleteMyAccount,
   getProfile,
   updateProfile,
+  checkTheUserInfo
 };
 

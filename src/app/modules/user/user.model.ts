@@ -90,6 +90,10 @@ const UserSchema = new Schema<IUser>(
       enum: ["Active", "None", "Expired"],
       default: "None",
     },
+    subscription_free: {
+      type: Boolean,
+      default: false,
+    },
     status: {
       type: String,
       enum: ["active", "deactivate"],

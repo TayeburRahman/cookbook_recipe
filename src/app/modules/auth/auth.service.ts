@@ -47,10 +47,10 @@ const registrationAccount = async (payload: IAuth, files: any) => {
     ]);
   }
 
-  let profile_image: string | undefined = undefined;
-  if (files && files.profile_image) {
-    profile_image = `/images/profile/${files.profile_image[0].filename}`;
-  }
+  // let profile_image: string | undefined = undefined;
+  // if (files && files.profile_image) {
+  //   profile_image = `/images/profile/${files.profile_image[0].filename}`;
+  // }
 
   console.log("payload", payload)
 
@@ -61,7 +61,7 @@ const registrationAccount = async (payload: IAuth, files: any) => {
     email,
     activationCode,
     password,
-    profile_image,
+    // profile_image,
     expirationTime: Date.now() + 3 * 60 * 1000,
     isActive: false
   };
@@ -84,14 +84,14 @@ const registrationAccount = async (payload: IAuth, files: any) => {
 
   other.authId = createAuth._id;
   other.email = email;
-  other.profile_image = profile_image;
+  // other.profile_image = profile_image;
 
-  if (other?.relevant_dielary?.length) {
-    other.relevant_dielary = JSON.parse(other.relevant_dielary)
-  }
-  if (other?.mail_types?.length) {
-    other.mail_types = JSON.parse(other.mail_types)
-  }
+  // if (other?.relevant_dielary?.length) {
+  //   other.relevant_dielary = JSON.parse(other.relevant_dielary)
+  // }
+  // if (other?.mail_types?.length) {
+  //   other.mail_types = JSON.parse(other.mail_types)
+  // }
 
   // Role-based user creation
   let result;

@@ -10,6 +10,9 @@ router.post('/create_checkout_session',
     PaymentController.createCheckoutSessionStripe);
 router.get('/stripe-webhooks',
     PaymentController.stripeCheckAndUpdateStatusSuccess);
+router.patch('/free-plan/:planId',
+    auth(ENUM_USER_ROLE.USER),
+    PaymentController.createFreePlan);
 router.get('/get-transaction',
     auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
     PaymentController.getAllTransactions);
