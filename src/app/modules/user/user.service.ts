@@ -111,21 +111,24 @@ const checkTheUserInfo = async (user: IReqUser) => {
     return { status: false, message: "User not found." };
   }
 
-  const { relevant_dielary, mail_types, profile_image } = existingUser;
+  const relevant_dielary = existingUser.relevant_dielary || [];
+  const mail_types = existingUser.mail_types || [];
+  const profile_image = existingUser.profile_image || "";
 
   const isProfileComplete =
     Array.isArray(relevant_dielary) &&
     relevant_dielary.length > 0 &&
     Array.isArray(mail_types) &&
     mail_types.length > 0 &&
-    profile_image !== null &&
-    profile_image !== "";
+    typeof profile_image === "string" &&
+    profile_image.trim() !== "";
 
   return {
     status: isProfileComplete,
     message: isProfileComplete ? "Complete" : "Incomplete",
   };
 };
+
 
 export const UserService = {
   getProfile,

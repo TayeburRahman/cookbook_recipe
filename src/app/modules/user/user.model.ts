@@ -19,7 +19,6 @@ const UserSchema = new Schema<IUser>(
     },
     profile_image: {
       type: String,
-      required: true,
       default: null,
     },
     phone_number: {
@@ -40,7 +39,7 @@ const UserSchema = new Schema<IUser>(
     },
     mail_types: {
       type: [String],
-      default: ['None'],
+      default: ['none'],
       enum: ENUM_MEAL_TYPE,
     },
     relevant_dielary: {
@@ -51,7 +50,6 @@ const UserSchema = new Schema<IUser>(
     helgth_goal: {
       type: String,
       enum: ["weight_loss", "muscle_gain", "maintain_weight"],
-      required: true
     },
     age: {
       type: String,

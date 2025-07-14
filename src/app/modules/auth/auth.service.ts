@@ -23,6 +23,8 @@ import { NotificationService } from "../meal-plan/notification.service";
 const registrationAccount = async (payload: IAuth, files: any) => {
   const { role, password, confirmPassword, email, ...other } = payload;
 
+  console.log("=======", role, password,)
+
   if (!role || !Object.values(ENUM_USER_ROLE).includes(role as any)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Valid Role is required!");
   }

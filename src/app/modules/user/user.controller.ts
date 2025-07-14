@@ -34,10 +34,11 @@ const deleteMyAccount = catchAsync(async (req: Request, res: Response) => {
 });
 
 const checkTheUserInfo = catchAsync(async (req: Request, res: Response) => {
-  await UserService.checkTheUserInfo(req.user as IReqUser);
+  const data = await UserService.checkTheUserInfo(req.user as IReqUser);
   sendResponse(res, {
     statusCode: 200,
     success: true,
+    data: data,
     message: "Get Successfully!",
   });
 });
