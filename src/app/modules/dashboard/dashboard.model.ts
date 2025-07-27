@@ -63,6 +63,21 @@ const ReviewSchema = new Schema<IReview>({
     },
 }, { timestamps: true });
 
+const scoreReviewSchema = new Schema<IReview>({
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+    ratting: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 5,
+    }
+
+}, { timestamps: true });
+
 const nutritionalSchema = new Schema<INutritional>({
     calories: { type: Number, required: true },
     protein: { type: Number, required: true },
@@ -93,6 +108,10 @@ const RecipeSchema = new Schema<IRecipe>({
     },
     nutritional: {
         type: nutritionalSchema,
+        required: true
+    },
+    scoreReview: {
+        type: [scoreReviewSchema],
         required: true
     },
     category: {

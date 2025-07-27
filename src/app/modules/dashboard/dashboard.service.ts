@@ -641,6 +641,48 @@ const getRecipesReview = async (recipeId: string) => {
 };
 
 
+const postScoreReview = async (
+    user: IReqUser,
+    recipeId: string,
+    ratting: number
+): Promise<{ message: string; newAverage: number }> => {
+    if (!recipeId || !ratting) {
+        throw new ApiError(400, "Recipe ID and rating are required.");
+    }
+
+    if (ratting < 1 || ratting > 5) {
+        throw new ApiError(400, "Rating must be between 1 and 5.");
+    }
+
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+        throw new ApiError(404, "Recipe not found.");
+    }
+
+    const alreadyReviewed = recipe.scoreReview.find(
+        (review: IReview) =>
+            review.userId.toString() === user.userId.toString()
+    );
+
+    if (alreadyReviewed) {
+        throw new ApiError(400, "You have already rated this recipe.");
+    }
+
+    recipe.scoreReview.push({
+        userId: new Types.ObjectId(user.userId),
+        ratting,
+    } as IReview);
+
+    await recipe.save();
+
+    return {
+        message: "Review submitted successfully.",
+        newAverage: recipe.ratting,
+    };
+};
+
+
+
 export const DashboardService = {
     totalCount,
     getAllUser,
@@ -673,5 +715,6 @@ export const DashboardService = {
     addRemoveFavorites,
     getUserFavorites,
     createReviews,
-    getRecipesReview
+    getRecipesReview,
+    postScoreReview
 };

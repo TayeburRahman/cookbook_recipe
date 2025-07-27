@@ -46,6 +46,7 @@ export interface IRecipe extends Document {
   prep_time: number
   recipe_tips: string;
   prep: string;
+  scoreReview: any;
 }
 
 export interface IReview extends Document {
