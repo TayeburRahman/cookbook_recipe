@@ -401,7 +401,6 @@ const getRecipesReview = catchAsync(async (req: Request, res: Response) => {
 });
 
 // ===================
-
 const postScoreReview = catchAsync(
   async (req: Request, res: Response) => {
     const user = req.user as IReqUser;
@@ -416,8 +415,25 @@ const postScoreReview = catchAsync(
 
   })
 
+const updateAddRecipes = catchAsync(
+  async (req: Request, res: Response) => {
+    const user = req.user as IReqUser;
+    const { recipeId, ratting } = req.query as any;
+    const result = await DashboardService.updateAddRecipes();
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: 'Score review posted successfully',
+      data: result,
+    });
+
+  })
+
+
+
 
 export const DashboardController = {
+  updateAddRecipes,
   getAllUser,
   createSubscriptions,
   updateSubscription,

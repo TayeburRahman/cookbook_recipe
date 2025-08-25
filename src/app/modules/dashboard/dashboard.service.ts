@@ -1,8 +1,10 @@
 import { Types } from "mongoose";
 import QueryBuilder from "../../../builder/QueryBuilder";
 import ApiError from "../../../errors/ApiError";
+import * as XLSX from "xlsx";
 import { IReqUser } from "../auth/auth.interface";
 import User from "../user/user.model";
+import path from "path";
 import { Adds, ContactSupport, Faq, PrivacyPolicy, Recipe, Review, Subscription, TermsConditions } from "./dashboard.model";
 import { IAdds, IContactSupport, IRecipe, IReview, ISubscriptions } from "./dsashbaord.interface";
 import { IUser } from "../user/user.interface";
@@ -392,7 +394,11 @@ const getMyRecipes = async (user: IReqUser) => {
 };
 
 const getRecipeDetails = async (id: Types.ObjectId) => {
-    const result = await Recipe.findById(id);
+    const result = await Recipe.findById(id).populate({
+        path: 'scoreReview.userId',
+        select: 'name email profile_image'
+    });
+
     if (!result) {
         throw new ApiError(404, "Not find recipe!")
     }
@@ -682,6 +688,46 @@ const postScoreReview = async (
 };
 
 
+const updateAddRecipes = async () => {
+    try {
+        const filePath = path.resolve(__dirname, "recipes.xlsx");
+        const workbook = XLSX.readFile(filePath);
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const rawData: any[] = XLSX.utils.sheet_to_json(sheet);
+
+        const data = rawData.map((item) => ({
+            creator: item?.creator || null,
+            image: item?.image,
+            name: item?.name,
+            ingredients: item?.ingredients
+                ? JSON.parse(item.ingredients.replace(/'/g, '"'))
+                : [],
+            instructions: item?.instructions,
+            nutritional: item?.nutritional ? JSON.parse(item?.nutritional) : {},
+            category: item?.category,
+            holiday_recipes: item?.holiday_recipes || null,
+            oils: item?.oils,
+            serving_temperature: item?.serving_temperature,
+            flavor: item?.flavor,
+            weight_and_muscle: item?.weight_and_muscle,
+            whole_food_type: item?.whole_food_type,
+            serving_size: item?.serving_size ? Number(item?.serving_size) : null,
+            prep_time: item?.prep_time ? Number(item?.prep_time) : null,
+            kid_approved: item?.kid_approved === "true" || item?.kid_approved === true,
+            no_weekend_prep:
+                item?.no_weekend_prep === "true" || item?.no_weekend_prep === true,
+            recipe_tips: item?.recipe_tips,
+            prep: item?.prep,
+        }));
+
+        const result = await Recipe.insertMany(data);
+        console.log("🍴 Recipes uploaded successfully!");
+        return result;
+    } catch (error: any) {
+        throw new ApiError(400, `Error Creating Recipes: ${error.message}`);
+    }
+};
 
 export const DashboardService = {
     totalCount,
@@ -716,5 +762,6 @@ export const DashboardService = {
     getUserFavorites,
     createReviews,
     getRecipesReview,
-    postScoreReview
+    postScoreReview,
+    updateAddRecipes
 };

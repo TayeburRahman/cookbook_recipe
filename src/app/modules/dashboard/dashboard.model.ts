@@ -75,7 +75,6 @@ const scoreReviewSchema = new Schema<IReview>({
         min: 1,
         max: 5,
     }
-
 }, { timestamps: true });
 
 const nutritionalSchema = new Schema<INutritional>({
@@ -100,7 +99,8 @@ const RecipeSchema = new Schema<IRecipe>({
     },
     ingredients: {
         type: [String],
-        required: true
+        required: true,
+        default: []
     },
     instructions: {
         type: String,
@@ -112,7 +112,7 @@ const RecipeSchema = new Schema<IRecipe>({
     },
     scoreReview: {
         type: [scoreReviewSchema],
-        required: true
+        default: []
     },
     category: {
         type: String,

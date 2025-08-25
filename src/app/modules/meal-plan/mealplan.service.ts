@@ -213,12 +213,39 @@ const getMealPlanById = async (id: string) => {
         throw new ApiError(404, 'Meal Plan not found!');
     }
 
-    // @ts-ignore
-    plan.data = plan.data.map(day => ({
-        ...day,
-        // @ts-ignore
-        recipes: day.recipes.map(({ ingredients, ...rest }) => rest),
-    }));
+    // Loop through each day
+    plan.data = plan.data.map(day => {
+        let totalNutrition = {
+            calories: 0,
+            protein: 0,
+            carbs: 0,
+            fat: 0,
+            fiber: 0,
+        };
+
+        const processedRecipes = day.recipes.map((entry: any) => {
+            const recipe = entry.recipe;
+
+            // Aggregate nutritionals if recipe and nutrition exist
+            if (recipe?.nutritional) {
+                totalNutrition.calories += recipe.nutritional.calories || 0;
+                totalNutrition.protein += recipe.nutritional.protein || 0;
+                totalNutrition.carbs += recipe.nutritional.carbs || 0;
+                totalNutrition.fat += recipe.nutritional.fat || 0;
+                totalNutrition.fiber += recipe.nutritional.fiber || 0;
+            }
+
+            // Remove ingredients if needed
+            const { ingredients, ...rest } = entry;
+            return rest;
+        });
+
+        return {
+            ...day,
+            recipes: processedRecipes,
+            nutritionalTotals: totalNutrition,
+        };
+    });
 
     return plan;
 };

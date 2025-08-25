@@ -150,6 +150,9 @@ router.get('/review/get/:id',
 
 router.post('/score_review/send',
   auth(ENUM_USER_ROLE.USER),
-  DashboardController.postScoreReview)
+  DashboardController.postScoreReview);
+
+router.get('/updateAddRecipes',
+  DashboardController.updateAddRecipes);
 
 export const DashboardRoutes = router;
