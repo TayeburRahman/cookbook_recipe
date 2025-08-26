@@ -38,7 +38,6 @@ router.get("/check_profile_info",
   ),
   UserController.checkTheUserInfo)
 
-
 //------ User Router ---------------
 router.get("/profile", auth(ENUM_USER_ROLE.USER), UserController.getProfile)
 router.patch("/edit-profile", auth(ENUM_USER_ROLE.USER),
