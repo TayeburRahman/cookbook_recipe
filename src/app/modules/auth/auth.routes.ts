@@ -9,7 +9,6 @@ import { UserController } from '../user/user.controller';
 const router = express.Router();
 //------ Auth Route -----------------
 router.post("/register",
-  // uploadFile(),
   AuthController.registrationAccount)
 
 router.post("/login", AuthController.loginAccount)
