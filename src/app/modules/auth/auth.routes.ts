@@ -44,7 +44,6 @@ router.patch("/edit-profile", auth(ENUM_USER_ROLE.USER),
   uploadFile(),
   UserController.updateProfile
 );
-
 //------ Admin Router ---------------
 router.get(
   "/admin-profile",
