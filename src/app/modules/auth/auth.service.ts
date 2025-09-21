@@ -23,8 +23,6 @@ import { NotificationService } from "../meal-plan/notification.service";
 const registrationAccount = async (payload: IAuth, files: any) => {
   const { role, password, confirmPassword, email, ...other } = payload;
 
-  console.log("=======", role, password,)
-
   if (!role || !Object.values(ENUM_USER_ROLE).includes(role as any)) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Valid Role is required!");
   }
@@ -86,6 +84,8 @@ const registrationAccount = async (payload: IAuth, files: any) => {
 
   other.authId = createAuth._id;
   other.email = email;
+  // @ts-ignore
+  other.date_of_birth = Date(payload?.date_of_birth);
   // other.profile_image = profile_image;
 
   // if (other?.relevant_dielary?.length) {
@@ -132,6 +132,7 @@ const activateAccount = async (payload: ActivationPayload) => {
   if (!existAuth) {
     throw new ApiError(400, "User not found");
   }
+  console.log('existAuth', existAuth, activation_code, userEmail)
   if (existAuth.activationCode !== activation_code) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Code didn't match!");
   }
@@ -377,70 +378,91 @@ const changePassword = async (user: { authId: string }, payload: ChangePasswordP
 };
 
 const resendCodeActivationAccount = async (payload: { email: string }) => {
-  const email = payload.email;
-  const user = await Auth.findOne({ email }) as IAuth;
+  const { email } = payload;
 
-  if (!user.email) {
-    throw new ApiError(httpStatus.BAD_REQUEST, "Email not found!");;
+  // Find user by email
+  const user = await Auth.findOne({ email }) as IAuth | null;
+  if (!user) {
+    throw new ApiError(httpStatus.BAD_REQUEST, "Email not found!");
   }
 
-  const activationCode = createActivationToken().activationCode;
-  const expiryTime = new Date(Date.now() + 3 * 60 * 1000);
+  // Generate activation code and expiry
+  const { activationCode } = createActivationToken();
+  const expiryTime = new Date(Date.now() + 3 * 60 * 1000); // 3 minutes
+
   user.activationCode = activationCode;
-  user.verifyExpire = expiryTime;
+  user.expirationTime = expiryTime;
   await user.save();
 
-  sendResetEmail(
+  console.log("activationCode:", activationCode, "expiryTime:", expiryTime);
+
+  // Send email
+  await sendResetEmail(
     user.email,
     `<!DOCTYPE html>
     <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Activation Code</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f4f4f4;
-                margin: 0;
-                padding: 20px;
-            }
-            .container {
-                max-width: 600px;
-                margin: auto;
-                background: white;
-                padding: 20px;
-                border-radius: 5px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            }
-            h1 {
-                color: #333;
-            }
-            p {
-                color: #555;
-                line-height: 1.5;
-            }
-            .footer {
-                margin-top: 20px;
-                font-size: 12px;
-                color: #999;
-            }
-        </style>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Activation Code</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          margin: 0;
+          padding: 20px;
+        }
+        .container {
+          max-width: 600px;
+          margin: auto;
+          background: #ffffff;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+          color: #333;
+        }
+        p {
+          color: #555;
+          line-height: 1.5;
+        }
+        .code {
+          font-size: 20px;
+          font-weight: bold;
+          color: #2c3e50;
+          padding: 10px;
+          background: #f1f1f1;
+          border-radius: 5px;
+          display: inline-block;
+          margin: 10px 0;
+        }
+        .footer {
+          margin-top: 20px;
+          font-size: 12px;
+          color: #999;
+        }
+      </style>
     </head>
     <body>
-        <div class="container">
-            <h1>Hello, ${user.name}</h1>
-            <p>Your activation code is: <strong>${activationCode}</strong></p>
-            <p>Please use this code to activate your account. If you did not request this, please ignore this email.</p>
-            <p>Thank you!</p>
-            <div class="footer">
-                <p>&copy; ${new Date().getFullYear()} bdCalling</p>
-            </div>
+      <div class="container">
+        <h1>Hello, ${user.name || "User"}</h1>
+        <p>Your activation code is:</p>
+        <div class="code">${activationCode}</div>
+        <p>This code will expire in <strong>3 minutes</strong>.</p>
+        <p>If you did not request this, please ignore this email.</p>
+        <p>Thank you!</p>
+        <div class="footer">
+          <p>&copy; ${new Date().getFullYear()} bdCalling</p>
         </div>
+      </div>
     </body>
     </html>`
   );
+
+  return { success: true, message: "Activation code sent successfully" };
 };
+
 
 const resendCodeForgotAccount = async (payload: ForgotPasswordPayload) => {
   const email = payload.email;
@@ -514,6 +536,7 @@ const resendCodeForgotAccount = async (payload: ForgotPasswordPayload) => {
 cron.schedule("* * * * *", async () => {
   try {
     const now = new Date();
+    console.log('cron job running', now)
     const result = await Auth.updateMany(
       {
         isActive: false,

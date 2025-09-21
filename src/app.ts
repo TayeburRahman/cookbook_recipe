@@ -18,7 +18,10 @@ app.use(
       'http://192.168.126.1:8004',
       'http://192.168.126.1:8005',
       'http://10.0.60.125:8002',
-      "http://10.0.60.118:8002"
+      "http://10.0.60.118:8002",
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175"
     ],
     credentials: true,
   }),
