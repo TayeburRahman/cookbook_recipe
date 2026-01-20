@@ -41,6 +41,9 @@ export type IAuth = Document & {
   email: string;
   password: string;
   role: 'USER' | 'RECIPE_CREATOR' | 'ADMIN' | 'SUPER_ADMIN';
+  phone_number: string;
+  country_code: string;
+  country_name: string;
   verifyCode?: string;
   codeVerify?: boolean;
   activationCode?: string;

@@ -8,7 +8,7 @@ dotenv.config({
 export default {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
-  app_name:process.env.APP_NAME,
+  app_name: process.env.APP_NAME,
   socket_port: process.env.SOCKET_PORT,
   ip: process.env.IP,
   base_url: process.env.BASE_URL,
@@ -44,4 +44,7 @@ export default {
   stripe: {
     stripe_secret_key: process.env.STRIPE_SECRET_KEY,
   },
+  cloud_name: process.env.CLOUD_NAME,
+  cloud_api_key: process.env.CLOUD_API_KEY,
+  cloud_api_secret_key: process.env.CLOUD_API_SECRET_KEY,
 };

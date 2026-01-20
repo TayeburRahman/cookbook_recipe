@@ -57,7 +57,6 @@ const createUpcomingWeekPlan = async (authId: any) => {
 const activateAccountCreateDefaultPlane = async (authId: any) => {
     try {
         if (!authId) {
-            console.error('Auth id is required.');
             return { status: false };
         }
 
@@ -117,7 +116,6 @@ const activateAccountCreateDefaultPlane = async (authId: any) => {
 
         return { status: true };
     } catch (error) {
-        console.error('Error creating meal plans for weeks:', error);
         return { status: false };
     }
 };
@@ -155,7 +153,6 @@ const createCustomPlane = async (user: IReqUser, payload: { name: string }) => {
 
         return resultFeatured;
     } catch (error) {
-        console.error('Error creating meal plans for weeks:', error);
         throw new ApiError(400, 'Error creating meal plans for weeks');
     }
 };
@@ -321,7 +318,6 @@ const getWeeklyMealPlan = async (user: IReqUser) => {
 
         return { status: true, plans: enrichedPlans.reverse() };
     } catch (error) {
-        console.error('Error fetching or creating weekly meal plans:', error);
         return { status: false, message: 'Error fetching plans' };
     }
 };
@@ -428,7 +424,6 @@ const removePlanRecipes = async (
             // @ts-ignore
             (recipe) => recipe.recipe?.toString() === removeId
         );
-        console.log("========", checkExist)
         if (!checkExist.length) {
             throw new ApiError(404, "Already remove this recipe in this plan");
         }

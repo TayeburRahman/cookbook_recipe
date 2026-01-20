@@ -6,6 +6,8 @@ export type IUser = Document & {
   email: string;
   profile_image?: string | null;
   phone_number?: string | null;
+  country_name: string;
+  country_code: string;
   isPhoneNumberVerified: boolean;
   street?: string | null;
   neighborhood?: string | null;

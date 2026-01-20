@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 
 export const dateCompare = (oldDate: string, newDate: string) => {
-  console.log(oldDate, newDate);
   return dayjs(oldDate).isBefore(dayjs(newDate));
 };
 export const nextFiveDay = (date: string) => {

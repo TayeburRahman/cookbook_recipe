@@ -5,6 +5,8 @@ import routes from './app/routes';
 import { NotFoundHandler } from './errors/NotFoundHandler';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import morgan from "morgan";
+
 
 export const app: Application = express();
 
@@ -27,6 +29,7 @@ app.use(
   }),
 );
 
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

@@ -52,7 +52,6 @@ const registrationAccount = async (payload: IAuth, files: any) => {
   //   profile_image = `/images/profile/${files.profile_image[0].filename}`;
   // }
 
-  console.log("payload", payload)
 
   const { activationCode } = createActivationToken();
   const auth = {
@@ -79,7 +78,6 @@ const registrationAccount = async (payload: IAuth, files: any) => {
     throw new ApiError(500, "Failed to create auth account");
   }
 
-  console.log('activationCode', activationCode)
 
 
   other.authId = createAuth._id;
@@ -132,7 +130,6 @@ const activateAccount = async (payload: ActivationPayload) => {
   if (!existAuth) {
     throw new ApiError(400, "User not found");
   }
-  console.log('existAuth', existAuth, activation_code, userEmail)
   if (existAuth.activationCode !== activation_code) {
     throw new ApiError(httpStatus.BAD_REQUEST, "Code didn't match!");
   }
@@ -141,7 +138,6 @@ const activateAccount = async (payload: ActivationPayload) => {
   const existPlan = await MealPlanWeek.find({ user: authId })
   if (!existPlan.length) {
     const data = await MealService.activateAccountCreateDefaultPlane(authId)
-    console.log('data', data)
     if (!data?.status) {
       throw new ApiError(400, "Server error, please try again later.")
     }
@@ -223,7 +219,6 @@ const loginAccount = async (payload: LoginPayload) => {
   let userDetails: any;
   let role;
 
-  console.log("role", role)
   switch (isAuth.role) {
     case ENUM_USER_ROLE.USER:
       userDetails = await User.findOne({ authId: isAuth._id }).populate("authId");
@@ -372,7 +367,6 @@ const changePassword = async (user: { authId: string }, payload: ChangePasswordP
 
   isUserExist.password = newPassword;
   await isUserExist.save();
-  console.log("User saved", isUserExist);
 
   return { message: "Password changed successfully" };
 };
@@ -394,7 +388,6 @@ const resendCodeActivationAccount = async (payload: { email: string }) => {
   user.expirationTime = expiryTime;
   await user.save();
 
-  console.log("activationCode:", activationCode, "expiryTime:", expiryTime);
 
   // Send email
   await sendResetEmail(
@@ -536,7 +529,7 @@ const resendCodeForgotAccount = async (payload: ForgotPasswordPayload) => {
 cron.schedule("* * * * *", async () => {
   try {
     const now = new Date();
-    console.log('cron job running', now)
+    //console.log('cron job running', now)
     const result = await Auth.updateMany(
       {
         isActive: false,
@@ -614,7 +607,6 @@ const blockUnblockAuthUser = async (payload: {
   role: string, email: string, is_block: boolean
 }) => {
   const { role, email, is_block } = payload;
-  console.log("USER", role, email, is_block)
   try {
     const updatedAuth = await Auth.findOneAndUpdate(
       { email: email, role: role },

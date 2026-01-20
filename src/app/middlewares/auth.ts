@@ -4,7 +4,6 @@ import config from '../../config';
 import ApiError from '../../errors/ApiError';
 import httpStatus from 'http-status';
 import { jwtHelpers } from '../../helpers/jwtHelpers';
-import User from '../modules/auth/auth.model';
 import Auth from '../modules/auth/auth.model';
 import { ENUM_USER_ROLE } from '../../enums/user';
 
@@ -17,7 +16,7 @@ const auth =
       if (!tokenWithBearer) {
         throw new ApiError(
           httpStatus.UNAUTHORIZED,
-          'You are not authorized for this role',
+          'You are not authorized for this role',   
         );
       }
 

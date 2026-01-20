@@ -62,7 +62,6 @@ const updateProfile = async (req: IRequest): Promise<IAdmin | null> => {
 
 const myProfile = async (req: IRequest): Promise<IAdmin | null> => {
   const { userId } = req.user;
-  console.log("AdminService", req.user)
 
   const result = await Admin.findById(userId).populate("authId");
   if (!result) {

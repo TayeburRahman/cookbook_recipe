@@ -107,7 +107,6 @@ const getMonthlySubscriptionGrowth = async (year?: number) => {
             data: result,
         };
     } catch (error) {
-        console.error('Error in getMonthlySubscriptionGrowth function: ', error);
         throw error;
     }
 };
@@ -208,7 +207,6 @@ const getAllUser = async (query: any) => {
     const result = await userQuery.modelQuery;
     const meta = await userQuery.countTotal();
 
-    console.log(result)
 
     return { result, meta };
 
@@ -281,7 +279,6 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
         }
     });
 
-    console.log("filterQuery:", filterQuery);
 
     const userQuery = new QueryBuilder(
         Recipe.find(filterQuery)
@@ -330,7 +327,6 @@ const createRecipes = async (files: any, payload: IRecipe, user: IReqUser) => {
             // @ts-ignore
             payload.ingredients = JSON.parse(payload?.ingredients);
         }
-        console.log('========ingredients', payload?.ingredients)
         if (payload?.nutritional) {
             // @ts-ignore
             payload.nutritional = JSON.parse(payload?.nutritional);
@@ -348,9 +344,10 @@ const createRecipes = async (files: any, payload: IRecipe, user: IReqUser) => {
 
 const updateRecipes = async (id: string, files: any, user: any, payload: IRecipe) => {
     try {
-        if (!files?.image) {
-            throw new ApiError(404, 'Image are not found!')
-        }
+        // if (!files?.image) {
+        //     throw new ApiError(404, 'Image are not found!')
+        // }
+
         if (files?.image) {
             payload.image = `/images/image/${files.image[0].filename}`;
         }
@@ -364,7 +361,6 @@ const updateRecipes = async (id: string, files: any, user: any, payload: IRecipe
             payload.nutritional = JSON.parse(payload?.nutritional);
         }
 
-        console.log("payload", payload)
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, payload, { new: true });
         if (!updatedRecipe) {
             throw new ApiError(404, 'Subscription not found');
@@ -453,7 +449,6 @@ const updateAdds = async (req: any) => {
     const id = req.params.id;
     const { ...AddsData } = req.body;
 
-    console.log("AddsData", AddsData)
 
     if (files && files.image) {
         AddsData.image = `/images/image/${files.image[0].filename}`;
@@ -472,7 +467,6 @@ const updateAdds = async (req: any) => {
             new: true,
         },
     );
-    console.log("result", result)
     return result;
 };
 
@@ -722,7 +716,6 @@ const updateAddRecipes = async () => {
         }));
 
         const result = await Recipe.insertMany(data);
-        console.log("🍴 Recipes uploaded successfully!");
         return result;
     } catch (error: any) {
         throw new ApiError(400, `Error Creating Recipes: ${error.message}`);

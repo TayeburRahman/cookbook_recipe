@@ -27,7 +27,7 @@ cron.schedule("0 0 */12 * * *", async () => {
                 $set: { subscription_status: "Expired" },
             }
         );
-        console.log("********************************************************=======================================================================###################################################**************************************************************************")
+        //console.log("********************************************************=======================================================================###################################################**************************************************************************")
         if (result.modifiedCount > 0) {
             logger.info(`Removed activation codes from ${result.modifiedCount} expired inactive users`);
         }
@@ -164,7 +164,6 @@ const stripeCheckAndUpdateStatusSuccess = async (req: any) => {
         return { status: "success", result: newTransaction };
 
     } catch (error: any) {
-        console.error('Error processing Stripe payment:', error);
         return { status: "failed", message: "Payment execution failed", error: error.message };
     }
 };
@@ -205,7 +204,6 @@ const createFreePlan = async (user: IReqUser, planId: string) => {
             result: existingUser,
         };
     } catch (error: any) {
-        console.error("Error creating free plan:", error);
         throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Server Error Please try again later!');
     }
 };
@@ -234,7 +232,6 @@ const getAllTransactions = async (query: any) => {
 
     const result = await transationQuery.modelQuery;
     const meta = await transationQuery.countTotal();
-    // console.log(result)
     return { result, meta };
 
 };

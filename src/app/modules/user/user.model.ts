@@ -23,7 +23,15 @@ const UserSchema = new Schema<IUser>(
     },
     phone_number: {
       type: String,
-      default: null,
+      default: ''
+    },
+    country_name: {
+      type: String,
+      default: ''
+    },
+    country_code: {
+      type: String,
+      default: '',
     },
     isPhoneNumberVerified: {
       type: Boolean,
