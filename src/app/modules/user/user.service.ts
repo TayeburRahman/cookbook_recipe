@@ -1,11 +1,10 @@
-import ApiError from "../../../errors/ApiError";
-import httpStatus from "http-status";
-import { Request } from "express";
-import { RequestData } from "../../../interfaces/common";
-import Auth from "../auth/auth.model";
-import { IUser } from "./user.interface";
-import User from "./user.model";
-import { IReqUser } from "../auth/auth.interface";
+import ApiError from '../../../errors/ApiError';
+import httpStatus from 'http-status';
+import { RequestData } from '../../../interfaces/common';
+import Auth from '../auth/auth.model';
+import { IUser } from './user.interface';
+import User from './user.model';
+import { IReqUser } from '../auth/auth.interface';
 
 const updateMyProfile = async (req: RequestData): Promise<IUser> => {
   const { files, body: data } = req;
@@ -14,19 +13,19 @@ const updateMyProfile = async (req: RequestData): Promise<IUser> => {
   if (!Object.keys(data as any).length) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
-      "Data is missing in the request body!"
+      'Data is missing in the request body!',
     );
   }
 
   const checkUser = await User.findById(userId);
 
   if (!checkUser) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User not found!");
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found!');
   }
 
   const checkAuth = await Auth.findById(authId);
   if (!checkAuth) {
-    throw new ApiError(httpStatus.NOT_FOUND, "You are not authorized");
+    throw new ApiError(httpStatus.NOT_FOUND, 'You are not authorized');
   }
 
   let profile_image: string | undefined = undefined;
@@ -37,10 +36,10 @@ const updateMyProfile = async (req: RequestData): Promise<IUser> => {
   const updatedData = { ...data };
 
   if (updatedData?.relevant_dielary?.length) {
-    updatedData.relevant_dielary = JSON.parse(updatedData.relevant_dielary)
+    updatedData.relevant_dielary = JSON.parse(updatedData.relevant_dielary);
   }
   if (updatedData?.mail_types?.length) {
-    updatedData.mail_types = JSON.parse(updatedData.mail_types)
+    updatedData.mail_types = JSON.parse(updatedData.mail_types);
   }
 
   const [, updateUser] = await Promise.all([
@@ -49,15 +48,15 @@ const updateMyProfile = async (req: RequestData): Promise<IUser> => {
       { name: updatedData.name },
       {
         new: true,
-      }
+      },
     ),
     User.findByIdAndUpdate(
       userId,
       { profile_image, ...updatedData },
       {
         new: true,
-      }
-    ).populate("authId"),
+      },
+    ).populate('authId'),
   ]);
 
   return updateUser as IUser;
@@ -65,32 +64,38 @@ const updateMyProfile = async (req: RequestData): Promise<IUser> => {
 
 const getProfile = async (user: { userId: string }): Promise<IUser> => {
   const { userId } = user;
-  const result = await User.findById(userId).populate("authId");
+  const result = await User.findById(userId).populate('authId');
   if (!result) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User not found");
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
 
   const auth = await Auth.findById(result.authId);
   if (auth?.is_block) {
-    throw new ApiError(httpStatus.FORBIDDEN, "You are blocked. Contact support");
+    throw new ApiError(
+      httpStatus.FORBIDDEN,
+      'You are blocked. Contact support',
+    );
   }
 
   return result;
 };
 
-const deleteUSerAccount = async (payload: { email: string; password: string; }): Promise<void> => {
+const deleteUSerAccount = async (payload: {
+  email: string;
+  password: string;
+}): Promise<void> => {
   const { email, password } = payload;
 
   const isUserExist = await Auth.isAuthExist(email);
   if (!isUserExist) {
-    throw new ApiError(httpStatus.NOT_FOUND, "User does not exist");
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
   }
 
   if (
     isUserExist.password &&
     !(await Auth.isPasswordMatched(password, isUserExist.password))
   ) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, "Password is incorrect");
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect');
   }
 
   await User.deleteOne({ authId: isUserExist._id });
@@ -101,38 +106,36 @@ const checkTheUserInfo = async (user: IReqUser) => {
   const { userId } = user;
 
   if (!userId) {
-    return { status: false, message: "User ID missing." };
+    return { status: false, message: 'User ID missing.' };
   }
 
   const existingUser = await User.findById(userId).lean();
 
   if (!existingUser) {
-    return { status: false, message: "User not found." };
+    return { status: false, message: 'User not found.' };
   }
 
   const relevant_dielary = existingUser.relevant_dielary || [];
   const mail_types = existingUser.mail_types || [];
-  const profile_image = existingUser.profile_image || "";
+  const profile_image = existingUser.profile_image || '';
 
   const isProfileComplete =
     Array.isArray(relevant_dielary) &&
     relevant_dielary.length > 0 &&
     Array.isArray(mail_types) &&
     mail_types.length > 0 &&
-    typeof profile_image === "string" &&
-    profile_image.trim() !== "";
+    typeof profile_image === 'string' &&
+    profile_image.trim() !== '';
 
   return {
     status: isProfileComplete,
-    message: isProfileComplete ? "Complete" : "Incomplete",
+    message: isProfileComplete ? 'Complete' : 'Incomplete',
   };
 };
-
 
 export const UserService = {
   getProfile,
   deleteUSerAccount,
   updateMyProfile,
-  checkTheUserInfo
+  checkTheUserInfo,
 };
-

@@ -83,7 +83,7 @@ const registrationAccount = async (payload: IAuth, files: any) => {
   other.authId = createAuth._id;
   other.email = email;
   // @ts-ignore
-  other.date_of_birth = Date(payload?.date_of_birth);
+  other.date_of_birth = payload?.date_of_birth;
   // other.profile_image = profile_image;
 
   // if (other?.relevant_dielary?.length) {
