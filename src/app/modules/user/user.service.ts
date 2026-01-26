@@ -1,21 +1,21 @@
 import ApiError from '../../../errors/ApiError';
 import httpStatus from 'http-status';
-import { RequestData } from '../../../interfaces/common';
 import Auth from '../auth/auth.model';
 import { IUser } from './user.interface';
 import User from './user.model';
 import { IReqUser } from '../auth/auth.interface';
+import uploadToCloudinary from '../../../utils/uploadToCloudinary';
 
-const updateMyProfile = async (req: RequestData): Promise<IUser> => {
-  const { files, body: data } = req;
+const updateMyProfile = async (req: any) => {
+  const { body: data } = req;
   const { userId, authId } = req.user;
 
-  if (!Object.keys(data as any).length) {
-    throw new ApiError(
-      httpStatus.BAD_REQUEST,
-      'Data is missing in the request body!',
-    );
-  }
+  // if (!Object.keys(data as any).length) {
+  //   throw new ApiError(
+  //     httpStatus.BAD_REQUEST,
+  //     'Data is missing in the request body!',
+  //   );
+  // }
 
   const checkUser = await User.findById(userId);
 
@@ -29,8 +29,8 @@ const updateMyProfile = async (req: RequestData): Promise<IUser> => {
   }
 
   let profile_image: string | undefined = undefined;
-  if (files && files.profile_image) {
-    profile_image = `/images/profile/${files.profile_image[0].filename}`;
+  if (req.file) {
+    profile_image = await uploadToCloudinary(req?.file?.path as string, 'user');
   }
 
   const updatedData = { ...data };

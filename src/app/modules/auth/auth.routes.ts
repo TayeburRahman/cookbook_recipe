@@ -5,6 +5,7 @@ import { uploadFile } from '../../middlewares/fileUploader';
 import { AdminController } from '../admin/admin.controller';
 import { AuthController } from './auth.controller';
 import { UserController } from '../user/user.controller';
+import upload from '../../../helpers/upload';
 
 const router = express.Router();
 //------ Auth Route -----------------
@@ -40,7 +41,7 @@ router.get("/check_profile_info",
 //------ User Router ---------------
 router.get("/profile", auth(ENUM_USER_ROLE.USER), UserController.getProfile)
 router.patch("/edit-profile", auth(ENUM_USER_ROLE.USER),
-  uploadFile(),
+  upload.single("profile_image"),
   UserController.updateProfile
 );
 //------ Admin Router ---------------
