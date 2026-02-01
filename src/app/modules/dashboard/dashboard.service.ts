@@ -404,12 +404,6 @@ const updateRecipes = async (
   user: any,
   payload: IRecipe,
 ) => {
-  if (req.file) {
-    payload.image = await uploadToCloudinary(
-      req?.file?.path as string,
-      'recipe',
-    );
-  }
 
   if (payload?.ingredients) {
     // @ts-ignore
@@ -420,11 +414,38 @@ const updateRecipes = async (
     payload.nutritional = JSON.parse(payload?.nutritional);
   }
 
+
+  /*check category*/
+  if (payload.category) {
+    if (isNotObjectId(payload?.category.toString())) {
+      throw new ApiError(400, 'category must be a valid ObjectId');
+    }
+
+    const existingCategory = await CategoryModel.findById(
+      payload?.category.toString(),
+    );
+    if (!existingCategory) {
+      throw new ApiError(404, 'Category not found');
+    }
+    if (existingCategory.status === 'hidden') {
+      throw new ApiError(404, 'Category is hidden');
+    }
+  }
+  /* --- check category ended */
+
+  //if image is available
+  if (req.file) {
+    payload.image = await uploadToCloudinary(
+      req?.file?.path as string,
+      'recipe',
+    );
+  }
+
   const updatedRecipe = await Recipe.findByIdAndUpdate(id, payload, {
     new: true,
   });
   if (!updatedRecipe) {
-    throw new ApiError(404, 'Subscription not found');
+    throw new ApiError(404, 'Recipe not found');
   }
   return updatedRecipe;
 };
