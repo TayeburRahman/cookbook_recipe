@@ -25,7 +25,7 @@ export interface IRecipe extends Document {
   ingredients: string[];
   instructions: string;
   nutritional: INutritional;
-  category: string;
+  category: Types.ObjectId;
   image: string;
   meal_type: string;
   temperature: string;

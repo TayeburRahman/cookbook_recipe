@@ -26,6 +26,8 @@ import { IUser } from '../user/user.interface';
 import { logger } from '../../../shared/logger';
 import { Transaction } from '../payment/payment.model';
 import uploadToCloudinary from '../../../utils/uploadToCloudinary';
+import isNotObjectId from '../../../utils/isNotObjectId';
+import CategoryModel from '../category/Category.model';
 
 // ===========================================
 const getYearRange = (year: any) => {
@@ -294,20 +296,32 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
   }
 
   // Dynamic filters (like category, weight_and_muscle etc.)
-  const allowedFilters = ['category', 'weight_and_muscle', 'oils'];
+  const allowedFilters = ['weight_and_muscle', 'oils'];
   allowedFilters.forEach(key => {
     if (query[key]) {
       filterQuery[key] = query[key];
     }
   });
 
+  if (query.category) {
+    filterQuery = {
+      ...filterQuery,
+      category: new Types.ObjectId(query.category),
+    };
+  }
+
   const userQuery = new QueryBuilder(
-    Recipe.find(filterQuery).select(
-      '_id name category image prep_time serving_size oils ratting favorites weight_and_muscle',
-    ),
+    Recipe.find(filterQuery)
+      .select(
+        '_id name category image prep_time serving_size oils ratting favorites weight_and_muscle',
+      )
+      .populate({
+        path: 'category',
+        select: 'name _id',
+      }),
     query,
   )
-    .search(['name', 'category'])
+    .search(['name'])
     .sort()
     .paginate()
     .fields();
@@ -327,46 +341,61 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
 
   const meta = await userQuery.countTotal();
 
-  return { result, meta };
+  return { meta, result };
 };
 
 const createRecipes = async (req: any, payload: IRecipe, user: IReqUser) => {
-  try {
-    const authId = user.authId as any;
-    if (!req.file) {
-      throw new ApiError(404, 'Please upload image');
-    }
-
-    if (req.file) {
-      payload.image = await uploadToCloudinary(
-        req?.file?.path as string,
-        'recipe',
-      );
-    }
-
-    if (!authId) {
-      throw new ApiError(404, 'User login unauthorized!');
-    }
-
-    payload.creator = authId;
-
-    if (payload?.ingredients) {
-      // @ts-ignore
-      payload.ingredients = JSON.parse(payload?.ingredients);
-    }
-    if (payload?.nutritional) {
-      // @ts-ignore
-      payload.nutritional = JSON.parse(payload?.nutritional);
-    }
-
-    const recipe = new Recipe(payload);
-
-    await recipe.save();
-
-    return recipe;
-  } catch (error: any) {
-    throw new ApiError(400, `Error Creating Recipes: ${error.message}`);
+  const authId = user.authId as any;
+  if (!req.file) {
+    throw new ApiError(404, 'Please upload image');
   }
+
+  //check categoryId
+  if (!payload.category) {
+    throw new ApiError(400, 'category is required');
+  }
+  if (isNotObjectId(payload?.category.toString())) {
+    throw new ApiError(400, 'category must be a valid ObjectId');
+  }
+
+  const existingCategory = await CategoryModel.findById(
+    payload?.category.toString(),
+  );
+  if (!existingCategory) {
+    throw new ApiError(404, 'Category not found');
+  }
+  if (existingCategory.status === 'hidden') {
+    throw new ApiError(404, 'Category is hidden');
+  }
+  /* --- check category ended */
+
+  if (req.file) {
+    payload.image = await uploadToCloudinary(
+      req?.file?.path as string,
+      'recipe',
+    );
+  }
+
+  if (!authId) {
+    throw new ApiError(404, 'User login unauthorized!');
+  }
+
+  payload.creator = authId;
+
+  if (payload?.ingredients) {
+    // @ts-ignore
+    payload.ingredients = JSON.parse(payload?.ingredients);
+  }
+  if (payload?.nutritional) {
+    // @ts-ignore
+    payload.nutritional = JSON.parse(payload?.nutritional);
+  }
+
+  const recipe = new Recipe(payload);
+
+  await recipe.save();
+
+  return recipe;
 };
 
 const updateRecipes = async (
@@ -375,33 +404,29 @@ const updateRecipes = async (
   user: any,
   payload: IRecipe,
 ) => {
-  try {
-    if (req.file) {
-      payload.image = await uploadToCloudinary(
-        req?.file?.path as string,
-        'recipe',
-      );
-    }
-
-    if (payload?.ingredients) {
-      // @ts-ignore
-      payload.ingredients = JSON.parse(payload?.ingredients);
-    }
-    if (payload?.nutritional) {
-      // @ts-ignore
-      payload.nutritional = JSON.parse(payload?.nutritional);
-    }
-
-    const updatedRecipe = await Recipe.findByIdAndUpdate(id, payload, {
-      new: true,
-    });
-    if (!updatedRecipe) {
-      throw new ApiError(404, 'Subscription not found');
-    }
-    return updatedRecipe;
-  } catch (error: any) {
-    throw new ApiError(400, `Error updating subscription: ${error.message}`);
+  if (req.file) {
+    payload.image = await uploadToCloudinary(
+      req?.file?.path as string,
+      'recipe',
+    );
   }
+
+  if (payload?.ingredients) {
+    // @ts-ignore
+    payload.ingredients = JSON.parse(payload?.ingredients);
+  }
+  if (payload?.nutritional) {
+    // @ts-ignore
+    payload.nutritional = JSON.parse(payload?.nutritional);
+  }
+
+  const updatedRecipe = await Recipe.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+  if (!updatedRecipe) {
+    throw new ApiError(404, 'Subscription not found');
+  }
+  return updatedRecipe;
 };
 
 const deleteRecipe = async (id: string) => {
@@ -418,15 +443,25 @@ const deleteRecipe = async (id: string) => {
 
 const getMyRecipes = async (user: IReqUser) => {
   const { authId } = user;
-  const result = await Recipe.find({ creator: authId }).sort({ createdAt: -1 });
+  const result = await Recipe.find({ creator: authId })
+    .populate({
+      path: 'category',
+      select: 'name _id',
+    })
+    .sort({ createdAt: -1 });
   return result;
 };
 
 const getRecipeDetails = async (id: Types.ObjectId) => {
-  const result = await Recipe.findById(id).populate({
-    path: 'scoreReview.userId',
-    select: 'name email profile_image',
-  });
+  const result = await Recipe.findById(id)
+    .populate({
+      path: 'scoreReview.userId',
+      select: 'name email profile_image',
+    })
+    .populate({
+      path: 'category',
+      select: 'name _id',
+    });
 
   if (!result) {
     throw new ApiError(404, 'Not find recipe!');
@@ -484,7 +519,10 @@ const updateAdds = async (req: any) => {
   const { ...AddsData } = req.body;
 
   if (req.file) {
-    AddsData.image = await uploadToCloudinary(req?.file?.path as string, 'adds');
+    AddsData.image = await uploadToCloudinary(
+      req?.file?.path as string,
+      'adds',
+    );
   }
 
   const isExist = await Adds.findOne({ _id: id });
@@ -637,6 +675,10 @@ const getUserFavorites = async (user: IReqUser) => {
     .select(
       '_id name category image prep_time serving_size oils ratting favorites',
     )
+    .populate({
+      path: 'category',
+      select: 'name _id',
+    })
     .lean();
 
   const updatedRecipes = recipes.map(recipe => ({
