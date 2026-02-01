@@ -134,7 +134,7 @@ const createRecipes: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const body = req.body as any;
     const user = req.user as IReqUser;
-    const result = await DashboardService.createRecipes(req.files, body as any, user);
+    const result = await DashboardService.createRecipes(req, body as any, user);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -147,10 +147,9 @@ const createRecipes: RequestHandler = catchAsync(
 const updateRecipes: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const payload = req.body as IRecipe;
-    const files = req.files;
     const user = req.user;
     const id = req.params.id
-    const result = await DashboardService.updateRecipes(id as string, files as any, user as any, payload as IRecipe);
+    const result = await DashboardService.updateRecipes(id as string, req as any, user as any, payload as IRecipe);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -210,7 +209,7 @@ const getRecipesForYou: RequestHandler = catchAsync(
   });
 
 const addsInsertIntoDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await DashboardService.addsInsertIntoDB(req.files, req.body);
+  const result = await DashboardService.addsInsertIntoDB(req as any, req.body);
   sendResponse<IAdds>(res, {
     statusCode: 200,
     success: true,

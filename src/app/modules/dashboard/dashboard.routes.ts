@@ -3,6 +3,7 @@ import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import { DashboardController } from './dashboard.controller';
 import { uploadFile } from '../../middlewares/fileUploader';
+import upload from '../../../helpers/upload';
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ router.get('/get_all_subscriptions',
 // =========================================
 router.post('/create_recipe',
   auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
-  uploadFile(),
+  upload.single("image"),
   DashboardController.createRecipes,
 );
 router.patch('/update_recipe/:id',
@@ -72,7 +73,7 @@ router.get('/get_recipe_details/:id',
 // ==================================================
 router.post('/create-adds',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
-  uploadFile(),
+  upload.single("image"),
   DashboardController.addsInsertIntoDB,
 );
 router.get(
@@ -82,7 +83,7 @@ router.get(
 router.patch(
   '/edit-adds/:id',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
-  uploadFile(),
+  upload.single("image"),
   DashboardController.updateAdds,
 );
 router.delete(
