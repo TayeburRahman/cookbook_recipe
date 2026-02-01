@@ -46,7 +46,10 @@ const auth =
         next();
       }
     } catch (error) {
-      next(error);
+      res.status(401).json({
+        success: false,
+        message: "You are not authorized"
+      })
     }
   };
 

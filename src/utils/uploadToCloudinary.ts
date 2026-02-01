@@ -2,7 +2,7 @@
 
 import cloudinary from '../helpers/cloudinary';
 
-type TFolder = 'user' | 'recipe' | 'adds';
+type TFolder = 'user' | 'recipe' | 'adds' | 'category';
 
 const uploadToCloudinary = async (path: string, folder: TFolder) => {
   try {
