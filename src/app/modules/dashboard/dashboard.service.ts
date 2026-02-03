@@ -6,6 +6,7 @@ import { IReqUser } from '../auth/auth.interface';
 import User from '../user/user.model';
 import path from 'path';
 import {
+  AboutUs,
   Adds,
   ContactSupport,
   Faq,
@@ -636,6 +637,23 @@ const getPrivacyPolicy = async () => {
   return await PrivacyPolicy.findOne();
 };
 
+const addAboutUs = async (payload: any) => {
+  const checkIsExist = await AboutUs.findOne();
+  if (checkIsExist) {
+    return await AboutUs.findOneAndUpdate({}, payload, {
+      new: true,
+
+      runValidators: true,
+    });
+  } else {
+    return await AboutUs.create(payload);
+  }
+};
+
+const getAboutUs = async () => {
+  return await AboutUs.findOne();
+};
+
 // =================
 const sendMessageSupport = async (user: IReqUser, payload: IContactSupport) => {
   return await ContactSupport.create({ ...payload, user: user?.userId });
@@ -851,6 +869,8 @@ export const DashboardService = {
   getTermsConditions,
   addPrivacyPolicy,
   getPrivacyPolicy,
+  addAboutUs,
+  getAboutUs,
   sendMessageSupport,
   getAllMessagesSupport,
   getMonthlySubscriptionGrowth,

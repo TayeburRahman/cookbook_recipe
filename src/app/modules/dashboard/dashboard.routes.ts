@@ -117,6 +117,12 @@ router.post('/addupdate-privacy-policy',
 router.get('/get-privacy-policy',
   DashboardController.getPrivacyPolicy,
 );
+router.post('/addupdate-about',
+  DashboardController.addAboutUs,
+);
+router.get('/get-about',
+  DashboardController.getAboutUs,
+);
 // ================================
 router.post('/send-message-support',
   auth(ENUM_USER_ROLE.USER),
