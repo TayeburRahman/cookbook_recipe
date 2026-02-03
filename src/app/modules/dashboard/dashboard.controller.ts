@@ -347,6 +347,26 @@ const getAboutUs = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+const addHelp = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashboardService.addHelp(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
+
+const getHelp = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashboardService.getHelp();
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Successful',
+    data: result,
+  });
+});
 // ================================
 
 const sendMessageSupport = catchAsync(async (req: Request, res: Response) => {
@@ -479,6 +499,8 @@ export const DashboardController = {
   getPrivacyPolicy,
   addAboutUs,
   getAboutUs,
+  addHelp,
+  getHelp,
   sendMessageSupport,
   getAllMessagesSupport,
   totalCount,

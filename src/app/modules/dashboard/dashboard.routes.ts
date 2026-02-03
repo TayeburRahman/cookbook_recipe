@@ -110,6 +110,8 @@ router.post('/addupdate-privacy-policy', DashboardController.addPrivacyPolicy);
 router.get('/get-privacy-policy', DashboardController.getPrivacyPolicy);
 router.post('/addupdate-about', DashboardController.addAboutUs);
 router.get('/get-about', DashboardController.getAboutUs);
+router.post('/addupdate-help', DashboardController.addHelp);
+router.get('/get-help', DashboardController.getHelp);
 // ================================
 router.post(
   '/send-message-support',

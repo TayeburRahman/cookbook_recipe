@@ -10,6 +10,7 @@ import {
   Adds,
   ContactSupport,
   Faq,
+  Help,
   PrivacyPolicy,
   Recipe,
   Review,
@@ -654,6 +655,23 @@ const getAboutUs = async () => {
   return await AboutUs.findOne();
 };
 
+const addHelp = async (payload: any) => {
+  const checkIsExist = await Help.findOne();
+  if (checkIsExist) {
+    return await Help.findOneAndUpdate({}, payload, {
+      new: true,
+
+      runValidators: true,
+    });
+  } else {
+    return await Help.create(payload);
+  }
+};
+
+const getHelp = async () => {
+  return await Help.findOne();
+};
+
 // =================
 const sendMessageSupport = async (user: IReqUser, payload: IContactSupport) => {
   return await ContactSupport.create({ ...payload, user: user?.userId });
@@ -871,6 +889,8 @@ export const DashboardService = {
   getPrivacyPolicy,
   addAboutUs,
   getAboutUs,
+  addHelp,
+  getHelp,
   sendMessageSupport,
   getAllMessagesSupport,
   getMonthlySubscriptionGrowth,
