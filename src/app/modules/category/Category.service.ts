@@ -6,6 +6,7 @@ import ApiError from '../../../errors/ApiError';
 import uploadToCloudinary from '../../../utils/uploadToCloudinary';
 import isNotObjectId from '../../../utils/isNotObjectId';
 import { CATEGORY_SEARCHABLE_FIELDS } from './Category.constant';
+import { Recipe } from '../dashboard/dashboard.model';
 
 const createCategoryService = async (req: any, payload: ICategory) => {
   const { name } = payload;
@@ -155,13 +156,13 @@ const deleteCategoryService = async (categoryId: string) => {
     throw new ApiError(404, 'This categoryId not found');
   }
 
-  //check if categoryId is associated with Product
-  // const associateWithProduct = await ProductModel.findOne({
-  //      categoryId
-  // });
-  // if(associateWithProduct){
-  //     throw new ApiError(409, 'Failled to delete, This category is associated with Product');
-  // }
+  //check if categoryId is associated with Recipe
+  const associateWithRecipe = await Recipe.findOne({
+       category
+  });
+  if(associateWithRecipe){
+      throw new ApiError(409, 'Unable to delete, This category is associated with Recipe');
+  }
 
   const result = await CategoryModel.deleteOne({ _id: categoryId });
   return result;

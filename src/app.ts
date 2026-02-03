@@ -23,7 +23,9 @@ app.use(
       "http://10.0.60.118:8002",
       "http://localhost:5173",
       "http://localhost:5174",
-      "http://localhost:5175"
+      "http://localhost:5175",
+      "http://172.252.13.86:5173",
+      "http://172.252.13.86:5174"
     ],
     credentials: true,
   }),
@@ -41,7 +43,7 @@ app.use(express.static('uploads'));
 app.use('/', routes);
 
 app.get('/', async (req: Request, res: Response) => {
-  res.json('Welcome to Trading App');
+  res.json('Welcome to Cook Recipe Backend');
 });
 
 app.use(globalErrorHandler);
