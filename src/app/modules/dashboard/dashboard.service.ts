@@ -298,19 +298,15 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
   }
 
   // Dynamic filters (like category, weight_and_muscle etc.)
-  const allowedFilters = ['weight_and_muscle', 'oils'];
-  allowedFilters.forEach(key => {
+  const allowedFilters = ["category", "weight_and_muscle", "oils"];
+
+  allowedFilters.forEach((key) => {
     if (query[key]) {
       filterQuery[key] = query[key];
     }
   });
 
-  if (query.category) {
-    filterQuery = {
-      ...filterQuery,
-      category: new Types.ObjectId(query.category),
-    };
-  }
+  console.log("filterQuery:", filterQuery);
 
   const userQuery = new QueryBuilder(
     Recipe.find(filterQuery)
@@ -352,23 +348,23 @@ const createRecipes = async (req: any, payload: IRecipe, user: IReqUser) => {
     throw new ApiError(404, 'Please upload image');
   }
 
-  //check categoryId
-  if (!payload.category) {
-    throw new ApiError(400, 'category is required');
-  }
-  if (isNotObjectId(payload?.category.toString())) {
-    throw new ApiError(400, 'category must be a valid ObjectId');
-  }
+  // //check categoryId
+  // if (!payload.category) {
+  //   throw new ApiError(400, 'category is required');
+  // }
+  // if (isNotObjectId(payload?.category.toString())) {
+  //   throw new ApiError(400, 'category must be a valid ObjectId');
+  // }
 
-  const existingCategory = await CategoryModel.findById(
-    payload?.category.toString(),
-  );
-  if (!existingCategory) {
-    throw new ApiError(404, 'Category not found');
-  }
-  if (existingCategory.status === 'hidden') {
-    throw new ApiError(404, 'Category is hidden');
-  }
+  // const existingCategory = await CategoryModel.findById(
+  //   payload?.category.toString(),
+  // );
+  // if (!existingCategory) {
+  //   throw new ApiError(404, 'Category not found');
+  // }
+  // if (existingCategory.status === 'hidden') {
+  //   throw new ApiError(404, 'Category is hidden');
+  // }
   /* --- check category ended */
 
   if (req.file) {
@@ -418,21 +414,21 @@ const updateRecipes = async (
 
 
   /*check category*/
-  if (payload.category) {
-    if (isNotObjectId(payload?.category.toString())) {
-      throw new ApiError(400, 'category must be a valid ObjectId');
-    }
+  // if (payload.category) {
+  //   if (isNotObjectId(payload?.category.toString())) {
+  //     throw new ApiError(400, 'category must be a valid ObjectId');
+  //   }
 
-    const existingCategory = await CategoryModel.findById(
-      payload?.category.toString(),
-    );
-    if (!existingCategory) {
-      throw new ApiError(404, 'Category not found');
-    }
-    if (existingCategory.status === 'hidden') {
-      throw new ApiError(404, 'Category is hidden');
-    }
-  }
+  //   const existingCategory = await CategoryModel.findById(
+  //     payload?.category.toString(),
+  //   );
+  //   if (!existingCategory) {
+  //     throw new ApiError(404, 'Category not found');
+  //   }
+  //   if (existingCategory.status === 'hidden') {
+  //     throw new ApiError(404, 'Category is hidden');
+  //   }
+  // }
   /* --- check category ended */
 
   //if image is available
@@ -823,13 +819,13 @@ const postScoreReview = async (
 
 const updateAddRecipes = async () => {
   try {
-    const filePath = path.resolve(__dirname, 'recipes.xlsx');
+    const filePath = path.resolve(__dirname, "recipes.xlsx");
     const workbook = XLSX.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
     const rawData: any[] = XLSX.utils.sheet_to_json(sheet);
 
-    const data = rawData.map(item => ({
+    const data = rawData.map((item) => ({
       creator: item?.creator || null,
       image: item?.image,
       name: item?.name,
@@ -847,15 +843,15 @@ const updateAddRecipes = async () => {
       whole_food_type: item?.whole_food_type,
       serving_size: item?.serving_size ? Number(item?.serving_size) : null,
       prep_time: item?.prep_time ? Number(item?.prep_time) : null,
-      kid_approved:
-        item?.kid_approved === 'true' || item?.kid_approved === true,
+      kid_approved: item?.kid_approved === "true" || item?.kid_approved === true,
       no_weekend_prep:
-        item?.no_weekend_prep === 'true' || item?.no_weekend_prep === true,
+        item?.no_weekend_prep === "true" || item?.no_weekend_prep === true,
       recipe_tips: item?.recipe_tips,
       prep: item?.prep,
     }));
 
     const result = await Recipe.insertMany(data);
+    console.log("🍴 Recipes uploaded successfully!");
     return result;
   } catch (error: any) {
     throw new ApiError(400, `Error Creating Recipes: ${error.message}`);
