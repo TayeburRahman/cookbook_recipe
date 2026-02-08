@@ -13,7 +13,7 @@ const categorySchema = new Schema<ICategory>(
       type: String,
       required: true,
       trim: true,
-      unique: true,
+      enum: ['breakfast', 'lunches-and-dinners', 'appetizers', 'salads', 'soups', 'desserts', 'smoothies/shakes', 'salad-dressings', 'jams/marmalades', 'sides']
     },
     image: {
       type: String,
