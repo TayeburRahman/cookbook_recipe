@@ -1,10 +1,11 @@
 import { Types } from 'mongoose';
 import QueryBuilder from '../../../builder/QueryBuilder';
 import ApiError from '../../../errors/ApiError';
-import * as XLSX from 'xlsx';
 import { IReqUser } from '../auth/auth.interface';
 import User from '../user/user.model';
-import path from 'path';
+import xlsx from "xlsx";
+import fs from "fs";
+import path from "path";
 import {
   AboutUs,
   Adds,
@@ -312,11 +313,7 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
     Recipe.find(filterQuery)
       .select(
         '_id name category image prep_time serving_size oils ratting favorites weight_and_muscle',
-      )
-      .populate({
-        path: 'category',
-        select: 'name _id',
-      }),
+      ),
     query,
   )
     .search(['name'])
@@ -463,10 +460,6 @@ const deleteRecipe = async (id: string) => {
 const getMyRecipes = async (user: IReqUser) => {
   const { authId } = user;
   const result = await Recipe.find({ creator: authId })
-    .populate({
-      path: 'category',
-      select: 'name _id',
-    })
     .sort({ createdAt: -1 });
   return result;
 };
@@ -477,10 +470,6 @@ const getRecipeDetails = async (id: Types.ObjectId) => {
       path: 'scoreReview.userId',
       select: 'name email profile_image',
     })
-    .populate({
-      path: 'category',
-      select: 'name _id',
-    });
 
   if (!result) {
     throw new ApiError(404, 'Not find recipe!');
@@ -728,10 +717,6 @@ const getUserFavorites = async (user: IReqUser) => {
     .select(
       '_id name category image prep_time serving_size oils ratting favorites',
     )
-    .populate({
-      path: 'category',
-      select: 'name _id',
-    })
     .lean();
 
   const updatedRecipes = recipes.map(recipe => ({
@@ -817,42 +802,136 @@ const postScoreReview = async (
   };
 };
 
+
+// ===============================================================================
+// ---------------- HELPERS ----------------
+
+// Safely parse a string that should be a JSON array (like "['a', 'b']")
+const parseArrayString = (value: string) => {
+  if (!value) return [];
+  try {
+    return JSON.parse(value.replace(/'/g, '"'));
+  } catch {
+    return [];
+  }
+};
+
+// Parse nutritional info string safely
+const parseNutrition = (value: string) => {
+  if (!value) return null;
+
+  try {
+    const obj = JSON.parse(value.replace(/'/g, '"'));
+    return {
+      calories: Number(obj.calories) || 0,
+      protein: obj.protein ? Number(obj.protein.replace("g", "")) : 0,
+      carbs: obj.carbohydrates ? Number(obj.carbohydrates.replace("g", "")) : 0,
+      fiber: obj.fiber ? Number(obj.fiber.replace("g", "")) : 0,
+      fat: obj.fat ? Number(obj.fat.replace("g", "")) : 0,
+    };
+  } catch {
+    return null;
+  }
+};
+
+// Normalize category: if valid in enum return as is, else default to 'breakfast'
+const validCategories = [
+  'breakfast', 'lunches-and-dinners', 'appetizers', 'salads', 'soups', 'desserts', 'smoothies/shakes', 'salad-dressings', 'jams/marmalades', 'sides'
+];
+const normalizeCategory = (value: string) => {
+  const list = parseArrayString(value);
+  for (const cat of list) {
+    if (validCategories.includes(cat)) {
+      return cat;
+    }
+  }
+  return "breakfast";
+};
+
+// Normalize temperature
+const normalizeTemp = (value: any) => {
+  if (typeof value !== "string") return "Cold";
+  return value.toLowerCase() === "hot" ? "Hot" : "Cold";
+};
+
+const parseBoolean = (value: any) => {
+  if (typeof value !== "string") return false;
+  return value.toLowerCase() === "true";
+};
 const updateAddRecipes = async () => {
   try {
-    const filePath = path.resolve(__dirname, "recipes.xlsx");
-    const workbook = XLSX.readFile(filePath);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const rawData: any[] = XLSX.utils.sheet_to_json(sheet);
+    const folderPath = path.join(__dirname, "./excel_files");
+    const files = fs.readdirSync(folderPath).filter(file => file.endsWith(".xlsx"));
 
-    const data = rawData.map((item) => ({
-      creator: item?.creator || null,
-      image: item?.image,
-      name: item?.name,
-      ingredients: item?.ingredients
-        ? JSON.parse(item.ingredients.replace(/'/g, '"'))
-        : [],
-      instructions: item?.instructions,
-      nutritional: item?.nutritional ? JSON.parse(item?.nutritional) : {},
-      category: item?.category,
-      holiday_recipes: item?.holiday_recipes || null,
-      oils: item?.oils,
-      serving_temperature: item?.serving_temperature,
-      flavor: item?.flavor,
-      weight_and_muscle: item?.weight_and_muscle,
-      whole_food_type: item?.whole_food_type,
-      serving_size: item?.serving_size ? Number(item?.serving_size) : null,
-      prep_time: item?.prep_time ? Number(item?.prep_time) : null,
-      kid_approved: item?.kid_approved === "true" || item?.kid_approved === true,
-      no_weekend_prep:
-        item?.no_weekend_prep === "true" || item?.no_weekend_prep === true,
-      recipe_tips: item?.recipe_tips,
-      prep: item?.prep,
-    }));
+    let allRecipes: any[] = [];
 
-    const result = await Recipe.insertMany(data);
-    console.log("🍴 Recipes uploaded successfully!");
-    return result;
+    for (const file of files) {
+      const filePath = path.join(folderPath, file);
+      const workbook = xlsx.readFile(filePath);
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = xlsx.utils.sheet_to_json<any>(sheet);
+
+      const recipes = rows
+        .map((row) => ({
+          creator: row.creator,
+          image: row.image?.match(/https:\/\/[^\s"]+/)?.[0],
+          name: row.name,
+          ingredients: parseArrayString(row.ingredients),
+          instructions: row?.instructions
+            ? row.instructions
+              .split(/\r?\n/)
+              .map((step: string) => step.trim())
+              .filter((step: string) => step)
+            : [],
+          prep: row.prep.split(/\r?\n/)
+            .map((step: string) => step.replace(/^\d+\.\s*/, '').trim())
+            .filter((step: string) => step)
+            .join(' '),
+          nutritional: parseNutrition(row.nutritional),
+          serving_size: !isNaN(Number(row.serving_size)) ? Number(row.serving_size) : 0,
+          prep_time: Number(row.prep_time),
+          category: normalizeCategory(row.category),
+          oils: row.oils === "with_oil" ? "with_oil" : "oil_free",
+          whole_food_type: row.whole_food_type,
+          flavor: row.flavor,
+          weight_and_muscle: row.weight_and_muscle,
+          kid_approved: parseBoolean(row.kid_approved),
+          no_weekend_prep: parseBoolean(row.no_weekend_prep),
+          holiday_recipes: row.holiday_recipes || null,
+          serving_temperature: normalizeTemp(row.serving_temperature),
+          rating: row.rating && row.rating > 0 ? row.rating : 5,
+          recipe_tips: row.recipe_tips || "",
+        }))
+        .filter(
+          (r) =>
+            r.name &&
+            r.ingredients.length > 0 &&
+            r.instructions &&
+            r.nutritional &&
+            r.category &&
+            r.prep
+        );
+
+      allRecipes = allRecipes.concat(recipes);
+    }
+
+    if (allRecipes.length === 0) {
+      return {
+        statusCode: 400,
+        success: false,
+        message: "No valid recipes found to import",
+        data: null,
+      }
+    }
+
+    const result = await Recipe.insertMany(allRecipes);
+
+    return {
+      statusCode: 200,
+      success: true,
+      message: "All valid Excel data imported successfully",
+      data: { totalInserted: result.length },
+    };
   } catch (error: any) {
     throw new ApiError(400, `Error Creating Recipes: ${error.message}`);
   }
