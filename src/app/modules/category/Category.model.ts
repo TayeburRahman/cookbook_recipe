@@ -9,12 +9,6 @@ const categorySchema = new Schema<ICategory>(
       trim: true,
       unique: true,
     },
-    filtername: {
-      type: String,
-      required: true,
-      trim: true,
-      unique: true,
-    },
     slug: {
       type: String,
       required: true,
