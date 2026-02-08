@@ -9,7 +9,7 @@ import { CATEGORY_SEARCHABLE_FIELDS } from './Category.constant';
 import { Recipe } from '../dashboard/dashboard.model';
 
 const createCategoryService = async (req: any, payload: ICategory) => {
-  const { name } = payload;
+  const { name, filtername } = payload;
 
   const slug = convertToSlug(name);
 
@@ -30,6 +30,7 @@ const createCategoryService = async (req: any, payload: ICategory) => {
   const image = await uploadToCloudinary(req?.file?.path as string, 'category');
 
   const result = await CategoryModel.create({
+    filtername,
     name,
     slug,
     image,
@@ -70,6 +71,7 @@ const getCategoriesService = async (query: TCategoryQuery) => {
       $project: {
         _id: 1,
         name: 1,
+        filtername: 1,
         image: 1,
         status: 1,
       },
@@ -104,7 +106,7 @@ const getCategoriesService = async (query: TCategoryQuery) => {
 
 const getCategoryDropDownService = async () => {
   const result = await CategoryModel.find({ status: 'visible' })
-    .select('_id name image')
+    .select('_id name image filtername')
     .sort('-createdAt');
   return result;
 };
@@ -158,10 +160,10 @@ const deleteCategoryService = async (categoryId: string) => {
 
   //check if categoryId is associated with Recipe
   const associateWithRecipe = await Recipe.findOne({
-       category
+    category
   });
-  if(associateWithRecipe){
-      throw new ApiError(409, 'Unable to delete, This category is associated with Recipe');
+  if (associateWithRecipe) {
+    throw new ApiError(409, 'Unable to delete, This category is associated with Recipe');
   }
 
   const result = await CategoryModel.deleteOne({ _id: categoryId });

@@ -3,10 +3,11 @@ import { Document } from "mongoose";
 export type TCategoryStatus = 'visible' | 'hidden';
 
 export interface ICategory extends Document {
-    name: string;
-    slug: string;
-    image: string;
-    status: TCategoryStatus
+  name: string;
+  filtername: string
+  slug: string;
+  image: string;
+  status: TCategoryStatus
 }
 
 
