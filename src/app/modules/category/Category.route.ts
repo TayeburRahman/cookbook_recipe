@@ -12,7 +12,7 @@ router.post(
   '/create-category',
   auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   upload.single('image'),
-  validationMiddleware(createCategorySchema),
+  // validationMiddleware(createCategorySchema),
   CategoryController.createCategory,
 );
 router.get(

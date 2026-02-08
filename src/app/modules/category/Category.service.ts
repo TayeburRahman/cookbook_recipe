@@ -10,7 +10,6 @@ import { Recipe } from '../dashboard/dashboard.model';
 
 const createCategoryService = async (req: any, payload: ICategory) => {
   const { name, filtername } = payload;
-
   console.log("payload:", payload);
 
   const slug = convertToSlug(name);
