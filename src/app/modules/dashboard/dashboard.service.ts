@@ -474,6 +474,7 @@ const getRecipeDetails = async (id: Types.ObjectId) => {
   if (!result) {
     throw new ApiError(404, 'Not find recipe!');
   }
+  console.log("result:", result);
   return result;
 };
 
