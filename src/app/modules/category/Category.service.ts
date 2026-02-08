@@ -9,10 +9,10 @@ import { CATEGORY_SEARCHABLE_FIELDS } from './Category.constant';
 import { Recipe } from '../dashboard/dashboard.model';
 
 const createCategoryService = async (req: any, payload: ICategory) => {
-  const { name, filtername } = payload;
+  const { name, slug } = payload;
   console.log("payload:", payload);
 
-  const slug = convertToSlug(name);
+  // const slug = convertToSlug(name);
 
   if (!req.file) {
     throw new ApiError(400, 'Upload an image');
@@ -23,15 +23,10 @@ const createCategoryService = async (req: any, payload: ICategory) => {
     slug,
   });
 
-  if (category) {
-    throw new ApiError(409, 'This category already exists.');
-  }
-
   //upload image
   const image = await uploadToCloudinary(req?.file?.path as string, 'category');
 
   const result = await CategoryModel.create({
-    filtername,
     name,
     slug,
     image,
@@ -72,7 +67,7 @@ const getCategoriesService = async (query: TCategoryQuery) => {
       $project: {
         _id: 1,
         name: 1,
-        filtername: 1,
+        slug: 1,
         image: 1,
         status: 1,
       },
@@ -107,7 +102,7 @@ const getCategoriesService = async (query: TCategoryQuery) => {
 
 const getCategoryDropDownService = async () => {
   const result = await CategoryModel.find({ status: 'visible' })
-    .select('_id name image filtername')
+    .select('_id name image slug')
     .sort('-createdAt');
   return result;
 };
@@ -124,18 +119,6 @@ const updateCategoryService = async (
   const existingCategory = await CategoryModel.findById(categoryId);
   if (!existingCategory) {
     throw new ApiError(404, 'This categoryId not found');
-  }
-
-  if (payload.name) {
-    const slug = convertToSlug(payload.name);
-    payload.slug = slug;
-    const categoryExist = await CategoryModel.findOne({
-      _id: { $ne: categoryId },
-      slug,
-    });
-    if (categoryExist) {
-      throw new ApiError(409, 'Sorry, This category already exists.');
-    }
   }
 
   //if image is available
