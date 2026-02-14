@@ -25,7 +25,11 @@ app.use(
       "http://localhost:5174",
       "http://localhost:5175",
       "http://172.252.13.86:5173",
-      "http://172.252.13.86:5174"
+      "http://172.252.13.86:5174",
+      "https://koumanisdietapp.com",
+      "https://www.koumanisdietapp.com",
+      "https://dashboard.koumanisdietapp.com",
+      "https://www.dashboard.koumanisdietapp.com"
     ],
     credentials: true,
   }),
