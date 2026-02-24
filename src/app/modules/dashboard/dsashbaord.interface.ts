@@ -23,7 +23,7 @@ export interface IRecipe extends Document {
   creator: string;
   duration: string;
   ingredients: string[];
-  instructions: string;
+  instructions: string[];
   nutritional: INutritional;
   category: string;
   image: string;
