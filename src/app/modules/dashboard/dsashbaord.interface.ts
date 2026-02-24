@@ -20,7 +20,7 @@ export interface INutritional {
 
 export interface IRecipe extends Document {
   name: string;
-  creator: Types.ObjectId;
+  creator: string;
   duration: string;
   ingredients: string[];
   instructions: string;

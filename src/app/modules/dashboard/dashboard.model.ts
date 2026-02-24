@@ -86,8 +86,7 @@ const nutritionalSchema = new Schema<INutritional>({
 
 const RecipeSchema = new Schema<IRecipe>({
     creator: {
-        type: Schema.Types.ObjectId,
-        ref: "Auth"
+        type: String,
     },
     image: {
         type: String
