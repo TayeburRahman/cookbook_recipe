@@ -162,6 +162,8 @@ const addPlaneRecipes = async (query: {
     day: string;
     recipeId: string;
 }, user: IReqUser) => {
+
+    console.log("🚀 ~ file: mealplan.service.ts:122 ~ addPlaneRecipes ~ query:", query)
     const recipe = await Recipe.findById(query.recipeId);
     if (!recipe) {
         throw new ApiError(404, 'Recipe not found!');
