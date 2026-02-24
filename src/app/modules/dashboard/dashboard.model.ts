@@ -101,7 +101,7 @@ const RecipeSchema = new Schema<IRecipe>({
         default: []
     },
     instructions: {
-        type: String,
+        type: [String],
         required: true
     },
     nutritional: {
