@@ -26,11 +26,13 @@ const MealPlanWeekSchema = new Schema<IMealPlanWeek>({
  //for saving AI Response 
   weekendPrepAdvice: {
     bake: [{
+      _id: false,
       title: String,
       instruction: String,
       ingredients: [String]
     }],
     speed_prep: [{
+      _id: false,
       item: String,
       action: String
     }],

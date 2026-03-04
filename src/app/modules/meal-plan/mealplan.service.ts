@@ -521,7 +521,7 @@ const generateWeekendPrepAdvice = async (planId: string) => {
       }
     });
   });
-console.log("ingredients-------->",allIngredients);
+// console.log("ingredients-------->",allIngredients);
   const uniqueIngredients = [...new Set(allIngredients)];
 
 
