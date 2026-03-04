@@ -80,7 +80,12 @@ router.patch(
     auth(ENUM_USER_ROLE.USER),
     MealPlanController.seenNotifications,
 );
-
+//ai api route
+router.get(
+    '/weekend-prep/:planId',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.getWeekendPrepAdvice,
+);
 
 
 export const MealPlanRoutes = router;

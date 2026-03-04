@@ -23,6 +23,19 @@ const MealPlanWeekSchema = new Schema<IMealPlanWeek>({
   startDate: { type: Date },
   endDate: { type: Date },
   data: [daySchema],
+ //for saving AI Response 
+  weekendPrepAdvice: {
+    bake: [{
+      title: String,
+      instruction: String,
+      ingredients: [String]
+    }],
+    speed_prep: [{
+      item: String,
+      action: String
+    }],
+    prep_notes: [String]
+  },
   types: {
     type: String,
     enum: ['week', 'custom', 'featured'],
