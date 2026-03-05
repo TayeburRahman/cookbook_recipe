@@ -4,20 +4,25 @@ interface IDay {
     day: string;
     recipes: Types.ObjectId[];
 }
-export interface IBakeItem {
-    title: string;
+
+
+
+
+export interface IPrepItem {
+    name: string;
+    amount: string;
     instruction: string;
-    ingredients: string[];
+    storage: string;
+    usedIn: string; 
 }
 
-export interface ISpeedPrepItem {
-    item: string;
-    action: string;
+export interface IPrepSection {
+    title: string; 
+    items: IPrepItem[];
 }
-
 export interface IWeekendPrep {
-    bake: IBakeItem[];
-    speed_prep: ISpeedPrepItem[];
+    sections: IPrepSection[]; // dynamic for  (Bake, Steam, Blend etc)
+    speed_prep: { item: string; action: string }[];
     prep_notes: string[];
 }
 interface IMealPlanWeek extends Document {

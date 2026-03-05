@@ -1,9 +1,17 @@
 import ApiError from "../../../errors/ApiError";
-import { getAIWeekendPrep } from "../../../helpers/apiHelper";
+import { getAIWeekendPrep } from "../../../helpers/apiHelperTest";
 import { IReqUser } from "../auth/auth.interface";
 import { Recipe } from "../dashboard/dashboard.model";
 import { MealPlanWeek } from "./mealplan.model";
 import { NotificationService } from "./notification.service";
+
+
+interface IIngredientInput {
+    recipeName: string;
+    ingredients: string[];
+}
+
+
 
 const getWeekDates = (currentDate: Date) => {
     const currentDayOfWeek = currentDate.getDay();
@@ -503,41 +511,75 @@ const toggleIngredientBuyStatus = async (ingredientId: string) => {
 
 // grok api service
 
-const generateWeekendPrepAdvice = async (planId: string) => {
+// const generateWeekendPrepAdvice = async (planId: string) => {
 
-  const plan = await MealPlanWeek.findById(planId).populate('data.recipes.recipe');
-  if (!plan) throw new ApiError(404, "Meal Plan not found!");
+//   const plan = await MealPlanWeek.findById(planId).populate('data.recipes.recipe');
+//   if (!plan) throw new ApiError(404, "Meal Plan not found!");
 
-  if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.prep_notes.length > 0) {
-    return plan.weekendPrepAdvice;
-  }
-
-
-  const allIngredients: string[] = [];
-  plan.data.forEach(day => {
-    day.recipes.forEach((item: any) => {
-      if (item.recipe && item.recipe.ingredients) {
-        allIngredients.push(...item.recipe.ingredients);
-      }
-    });
-  });
-// console.log("ingredients-------->",allIngredients);
-  const uniqueIngredients = [...new Set(allIngredients)];
+//   if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.prep_notes.length > 0) {
+//     return plan.weekendPrepAdvice;
+//   }
 
 
-  const aiAdvice = await getAIWeekendPrep(uniqueIngredients);
+//   const allIngredients: string[] = [];
+//   plan.data.forEach(day => {
+//     day.recipes.forEach((item: any) => {
+//       if (item.recipe && item.recipe.ingredients) {
+//         allIngredients.push(...item.recipe.ingredients);
+//       }
+//     });
+//   });
+// // console.log("ingredients-------->",allIngredients);
+//   const uniqueIngredients = [...new Set(allIngredients)];
 
-  if (aiAdvice) {
+
+//   const aiAdvice = await getAIWeekendPrep(uniqueIngredients);
+
+//   if (aiAdvice) {
  
-    plan.weekendPrepAdvice = aiAdvice;
-    await plan.save();
-  }
+//     plan.weekendPrepAdvice = aiAdvice;
+//     await plan.save();
+//   }
 
-  return aiAdvice;
+//   return aiAdvice;
+// };
+
+
+// src/app/modules/meal-plan/mealplan.service.ts
+
+// src/app/modules/meal-plan/mealplan.service.ts
+
+const generateWeekendPrepAdvice = async (planId: string) => {
+    const plan = await MealPlanWeek.findById(planId).populate('data.recipes.recipe');
+    if (!plan) throw new ApiError(404, "Meal Plan not found!");
+
+   
+    // if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.sections?.length > 0) {
+    //     return plan.weekendPrepAdvice;
+    // }
+
+ 
+  const inputForAI = plan.data.flatMap(day => 
+        day.recipes.map((item: any) => ({
+            recipeName: item.recipe?.name,
+            ingredients: item.recipe?.ingredients
+        }))
+    );
+
+    if (inputForAI.length === 0) {
+        throw new ApiError(400, "No recipes found in this plan!");
+    }
+ 
+   
+    const aiAdvice = await getAIWeekendPrep(inputForAI  as unknown as any[]);
+
+    if (aiAdvice) {
+        plan.weekendPrepAdvice = aiAdvice;
+        await plan.save();
+    }
+
+    return aiAdvice;
 };
-
-
-
 
 
 
