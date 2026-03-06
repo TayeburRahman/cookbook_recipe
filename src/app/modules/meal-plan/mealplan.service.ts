@@ -7,10 +7,7 @@ import { MealPlanWeek } from "./mealplan.model";
 import { NotificationService } from "./notification.service";
 
 
-interface IIngredientInput {
-    recipeName: string;
-    ingredients: string[];
-}
+
 
 
 
@@ -510,54 +507,20 @@ const toggleIngredientBuyStatus = async (ingredientId: string) => {
     }
 };
 
-// grok api service
-
-// const generateWeekendPrepAdvice = async (planId: string) => {
-
-//   const plan = await MealPlanWeek.findById(planId).populate('data.recipes.recipe');
-//   if (!plan) throw new ApiError(404, "Meal Plan not found!");
-
-//   if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.prep_notes.length > 0) {
-//     return plan.weekendPrepAdvice;
-//   }
 
 
-//   const allIngredients: string[] = [];
-//   plan.data.forEach(day => {
-//     day.recipes.forEach((item: any) => {
-//       if (item.recipe && item.recipe.ingredients) {
-//         allIngredients.push(...item.recipe.ingredients);
-//       }
-//     });
-//   });
-// // console.log("ingredients-------->",allIngredients);
-//   const uniqueIngredients = [...new Set(allIngredients)];
+// openAI api service
 
 
-//   const aiAdvice = await getAIWeekendPrep(uniqueIngredients);
-
-//   if (aiAdvice) {
- 
-//     plan.weekendPrepAdvice = aiAdvice;
-//     await plan.save();
-//   }
-
-//   return aiAdvice;
-// };
-
-
-// src/app/modules/meal-plan/mealplan.service.ts
-
-// src/app/modules/meal-plan/mealplan.service.ts
 
 const generateWeekendPrepAdvice = async (planId: string) => {
     const plan = await MealPlanWeek.findById(planId).populate('data.recipes.recipe');
     if (!plan) throw new ApiError(404, "Meal Plan not found!");
 
    
-    // if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.sections?.length > 0) {
-    //     return plan.weekendPrepAdvice;
-    // }
+    if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.sections?.length > 0) {
+        return plan.weekendPrepAdvice;
+    }
 
  
   const inputForAI = plan.data.flatMap(day => 
