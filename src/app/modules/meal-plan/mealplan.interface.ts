@@ -6,7 +6,10 @@ interface IDay {
 }
 
 
-
+export interface ISpeedPrep {
+    ingredient: string; 
+    steps: string[];   
+}
 
 export interface IPrepItem {
     name: string;
@@ -22,7 +25,7 @@ export interface IPrepSection {
 }
 export interface IWeekendPrep {
     sections: IPrepSection[]; // dynamic for  (Bake, Steam, Blend etc)
-    speed_prep: { item: string; action: string }[];
+    speed_prep:ISpeedPrep[]; // for quick chopping or assembly tasks
     prep_notes: string[];
 }
 interface IMealPlanWeek extends Document {

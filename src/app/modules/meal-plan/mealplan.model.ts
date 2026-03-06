@@ -43,7 +43,13 @@ weekendPrepAdvice: {
       ]
     }
   ],
-  speed_prep: [{ _id: false, item: String, action: String }],
+speed_prep: [
+  {
+    _id: false,
+    ingredient: String,
+    steps: [String] 
+  }
+],
   prep_notes: [String]
 },
   types: {

@@ -1,5 +1,6 @@
 import ApiError from "../../../errors/ApiError";
-import { getAIWeekendPrep } from "../../../helpers/apiHelperTest";
+import { getAIWeekendPrep } from "../../../helpers/apiHelper";
+
 import { IReqUser } from "../auth/auth.interface";
 import { Recipe } from "../dashboard/dashboard.model";
 import { MealPlanWeek } from "./mealplan.model";
