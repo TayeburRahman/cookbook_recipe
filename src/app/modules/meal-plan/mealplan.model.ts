@@ -47,7 +47,12 @@ speed_prep: [
   {
     _id: false,
     ingredient: String,
-    steps: [String] 
+      steps: [
+      {
+        text: String,
+        isDone: { type: Boolean, default: false }
+      }
+    ] 
   }
 ],
   prep_notes: [String]

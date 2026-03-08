@@ -176,6 +176,18 @@ const getWeekendPrepAdvice = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const toggleSpeedPrepStep = catchAsync(async (req: Request, res: Response) => {
+    const { planId, stepId } = req.body; // ফ্রন্টএন্ড থেকে বডিতে এই ২টা আইডি আসবে
+    
+    const result = await MealService.toggleSpeedPrepStep(planId, stepId);
+    
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        data: result,
+        message: "Step status updated!",
+    });
+});
 
 export const MealPlanController = {
     addMealPlan,
@@ -191,5 +203,5 @@ export const MealPlanController = {
     toggleIngredientBuyStatus,
     seenNotifications,
     getUserNotifications,
-    getWeekendPrepAdvice
+    getWeekendPrepAdvice,toggleSpeedPrepStep
 };
