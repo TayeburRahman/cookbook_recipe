@@ -1,8 +1,15 @@
 import ApiError from "../../../errors/ApiError";
+import { getAIWeekendPrep } from "../../../helpers/apiHelper";
+
 import { IReqUser } from "../auth/auth.interface";
 import { Recipe } from "../dashboard/dashboard.model";
 import { MealPlanWeek } from "./mealplan.model";
 import { NotificationService } from "./notification.service";
+
+
+
+
+
 
 const getWeekDates = (currentDate: Date) => {
     const currentDayOfWeek = currentDate.getDay();
@@ -500,6 +507,47 @@ const toggleIngredientBuyStatus = async (ingredientId: string) => {
     }
 };
 
+
+
+// openAI api service
+
+
+
+const generateWeekendPrepAdvice = async (planId: string) => {
+    const plan = await MealPlanWeek.findById(planId).populate('data.recipes.recipe');
+    if (!plan) throw new ApiError(404, "Meal Plan not found!");
+
+   
+    if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.sections?.length > 0) {
+        return plan.weekendPrepAdvice;
+    }
+
+ 
+  const inputForAI = plan.data.flatMap(day => 
+        day.recipes.map((item: any) => ({
+            recipeName: item.recipe?.name,
+            ingredients: item.recipe?.ingredients
+        }))
+    );
+
+    if (inputForAI.length === 0) {
+        throw new ApiError(400, "No recipes found in this plan!");
+    }
+ 
+   
+    const aiAdvice = await getAIWeekendPrep(inputForAI  as unknown as any[]);
+
+    if (aiAdvice) {
+        plan.weekendPrepAdvice = aiAdvice;
+        await plan.save();
+    }
+
+    return aiAdvice;
+};
+
+
+
+
 export const MealService = {
     addPlaneRecipes,
     activateAccountCreateDefaultPlane,
@@ -512,5 +560,6 @@ export const MealService = {
     removePlanRecipes,
     getWeeklyMealPlan,
     getGroceryList,
-    toggleIngredientBuyStatus
+    toggleIngredientBuyStatus,
+    generateWeekendPrepAdvice
 };
