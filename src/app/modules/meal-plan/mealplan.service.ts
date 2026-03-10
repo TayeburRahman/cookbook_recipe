@@ -545,7 +545,31 @@ const generateWeekendPrepAdvice = async (planId: string) => {
     return aiAdvice;
 };
 
+const toggleSpeedPrepStep = async (planId: string, stepId: string) => {
 
+    const plan = await MealPlanWeek.findById(planId);
+    if (!plan) throw new Error("Meal plan not found");
+
+
+    let stepFound = false;
+
+    plan.weekendPrepAdvice?.speed_prep.forEach((item) => {
+        item.steps.forEach((step: any) => {
+     
+            if (step._id.toString() === stepId) {
+                step.isDone = !step.isDone;
+                stepFound = true;
+            }
+        });
+    });
+
+    if (!stepFound) throw new Error("Step not found in this plan");
+
+    await plan.save();
+
+    // return plan.weekendPrepAdvice;
+    return {};
+};
 
 
 export const MealService = {
@@ -561,5 +585,5 @@ export const MealService = {
     getWeeklyMealPlan,
     getGroceryList,
     toggleIngredientBuyStatus,
-    generateWeekendPrepAdvice
+    generateWeekendPrepAdvice,toggleSpeedPrepStep
 };

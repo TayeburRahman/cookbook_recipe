@@ -8,7 +8,12 @@ interface IDay {
 
 export interface ISpeedPrep {
     ingredient: string; 
-    steps: string[];   
+    steps: {
+        _id: string; 
+        text: string;
+        isDone: boolean;
+    }[];   
+
 }
 
 export interface IPrepItem {

@@ -88,4 +88,9 @@ router.get(
 );
 
 
+router.patch(
+    '/toggle-speed-prep',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.toggleSpeedPrepStep
+);
 export const MealPlanRoutes = router;
