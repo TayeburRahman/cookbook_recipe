@@ -16,7 +16,6 @@ const daySchema = new Schema<IDay>({
   }]
 });
 
-
 const MealPlanWeekSchema = new Schema<IMealPlanWeek>({
   user: { type: Types.ObjectId, ref: "Auth" },
   name: { type: String },
