@@ -50,7 +50,8 @@ speed_prep: [
       steps: [
       {
         text: String,
-        isDone: { type: Boolean, default: false }
+        isDone: { type: Boolean, default: false },
+      
       }
     ] 
   }
