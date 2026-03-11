@@ -513,38 +513,66 @@ const toggleIngredientBuyStatus = async (ingredientId: string) => {
 
 
 
+// const generateWeekendPrepAdvice = async (planId: string) => {
+//     const plan = await MealPlanWeek.findById(planId).populate('data.recipes.recipe');
+//     if (!plan) throw new ApiError(404, "Meal Plan not found!");
+
+   
+//     if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.sections?.length > 0) {
+//         return plan.weekendPrepAdvice;
+//     }
+
+ 
+//   const inputForAI = plan.data.flatMap(day => 
+//         day.recipes.map((item: any) => ({
+//             recipeName: item.recipe?.name,
+//             ingredients: item.recipe?.ingredients
+//         }))
+//     );
+
+//     if (inputForAI.length === 0) {
+//         throw new ApiError(400, "No recipes found in this plan!");
+//     }
+ 
+   
+//     const aiAdvice = await getAIWeekendPrep(inputForAI  as unknown as any[]);
+
+//     if (aiAdvice) {
+//         plan.weekendPrepAdvice = aiAdvice;
+//         await plan.save();
+//     }
+
+//     return aiAdvice;
+// };
 const generateWeekendPrepAdvice = async (planId: string) => {
     const plan = await MealPlanWeek.findById(planId).populate('data.recipes.recipe');
     if (!plan) throw new ApiError(404, "Meal Plan not found!");
 
-   
+
     if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.sections?.length > 0) {
         return plan.weekendPrepAdvice;
     }
 
- 
-  const inputForAI = plan.data.flatMap(day => 
+    const inputForAI = plan.data.flatMap(day => 
         day.recipes.map((item: any) => ({
-            recipeName: item.recipe?.name,
-            ingredients: item.recipe?.ingredients
+            recipeName: item.recipe?.name || "Unknown Recipe",
+            ingredients: item.recipe?.ingredients || []
         }))
     );
 
-    if (inputForAI.length === 0) {
-        throw new ApiError(400, "No recipes found in this plan!");
-    }
- 
-   
-    const aiAdvice = await getAIWeekendPrep(inputForAI  as unknown as any[]);
+    const aiAdvice = await getAIWeekendPrep(inputForAI);
 
     if (aiAdvice) {
+    
         plan.weekendPrepAdvice = aiAdvice;
+        
+    
         await plan.save();
     }
 
-    return aiAdvice;
+ 
+    return plan.weekendPrepAdvice; 
 };
-
 const toggleSpeedPrepStep = async (planId: string, stepId: string) => {
 
     const plan = await MealPlanWeek.findById(planId);
