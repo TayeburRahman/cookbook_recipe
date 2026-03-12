@@ -21,6 +21,7 @@ const SpeedPrepStepSchema = new Schema({
     isDone: { type: Boolean, default: false }
 }, { _id: true }); 
 
+
 const MealPlanWeekSchema = new Schema<IMealPlanWeek>({
   user: { type: Types.ObjectId, ref: "Auth" },
   name: { type: String },

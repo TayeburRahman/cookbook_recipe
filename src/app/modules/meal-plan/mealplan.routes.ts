@@ -87,7 +87,6 @@ router.get(
     MealPlanController.getWeekendPrepAdvice,
 );
 
-
 router.patch(
     '/toggle-speed-prep',
     auth(ENUM_USER_ROLE.USER),
