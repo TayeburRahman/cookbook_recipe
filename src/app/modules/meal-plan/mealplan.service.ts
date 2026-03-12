@@ -552,7 +552,9 @@ const generateWeekendPrepAdvice = async (planId: string) => {
     if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.sections?.length > 0) {
         return plan.weekendPrepAdvice;
     }
-
+ if (plan.weekendPrepAdvice && plan.weekendPrepAdvice.speed_prep?.length > 0) {
+        return plan.weekendPrepAdvice;
+    }
     const inputForAI = plan.data.flatMap(day => 
         day.recipes.map((item: any) => ({
             recipeName: item.recipe?.name || "Unknown Recipe",
