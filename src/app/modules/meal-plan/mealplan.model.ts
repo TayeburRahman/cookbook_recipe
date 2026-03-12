@@ -16,6 +16,10 @@ const daySchema = new Schema<IDay>({
   }]
 });
 
+const SpeedPrepStepSchema = new Schema({
+    text: String,
+    isDone: { type: Boolean, default: false }
+}, { _id: true }); 
 
 const MealPlanWeekSchema = new Schema<IMealPlanWeek>({
   user: { type: Types.ObjectId, ref: "Auth" },
@@ -47,13 +51,9 @@ speed_prep: [
   {
     _id: false,
     ingredient: String,
-      steps: [
-      {
-        text: String,
-        isDone: { type: Boolean, default: false },
       
-      }
-    ] 
+     steps: [SpeedPrepStepSchema]
+    
   }
 ],
   prep_notes: [String]
@@ -63,7 +63,7 @@ speed_prep: [
     enum: ['week', 'custom', 'featured'],
   },
   createdAt: { type: Date, default: Date.now },
-});
+} ,{ timestamps: true })
 
 const NotificationSchema = new Schema<INotification>({
   user: { type: Types.ObjectId, ref: "Auth" },
