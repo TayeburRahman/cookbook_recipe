@@ -859,6 +859,7 @@ const parseBoolean = (value: any) => {
   if (typeof value !== "string") return false;
   return value.toLowerCase() === "true";
 };
+
 const updateAddRecipes = async () => {
   try {
     const folderPath = path.join(__dirname, "./excel_files");
