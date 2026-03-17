@@ -80,7 +80,16 @@ router.patch(
     auth(ENUM_USER_ROLE.USER),
     MealPlanController.seenNotifications,
 );
+//ai api route
+router.get(
+    '/weekend-prep/:planId',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.getWeekendPrepAdvice,
+);
 
-
-
+router.patch(
+    '/toggle-speed-prep',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.toggleSpeedPrepStep
+);
 export const MealPlanRoutes = router;

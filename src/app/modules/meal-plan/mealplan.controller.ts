@@ -163,6 +163,32 @@ const getUserNotifications = catchAsync(async (req, res) => {
     });
 });
 
+
+const getWeekendPrepAdvice = catchAsync(async (req: Request, res: Response) => {
+    const { planId } = req.params;
+    const result = await MealService.generateWeekendPrepAdvice(planId);
+    
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        data: result,
+        message: "Weekend prep advice retrieved successfully!",
+    });
+});
+
+const toggleSpeedPrepStep = catchAsync(async (req: Request, res: Response) => {
+    const { planId, stepId } = req.body; // ফ্রন্টএন্ড থেকে বডিতে এই ২টা আইডি আসবে
+    
+    const result = await MealService.toggleSpeedPrepStep(planId, stepId);
+    
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        data: result,
+        message: "Step status updated!",
+    });
+});
+
 export const MealPlanController = {
     addMealPlan,
     getMealPlanById,
@@ -176,5 +202,6 @@ export const MealPlanController = {
     getGroceryList,
     toggleIngredientBuyStatus,
     seenNotifications,
-    getUserNotifications
+    getUserNotifications,
+    getWeekendPrepAdvice,toggleSpeedPrepStep
 };

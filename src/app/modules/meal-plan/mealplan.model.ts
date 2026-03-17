@@ -16,6 +16,11 @@ const daySchema = new Schema<IDay>({
   }]
 });
 
+const SpeedPrepStepSchema = new Schema({
+    text: String,
+    isDone: { type: Boolean, default: false }
+}, { _id: true }); 
+
 
 const MealPlanWeekSchema = new Schema<IMealPlanWeek>({
   user: { type: Types.ObjectId, ref: "Auth" },
@@ -23,12 +28,43 @@ const MealPlanWeekSchema = new Schema<IMealPlanWeek>({
   startDate: { type: Date },
   endDate: { type: Date },
   data: [daySchema],
+ //for saving AI Response 
+
+
+weekendPrepAdvice: {
+  sections: [
+    {
+      _id: false,
+      title: String, 
+      items: [
+        {
+          _id: false,
+          name: String,
+          amount: String,
+          instruction: String,
+          storage: String,
+          usedIn: String
+        }
+      ]
+    }
+  ],
+speed_prep: [
+  {
+    _id: false,
+    ingredient: String,
+      
+     steps: [SpeedPrepStepSchema]
+    
+  }
+],
+  prep_notes: [String]
+},
   types: {
     type: String,
     enum: ['week', 'custom', 'featured'],
   },
   createdAt: { type: Date, default: Date.now },
-});
+} ,{ timestamps: true })
 
 const NotificationSchema = new Schema<INotification>({
   user: { type: Types.ObjectId, ref: "Auth" },
