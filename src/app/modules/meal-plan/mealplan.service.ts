@@ -601,6 +601,38 @@ const toggleSpeedPrepStep = async (planId: string, stepId: string) => {
     return {};
 };
 
+const resetMealPlan = async (id: string) => {
+    if (!id) {
+        throw new ApiError(400, 'Invalid Meal Plan ID');
+    }
+
+    const plan = await MealPlanWeek.findById(id);
+    if (!plan) {
+        throw new ApiError(404, 'Meal Plan not found!');
+    }
+
+    const daysData = [
+        { day: "Day-1", recipes: [] },
+        { day: "Day-2", recipes: [] },
+        { day: "Day-3", recipes: [] },
+        { day: "Day-4", recipes: [] },
+        { day: "Day-5", recipes: [] },
+        { day: "Day-6", recipes: [] },
+        { day: "Day-7", recipes: [] },
+    ];
+
+    const result = await MealPlanWeek.findByIdAndUpdate(
+        id,
+        {
+            $set: { data: daysData },
+            $unset: { weekendPrepAdvice: "" }
+        },
+        { new: true }
+    );
+
+    return result;
+};
+
 
 export const MealService = {
     addPlaneRecipes,
@@ -615,5 +647,6 @@ export const MealService = {
     getWeeklyMealPlan,
     getGroceryList,
     toggleIngredientBuyStatus,
-    generateWeekendPrepAdvice,toggleSpeedPrepStep
+    generateWeekendPrepAdvice, toggleSpeedPrepStep,
+    resetMealPlan
 };

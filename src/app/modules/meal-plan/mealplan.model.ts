@@ -29,8 +29,6 @@ const MealPlanWeekSchema = new Schema<IMealPlanWeek>({
   endDate: { type: Date },
   data: [daySchema],
  //for saving AI Response 
-
-
 weekendPrepAdvice: {
   sections: [
     {

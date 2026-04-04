@@ -189,6 +189,17 @@ const toggleSpeedPrepStep = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+const resetMealPlan = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await MealService.resetMealPlan(id as string);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        data: result,
+        message: "Meal plan reset successfully!",
+    });
+});
+
 export const MealPlanController = {
     addMealPlan,
     getMealPlanById,
@@ -203,5 +214,6 @@ export const MealPlanController = {
     toggleIngredientBuyStatus,
     seenNotifications,
     getUserNotifications,
-    getWeekendPrepAdvice,toggleSpeedPrepStep
+    getWeekendPrepAdvice, toggleSpeedPrepStep,
+    resetMealPlan
 };

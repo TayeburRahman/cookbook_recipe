@@ -92,4 +92,10 @@ router.patch(
     auth(ENUM_USER_ROLE.USER),
     MealPlanController.toggleSpeedPrepStep
 );
+
+router.patch(
+    '/reset-mealplan/:id',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.resetMealPlan,
+);
 export const MealPlanRoutes = router;
