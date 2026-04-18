@@ -138,7 +138,7 @@ const RecipeSchema = new Schema<IRecipe>({
     },
     whole_food_type: {
         type: String,
-        enum: ['plant_based', 'whole_food', "paleo"]
+        enum: ['plant_based', 'whole_food', "paleo", "animal_protein", "vegan", "vegetarian"]
     },
     serving_size: {
         type: Number,
