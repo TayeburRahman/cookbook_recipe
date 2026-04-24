@@ -113,9 +113,30 @@ const RecipeSchema = new Schema<IRecipe>({
         default: []
     },
     category: {
-        type: String,
+        type: [String],
         required: true,
-        enum: ['breakfast', 'lunches-and-dinners', 'appetizers', 'salads', 'soups', 'desserts', 'smoothies/shakes', 'salad-dressings', 'jams/marmalades', 'sides'],
+        enum: [
+            'muscle-gain', 'weight-loss', 'lunches-and-dinners',
+            'ethnic', 'arabic', 'seafood',
+            'wraps', 'sandwiches', 'rice',
+            'stews', 'stir-fry', 'whole-foods',
+            'smoothies/shakes', 'salads', 'greek',
+            'thai', 'mexican', 'plant-based',
+            'oil-free', 'salad-dressings', 'japanese',
+            'indian', 'appetizers', 'sides',
+            'soups', 'pasta', 'gyro',
+            'breakfast', 'desserts', 'noodles',
+            'maintain-weight', 'backyard-barbecue', 'subs',
+            'southern-comfort', 'chinese', 'vegan',
+            'snacks', 'casseroles', 'french',
+            'spicy', 'pizza', 'italian',
+            'tacos', 'bowls', 'burgers',
+            'paleo', 'southern', 'grill',
+            'curries', 'asian', 'flatbread',
+            'variety', 'condiments', 'dressings',
+            'sauces', 'spreads', 'jams',
+            'marmalades'
+        ]
     },
     holiday_recipes: {
         type: String,
@@ -164,7 +185,7 @@ const RecipeSchema = new Schema<IRecipe>({
         default: [],
     },
     recipe_tips: {
-        type: String,
+        type: [String],
     },
     prep: {
         type: String,

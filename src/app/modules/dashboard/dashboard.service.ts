@@ -835,18 +835,33 @@ const parseNutrition = (value: string) => {
   }
 };
 
-// Normalize category: if valid in enum return as is, else default to 'breakfast'
-const validCategories = [
-  'breakfast', 'lunches-and-dinners', 'appetizers', 'salads', 'soups', 'desserts', 'smoothies/shakes', 'salad-dressings', 'jams/marmalades', 'sides'
-];
+
+
 const normalizeCategory = (value: string) => {
-  const list = parseArrayString(value);
+  if (!value) return [];
+
+  let list: string[] = [];
+  if (typeof value === 'string' && value.trim().startsWith('[')) {
+    list = parseArrayString(value);
+  } else if (typeof value === 'string') {
+    list = value.split(',').map(item => item.trim());
+  } else if (Array.isArray(value)) {
+    list = value;
+  }
+
+  const resultCategories: string[] = [];
+
   for (const cat of list) {
-    if (validCategories.includes(cat)) {
-      return cat;
+    if (cat && typeof cat === 'string') {
+      // Lowercase and replace spaces with hyphens to match enum
+      const normalizedCat = cat.trim().toLowerCase().replace(/\s+/g, '-');
+      if (normalizedCat) {
+        resultCategories.push(normalizedCat);
+      }
     }
   }
-  return "breakfast";
+
+  return [...new Set(resultCategories)];
 };
 
 // Normalize temperature
@@ -866,6 +881,7 @@ const updateAddRecipes = async () => {
     const files = fs.readdirSync(folderPath).filter(file => file.endsWith(".xlsx"));
 
     let allRecipes: any[] = [];
+    const allUniqueCategories = new Set<string>();
 
     for (const file of files) {
       const filePath = path.join(folderPath, file);
@@ -874,36 +890,41 @@ const updateAddRecipes = async () => {
       const rows = xlsx.utils.sheet_to_json<any>(sheet);
 
       const recipes = rows
-        .map((row) => ({
-          creator: row.creator,
-          image: row.image?.match(/https:\/\/[^\s"]+/)?.[0],
-          name: row.name,
-          ingredients: parseArrayString(row.ingredients),
-          instructions: row?.instructions
-            ? row.instructions
-              .split(/\r?\n/)
-              .map((step: string) => step.trim())
+        .map((row) => {
+          const cats = normalizeCategory(row.category);
+          cats.forEach(c => allUniqueCategories.add(c));
+
+          return {
+            creator: row.creator,
+            image: row.image?.match(/https:\/\/[^\s"]+/)?.[0],
+            name: row.name,
+            ingredients: parseArrayString(row.ingredients),
+            instructions: row?.instructions
+              ? row.instructions
+                .split(/\r?\n/)
+                .map((step: string) => step.trim())
+                .filter((step: string) => step)
+              : [],
+            prep: row.prep.split(/\r?\n/)
+              .map((step: string) => step.replace(/^\d+\.\s*/, '').trim())
               .filter((step: string) => step)
-            : [],
-          prep: row.prep.split(/\r?\n/)
-            .map((step: string) => step.replace(/^\d+\.\s*/, '').trim())
-            .filter((step: string) => step)
-            .join(' '),
-          nutritional: parseNutrition(row.nutritional),
-          serving_size: !isNaN(Number(row.serving_size)) ? Number(row.serving_size) : 0,
-          prep_time: Number(row.prep_time),
-          category: normalizeCategory(row.category),
-          oils: row.oils === "with_oil" ? "with_oil" : "oil_free",
-          whole_food_type: row.whole_food_type,
-          flavor: row.flavor,
-          weight_and_muscle: row.weight_and_muscle,
-          kid_approved: parseBoolean(row.kid_approved),
-          no_weekend_prep: parseBoolean(row.no_weekend_prep),
-          holiday_recipes: row.holiday_recipes || null,
-          serving_temperature: normalizeTemp(row.serving_temperature),
-          rating: row.rating && row.rating > 0 ? row.rating : 5,
-          recipe_tips: row.recipe_tips || "",
-        }))
+              .join(' '),
+            nutritional: parseNutrition(row.nutritional),
+            serving_size: !isNaN(Number(row.serving_size)) ? Number(row.serving_size) : 0,
+            prep_time: Number(row.prep_time),
+            category: cats,
+            oils: row.oils === "with_oil" ? "with_oil" : "oil_free",
+            whole_food_type: row.whole_food_type,
+            flavor: row.flavor,
+            weight_and_muscle: row.weight_and_muscle,
+            kid_approved: parseBoolean(row.kid_approved),
+            no_weekend_prep: parseBoolean(row.no_weekend_prep),
+            holiday_recipes: row.holiday_recipes || null,
+            serving_temperature: normalizeTemp(row.serving_temperature),
+            rating: row.rating && row.rating > 0 ? row.rating : 5,
+            recipe_tips: parseArrayString(row.prep_list || row.recipe_tips),
+          };
+        })
         .filter(
           (r) =>
             r.name &&
@@ -925,6 +946,9 @@ const updateAddRecipes = async () => {
         data: null,
       }
     }
+
+    // Log all unique categories found in the excel files
+    console.log("All Unique Categories Found:", Array.from(allUniqueCategories));
 
     const result = await Recipe.insertMany(allRecipes);
 

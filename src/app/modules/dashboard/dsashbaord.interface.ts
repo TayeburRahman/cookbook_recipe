@@ -25,7 +25,7 @@ export interface IRecipe extends Document {
   ingredients: string[];
   instructions: string[];
   nutritional: INutritional;
-  category: string;
+  category: string[];
   image: string;
   meal_type: string;
   temperature: string;
@@ -44,7 +44,7 @@ export interface IRecipe extends Document {
   weight_and_muscle: string;
   whole_food_type: string;
   prep_time: number
-  recipe_tips: string;
+  recipe_tips: string[];
   prep: string;
   scoreReview: any;
 }
