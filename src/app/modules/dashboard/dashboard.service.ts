@@ -299,11 +299,28 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
   }
 
   // Dynamic filters (like category, weight_and_muscle etc.)
-  const allowedFilters = ["category", "weight_and_muscle", "oils"];
+  const allowedFilters = ["category", "weight_and_muscle", "oils", "whole_food_type"];
 
   allowedFilters.forEach((key) => {
     if (query[key]) {
-      filterQuery[key] = query[key];
+      if (Array.isArray(query[key])) {
+        filterQuery[key] = { $in: query[key] };
+      } else if (typeof query[key] === 'string' && query[key].startsWith('[')) {
+        try {
+          const parsed = JSON.parse(query[key]);
+          if (Array.isArray(parsed)) {
+            filterQuery[key] = { $in: parsed };
+          } else {
+            filterQuery[key] = query[key];
+          }
+        } catch (err) {
+          filterQuery[key] = query[key];
+        }
+      } else if (typeof query[key] === 'string' && query[key].includes(',')) {
+        filterQuery[key] = { $in: query[key].split(',') };
+      } else {
+        filterQuery[key] = query[key];
+      }
     }
   });
 
