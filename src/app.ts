@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: [
       'http://192.168.10.16:3000',
-      'http://localhost:5173',
+      'http://192.168.10.16:5173',
       "https://koumanisdietapp.com",
       "https://www.koumanisdietapp.com",
       "https://dashboard.koumanisdietapp.com",

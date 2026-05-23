@@ -19,6 +19,7 @@ export interface INutritional {
 }
 
 export interface IRecipe extends Document {
+  recipe_id: string;
   name: string;
   creator: string;
   duration: string;

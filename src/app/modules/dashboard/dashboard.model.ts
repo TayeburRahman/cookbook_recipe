@@ -1,7 +1,6 @@
 import mongoose, { Model, Schema, Types } from "mongoose";
 import { IAdds, IComment, IContactSupport, INutritional, IRecipe, IReview, ISubscriptions } from "./dsashbaord.interface";
 
-
 const SubscriptionSchema = new Schema<ISubscriptions>({
     name: {
         type: String,
@@ -85,6 +84,9 @@ const nutritionalSchema = new Schema<INutritional>({
 })
 
 const RecipeSchema = new Schema<IRecipe>({
+    recipe_id: {
+        type: String,
+    },
     creator: {
         type: String,
     },
@@ -135,7 +137,7 @@ const RecipeSchema = new Schema<IRecipe>({
             'curries', 'asian', 'flatbread',
             'variety', 'condiments', 'dressings',
             'sauces', 'spreads', 'jams',
-            'marmalades'
+            'marmalades', 'animal-protein', 'vegetarian', 'holiday'
         ]
     },
     holiday_recipes: {
@@ -151,7 +153,7 @@ const RecipeSchema = new Schema<IRecipe>({
     },
     flavor: {
         type: String,
-        enum: ['Sweet', 'Savory']
+        enum: ['Sweet', 'Savory', 'Spicy']
     },
     weight_and_muscle: {
         type: String,
@@ -159,7 +161,7 @@ const RecipeSchema = new Schema<IRecipe>({
     },
     whole_food_type: {
         type: String,
-        enum: ['plant_based', 'whole_food', "paleo", "animal_protein", "vegan", "vegetarian"]
+        enum: ['plant_based', 'whole_food', "paleo", "animal_protein", "vegan", "vegetarian",]
     },
     serving_size: {
         type: Number,

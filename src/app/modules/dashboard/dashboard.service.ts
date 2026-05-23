@@ -854,6 +854,10 @@ const parseNutrition = (value: string) => {
 
 
 
+const VALID_CATEGORIES = new Set([
+  'muscle-gain', 'weight-loss', 'lunches-and-dinners', 'ethnic', 'arabic', 'seafood', 'wraps', 'sandwiches', 'rice', 'stews', 'stir-fry', 'whole-foods', 'smoothies/shakes', 'salads', 'greek', 'thai', 'mexican', 'plant-based', 'oil-free', 'salad-dressings', 'japanese', 'indian', 'appetizers', 'sides', 'soups', 'pasta', 'gyro', 'breakfast', 'desserts', 'noodles', 'maintain-weight', 'backyard-barbecue', 'subs', 'southern-comfort', 'chinese', 'vegan', 'snacks', 'casseroles', 'french', 'spicy', 'pizza', 'italian', 'tacos', 'bowls', 'burgers', 'paleo', 'southern', 'grill', 'curries', 'asian', 'flatbread', 'variety', 'condiments', 'dressings', 'sauces', 'spreads', 'jams', 'marmalades', 'animal-protein', 'vegetarian', 'holiday'
+]);
+
 const normalizeCategory = (value: string) => {
   if (!value) return [];
 
@@ -870,10 +874,11 @@ const normalizeCategory = (value: string) => {
 
   for (const cat of list) {
     if (cat && typeof cat === 'string') {
-      // Lowercase and replace spaces with hyphens to match enum
       const normalizedCat = cat.trim().toLowerCase().replace(/\s+/g, '-');
-      if (normalizedCat) {
+      if (VALID_CATEGORIES.has(normalizedCat)) {
         resultCategories.push(normalizedCat);
+      } else if (normalizedCat === "smoothies-shakes" || normalizedCat === "smoothies" || normalizedCat === "shakes") {
+        resultCategories.push("smoothies/shakes");
       }
     }
   }
@@ -881,15 +886,56 @@ const normalizeCategory = (value: string) => {
   return [...new Set(resultCategories)];
 };
 
-// Normalize temperature
 const normalizeTemp = (value: any) => {
-  if (typeof value !== "string") return "Cold";
-  return value.toLowerCase() === "hot" ? "Hot" : "Cold";
+  if (typeof value !== "string") return undefined;
+  const lower = value.toLowerCase().trim();
+  return lower === "hot" ? "Hot" : (lower === "cold" ? "Cold" : undefined);
+};
+
+const normalizeFlavor = (val: any) => {
+  if (typeof val !== 'string') return undefined;
+  const lower = val.trim().toLowerCase();
+  if (lower.includes('sweet')) return 'Sweet';
+  if (lower.includes('savory') || lower.includes('savoury')) return 'Savory';
+  if (lower.includes('spicy')) return 'Spicy';
+  return undefined;
+};
+
+const normalizeOils = (val: any) => {
+  if (typeof val !== 'string') return undefined;
+  const lower = val.trim().toLowerCase();
+  if (lower.includes('oil') || lower.includes('free')) {
+     if (lower.includes('free') || lower.includes('no')) return 'oil_free';
+     return 'with_oil';
+  }
+  return undefined;
+};
+
+const normalizeWeightAndMuscle = (val: any) => {
+  if (typeof val !== 'string') return undefined;
+  const lower = val.trim().toLowerCase();
+  if (lower.includes('weight') && lower.includes('loss')) return 'weight_loss';
+  if (lower.includes('muscle') || lower.includes('gain')) return 'muscle_gain';
+  if (lower.includes('maintain')) return 'maintain_weight';
+  return undefined;
+};
+
+const normalizeWholeFoodType = (val: any) => {
+  if (typeof val !== 'string') return undefined;
+  const lower = val.trim().toLowerCase();
+  if (lower.includes('plant')) return 'plant_based';
+  if (lower.includes('whole')) return 'whole_food';
+  if (lower.includes('paleo')) return 'paleo';
+  if (lower.includes('animal') || lower.includes('protein')) return 'animal_protein';
+  if (lower.includes('vegan')) return 'vegan';
+  if (lower.includes('veget')) return 'vegetarian';
+  return undefined;
 };
 
 const parseBoolean = (value: any) => {
+  if (typeof value === "boolean") return value;
   if (typeof value !== "string") return false;
-  return value.toLowerCase() === "true";
+  return value.toLowerCase() === "true" || value === "1" || value.toLowerCase() === "yes";
 };
 
 const updateAddRecipes = async () => {
@@ -912,6 +958,7 @@ const updateAddRecipes = async () => {
           cats.forEach(c => allUniqueCategories.add(c));
 
           return {
+            recipe_id: row.recipe_id,
             creator: row.creator,
             image: row.image?.match(/https:\/\/[^\s"]+/)?.[0],
             name: row.name,
@@ -930,10 +977,10 @@ const updateAddRecipes = async () => {
             serving_size: !isNaN(Number(row.serving_size)) ? Number(row.serving_size) : 0,
             prep_time: Number(row.prep_time),
             category: cats,
-            oils: row.oils === "with_oil" ? "with_oil" : "oil_free",
-            whole_food_type: row.whole_food_type,
-            flavor: row.flavor,
-            weight_and_muscle: row.weight_and_muscle,
+            oils: normalizeOils(row.oils),
+            whole_food_type: normalizeWholeFoodType(row.whole_food_type),
+            flavor: normalizeFlavor(row.flavor),
+            weight_and_muscle: normalizeWeightAndMuscle(row.weight_and_muscle),
             kid_approved: parseBoolean(row.kid_approved),
             no_weekend_prep: parseBoolean(row.no_weekend_prep),
             holiday_recipes: row.holiday_recipes || null,
