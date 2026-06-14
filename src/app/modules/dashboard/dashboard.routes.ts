@@ -160,4 +160,11 @@ router.post(
 
 router.get('/updateAddRecipes', DashboardController.updateAddRecipes);
 
+router.post(
+  '/import-master-ingredients',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  upload.single('file'), 
+  DashboardController.importMasterIngredients
+);
+
 export const DashboardRoutes = router;
