@@ -1027,6 +1027,62 @@ const updateAddRecipes = async () => {
   }
 };
 
+
+const importMasterIngredients = async (req: any) => {
+  if (!req.file) {
+    throw new ApiError(400, 'Please upload an Excel file!');
+  }
+
+  const workbook = xlsx.readFile(req.file.path);
+  const sheetName = workbook.SheetNames[0];
+  const rows: any[] = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+ 
+  const recipesMap = new Map();
+
+  rows.forEach((row) => {
+    const name = row.recipe_name; // Column A
+    if (!name) return;
+
+    // (Quantity + Unit + Name)
+    const quantity = row.ingd_quantity || '';
+    const unit = row.ingd_measurement_unit || '';
+    const ingredientName = row.ingd_clean_ingredient || '';
+    const ingredientString = `${quantity} ${unit} ${ingredientName}`.trim();
+
+    if (!recipesMap.has(name)) {
+      recipesMap.set(name, {
+        recipe_id: row.recipe_id?.toString(),
+        name: name,
+        ingredients: [ingredientString],
+        instructions: row.preparation_steps ? [row.preparation_steps] : [], // Column L
+        prep: row.preparation_steps || "",
+        category: ["lunches-and-dinners"],
+        nutritional: { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 },
+        image: "https://via.placeholder.com/150"
+      });
+    } else {
+   
+      recipesMap.get(name).ingredients.push(ingredientString);
+    }
+  });
+
+  const finalRecipes = Array.from(recipesMap.values());
+
+
+  const result = await Recipe.insertMany(finalRecipes);
+
+
+  fs.unlinkSync(req.file.path);
+
+  return {
+    totalRecipes: result.length,
+    message: "Master list imported and grouped successfully"
+  };
+};
+
+
+
 export const DashboardService = {
   totalCount,
   getAllUser,
@@ -1066,4 +1122,5 @@ export const DashboardService = {
   getRecipesReview,
   postScoreReview,
   updateAddRecipes,
+  importMasterIngredients
 };
