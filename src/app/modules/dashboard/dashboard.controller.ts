@@ -468,7 +468,15 @@ const updateAddRecipes = catchAsync(
 
   })
 
-
+const importMasterIngredients = catchAsync(async (req: Request, res: Response) => {
+  const result = await DashboardService.importMasterIngredients(req);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: result.message,
+    data: result,
+  });
+});
 
 
 export const DashboardController = {
@@ -510,5 +518,6 @@ export const DashboardController = {
   getUserFavorites,
   createReviews,
   postScoreReview,
-  getRecipesReview
+  getRecipesReview,
+  importMasterIngredients
 };
