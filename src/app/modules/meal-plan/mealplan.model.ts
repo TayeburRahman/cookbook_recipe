@@ -57,6 +57,25 @@ speed_prep: [
 ],
   prep_notes: [String]
 },
+groceryListAdvice: [
+    {
+        _id: false,
+        department: String,
+        items: [
+            {
+                _id: false,
+                name: String,
+                amount: String
+            }
+        ]
+    }
+],
+fullAiPlanData: {
+    plan_title: String,
+    duration: String,
+    days: [Schema.Types.Mixed],
+    complete_grocery_list: [Schema.Types.Mixed]
+},
   types: {
     type: String,
     enum: ['week', 'custom', 'featured'],

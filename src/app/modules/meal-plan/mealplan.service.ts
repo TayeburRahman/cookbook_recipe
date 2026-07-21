@@ -3,6 +3,7 @@ import { getAIWeekendPrep } from "../../../helpers/apiHelper";
 
 import { IReqUser } from "../auth/auth.interface";
 import { Recipe } from "../dashboard/dashboard.model";
+import { getAIFullMealPlanAndGrocery } from "./apiHelper";
 import { MealPlanWeek } from "./mealplan.model";
 import { NotificationService } from "./notification.service";
 
@@ -575,6 +576,44 @@ const generateWeekendPrepAdvice = async (planId: string) => {
  
     return plan.weekendPrepAdvice; 
 };
+//new function for generating grocery list using AI
+
+
+const generateWeeklyGroceryList = async (planId: string) => {
+    const plan = await MealPlanWeek.findById(planId).populate('data.recipes.recipe');
+    if (!plan) throw new ApiError(404, "Meal Plan not found!");
+
+
+    if (plan.fullAiPlanData && plan.fullAiPlanData.days?.length > 0) {
+        return plan.fullAiPlanData;
+    }
+
+    const mealPlanRawData = plan.data.map(day => ({
+        day: day.day,
+        recipes: day.recipes.map((r: any) => ({
+            name: r.recipe?.name,
+            ingredients: r.recipe?.ingredients,
+            instructions: r.recipe?.instructions 
+        }))
+    }));
+
+  
+    const aiResponse = await getAIFullMealPlanAndGrocery(mealPlanRawData);
+
+    if (aiResponse) {
+     
+        plan.fullAiPlanData = aiResponse;
+        
+       
+        plan.groceryListAdvice = aiResponse.complete_grocery_list;
+        
+        await plan.save();
+    }
+
+    return plan.fullAiPlanData;
+};
+
+
 const toggleSpeedPrepStep = async (planId: string, stepId: string) => {
 
     const plan = await MealPlanWeek.findById(planId);
@@ -648,5 +687,5 @@ export const MealService = {
     getGroceryList,
     toggleIngredientBuyStatus,
     generateWeekendPrepAdvice, toggleSpeedPrepStep,
-    resetMealPlan
+    resetMealPlan,generateWeeklyGroceryList
 };
