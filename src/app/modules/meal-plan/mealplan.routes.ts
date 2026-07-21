@@ -98,4 +98,9 @@ router.patch(
     auth(ENUM_USER_ROLE.USER),
     MealPlanController.resetMealPlan,
 );
+router.get(
+    '/grocery-list-advice/:planId',
+    auth(ENUM_USER_ROLE.USER),
+    MealPlanController.getGroceryListAdvice
+);
 export const MealPlanRoutes = router;

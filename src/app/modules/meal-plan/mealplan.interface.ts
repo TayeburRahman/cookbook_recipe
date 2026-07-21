@@ -23,6 +23,15 @@ export interface IPrepItem {
     storage: string;
     usedIn: string; 
 }
+export interface IGroceryItem {
+    name: string;
+    amount: string;
+}
+
+export interface IGroceryCategory {
+    department: string;
+    items: IGroceryItem[];
+}
 
 export interface IPrepSection {
     title: string; 
@@ -33,6 +42,34 @@ export interface IWeekendPrep {
     speed_prep:ISpeedPrep[]; // for quick chopping or assembly tasks
     prep_notes: string[];
 }
+
+
+
+//new interface for AI response
+export interface IFullMealPlanAIResponse {
+    plan_title: string;
+    duration: string;
+    days: {
+        day_number: number;
+        meals: {
+            type: string; // Breakfast, Lunch, Dinner
+            recipe_name: string;
+            ingredients: string[];
+            instructions: string[];
+        }[];
+    }[];
+    complete_grocery_list: {
+        department: string;
+        items: {
+            ingredient: string;
+            amount_to_purchase: string;
+        }[];
+    }[];
+}
+
+
+
+
 interface IMealPlanWeek extends Document {
     user: Schema.Types.ObjectId;
     name: string;
@@ -42,6 +79,9 @@ interface IMealPlanWeek extends Document {
     weekendPrepAdvice?:IWeekendPrep;
     createdAt: Date;
     types: string;
+    //new added for grocery list advice
+    groceryListAdvice?: IGroceryCategory[]; 
+       fullAiPlanData?: IFullMealPlanAIResponse;
 }
 interface IMealPlanCustom extends Document {
     user: Schema.Types.ObjectId;
