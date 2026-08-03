@@ -58,7 +58,6 @@ export const getAIWeekendPrep = async (ingredientsWithRecipes: any[]) => {
     temperature: 0.2, 
   });
 
-//   console.log("openAI worked");
   return JSON.parse(response.choices[0].message.content || "{}");
 };
 

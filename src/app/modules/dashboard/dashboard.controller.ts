@@ -418,7 +418,6 @@ const getUserFavorites = catchAsync(async (req: Request, res: Response) => {
 const createReviews = catchAsync(async (req: Request, res: Response) => {
   const user = req.user as IReqUser;
   const payload = req.body;
-  console.log('======', payload)
   const result = await DashboardService.createReviews(user, payload);
   sendResponse(res, {
     statusCode: 200,
@@ -429,7 +428,6 @@ const createReviews = catchAsync(async (req: Request, res: Response) => {
 });
 const getRecipesReview = catchAsync(async (req: Request, res: Response) => {
   const recipeId = req.params.id as string;
-  console.log('======', recipeId)
   const result = await DashboardService.getRecipesReview(recipeId);
   sendResponse(res, {
     statusCode: 200,

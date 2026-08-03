@@ -324,8 +324,6 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
     }
   });
 
-  console.log("filterQuery:", filterQuery);
-
   const userQuery = new QueryBuilder(
     Recipe.find(filterQuery)
       .select(
@@ -491,7 +489,6 @@ const getRecipeDetails = async (id: Types.ObjectId) => {
   if (!result) {
     throw new ApiError(404, 'Not find recipe!');
   }
-  console.log("result:", result);
   return result;
 };
 
@@ -1010,9 +1007,6 @@ const updateAddRecipes = async () => {
         data: null,
       }
     }
-
-    // Log all unique categories found in the excel files
-    console.log("All Unique Categories Found:", Array.from(allUniqueCategories));
 
     const result = await Recipe.insertMany(allRecipes);
 
