@@ -178,7 +178,6 @@ const exportDataFromFolder = async (req: Request, res: Response) => {
       data: { totalInserted: result.length },
     });
   } catch (error: any) {
-    console.error(error);
     sendResponse(res, {
       statusCode: 500,
       success: false,

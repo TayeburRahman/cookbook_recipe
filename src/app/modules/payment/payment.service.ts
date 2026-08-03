@@ -27,7 +27,6 @@ cron.schedule("0 0 */12 * * *", async () => {
                 $set: { subscription_status: "Expired" },
             }
         );
-        //console.log("********************************************************=======================================================================###################################################**************************************************************************")
         if (result.modifiedCount > 0) {
             logger.info(`Removed activation codes from ${result.modifiedCount} expired inactive users`);
         }

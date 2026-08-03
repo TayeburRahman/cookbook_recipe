@@ -529,7 +529,6 @@ const resendCodeForgotAccount = async (payload: ForgotPasswordPayload) => {
 cron.schedule("* * * * *", async () => {
   try {
     const now = new Date();
-    //console.log('cron job running', now)
     const result = await Auth.updateMany(
       {
         isActive: false,
