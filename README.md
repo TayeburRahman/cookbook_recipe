@@ -1,4 +1,4 @@
-# Cookbook Recipe Backend
+# Cookbook Recipe Backend(Client: Jaykou69)
 
 Backend service for a cookbook and recipe platform built with Node.js, TypeScript, Express, and MongoDB.
 
