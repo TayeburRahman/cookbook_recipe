@@ -1,0 +1,8 @@
+node_modules
+.vercel 
+logs/
+dist/
+entrypoint.sh
+yarn.lock
+.env.example
+.env
