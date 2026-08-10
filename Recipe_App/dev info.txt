@@ -1,0 +1,9 @@
+java : 17.0.12 2024-07-16 LTS
+Mac/Linux: keytool -genkey -v -keystore key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key
+key make command (windows): keytool -genkeypair -v -keystore key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key
+first and last name: Jaykou
+name of your organizational : Jaykou
+name of your City : newyork
+two-letter country code : US
+State or Province : Jaykou 
+password : 12345678
