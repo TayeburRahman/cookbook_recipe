@@ -1,0 +1,41 @@
+<svg width="300" height="600" viewBox="0 0 300 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Phone frame -->
+    <rect x="10" y="20" width="280" height="560" rx="30" fill="#F9FAFB" stroke="#E5E7EB" stroke-width="2"/>
+    
+    <!-- Status bar -->
+    <rect x="20" y="30" width="260" height="40" rx="8" fill="#FFFFFF"/>
+    <text x="40" y="55" font-family="Arial" font-size="12" fill="#111827">9:41</text>
+    <circle cx="270" cy="45" r="3" fill="#10B981"/>
+    
+    <!-- Header -->
+    <rect x="20" y="80" width="260" height="50" rx="10" fill="#10B981"/>
+    <text x="40" y="115" font-family="Arial" font-size="16" font-weight="bold" fill="white">Koumanis Diet</text>
+    
+    <!-- Dashboard -->
+    <rect x="20" y="140" width="260" height="100" rx="10" fill="#ECFDF5"/>
+    <text x="40" y="170" font-family="Arial" font-size="14" fill="#065F46">Today's Plan</text>
+    <text x="40" y="200" font-family="Arial" font-size="24" font-weight="bold" fill="#065F46">1,850</text>
+    <text x="40" y="225" font-family="Arial" font-size="12" fill="#065F46">calories</text>
+    
+    <!-- Meal cards -->
+    <rect x="20" y="260" width="260" height="100" rx="10" fill="#FEF3C7"/>
+    <text x="40" y="290" font-family="Arial" font-size="14" fill="#92400E">Breakfast</text>
+    <text x="40" y="315" font-family="Arial" font-size="16" font-weight="bold" fill="#92400E">Avocado Toast</text>
+    <text x="40" y="340" font-family="Arial" font-size="12" fill="#92400E">420 cal • 30g protein</text>
+    
+    <rect x="20" y="370" width="125" height="100" rx="10" fill="#E0F2FE"/>
+    <text x="40" y="400" font-family="Arial" font-size="12" fill="#075985">Lunch</text>
+    <text x="40" y="425" font-family="Arial" font-size="14" font-weight="bold" fill="#075985">Chicken Salad</text>
+    <text x="40" y="450" font-family="Arial" font-size="10" fill="#075985">520 cal</text>
+    
+    <rect x="155" y="370" width="125" height="100" rx="10" fill="#F3E8FF"/>
+    <text x="175" y="400" font-family="Arial" font-size="12" fill="#5B21B6">Dinner</text>
+    <text x="175" y="425" font-family="Arial" font-size="14" font-weight="bold" fill="#5B21B6">Salmon Bowl</text>
+    <text x="175" y="450" font-family="Arial" font-size="10" fill="#5B21B6">480 cal</text>
+    
+    <!-- Bottom nav -->
+    <rect x="20" y="490" width="260" height="70" rx="15" fill="#FFFFFF"/>
+    <circle cx="70" cy="525" r="5" fill="#10B981"/>
+    <circle cx="150" cy="525" r="5" fill="#D1D5DB"/>
+    <circle cx="230" cy="525" r="5" fill="#D1D5DB"/>
+</svg>
