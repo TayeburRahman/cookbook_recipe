@@ -109,8 +109,18 @@ class _MealPlanSectionState extends State<MealPlanSection> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    //==============@@Weekly@@=============
-                    GestureDetector(
+                    //============== Weekly ==============
+                    _buildTabPill(
+                      index: 0,
+                      label: AppStrings.weekly.tr.toUpperCase(),
+                      icon: Assets.icons.calender.svg(
+                        height: 16.r,
+                        width: 16.r,
+                        colorFilter: ColorFilter.mode(
+                          selectedIndex == 0 ? Colors.white : const Color(0xFF64748B),
+                          BlendMode.srcIn,
+                        ),
+                      ),
                       onTap: () {
                         CommonFilterBox.weeklyBox(context, (plan) {
                           setState(() {
@@ -121,75 +131,30 @@ class _MealPlanSectionState extends State<MealPlanSection> {
                           controller.getWeeklyMealPlan(id: plan.id ?? '');
                         });
                       },
-                      child: Row(
-                        children: [
-                          Assets.icons.calender.svg(
-                            colorFilter: ColorFilter.mode(
-                              selectedIndex == 0
-                                  ? AppColors.green
-                                  : AppColors.black500,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                          CustomText(
-                            left: 4,
-                            text: AppStrings.weekly.tr.toUpperCase(),
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: selectedIndex == 0
-                                ? AppColors.green
-                                : AppColors.black500,
-                          ),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            size: 20.sp,
-                            color: selectedIndex == 0
-                                ? AppColors.green
-                                : AppColors.black500,
-                          ),
-                        ],
-                      ),
                     ),
                     SizedBox(width: 8.w),
 
-                    //==============Custom=============
-
-                    GestureDetector(
+                    //============== Custom ==============
+                    _buildTabPill(
+                      index: 1,
+                      label: AppStrings.custom.tr.toUpperCase(),
                       onTap: () {
-                        CommonFilterBox.showCustomDialog(context,
-                            (customPlanList) {
+                        CommonFilterBox.showCustomDialog(context, (customPlanList) {
                           setState(() {
                             selectedIndexBeforePrep = 1;
                             selectedIndex = 1;
                             controller.selectedCustomPlanList = customPlanList;
                           });
-                          controller.getWeeklyMealPlan(
-                              id: customPlanList.id ?? '');
+                          controller.getWeeklyMealPlan(id: customPlanList.id ?? '');
                         });
                       },
-                      child: Row(
-                        children: [
-                          CustomText(
-                            text: AppStrings.custom.tr.toUpperCase(),
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: selectedIndex == 1
-                                ? AppColors.green
-                                : AppColors.black500,
-                          ),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            size: 20.sp,
-                            color: selectedIndex == 1
-                                ? AppColors.green
-                                : AppColors.black500,
-                          ),
-                        ],
-                      ),
                     ),
                     SizedBox(width: 8.w),
 
-                    GestureDetector(
+                    //============== Featured ==============
+                    _buildTabPill(
+                      index: 2,
+                      label: AppStrings.featured.tr.toUpperCase(),
                       onTap: () {
                         CommonFilterBox.featureBox(context, (selectedPlan) {
                           setState(() {
@@ -197,49 +162,22 @@ class _MealPlanSectionState extends State<MealPlanSection> {
                             selectedIndex = 2;
                             controller.selectedFeaturePlanList = selectedPlan;
                           });
-                          controller.getWeeklyMealPlan(
-                              id: selectedPlan.id ?? '');
+                          controller.getWeeklyMealPlan(id: selectedPlan.id ?? '');
                         });
                       },
-                      child: Row(
-                        children: [
-                          CustomText(
-                            text: AppStrings.featured.tr.toUpperCase(),
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            color: selectedIndex == 2
-                                ? AppColors.green
-                                : AppColors.black500,
-                          ),
-                          Icon(
-                            Icons.arrow_drop_down,
-                            size: 20.sp,
-                            color: selectedIndex == 2
-                                ? AppColors.green
-                                : AppColors.black500,
-                          ),
-                        ],
-                      ),
                     ),
                     SizedBox(width: 8.w),
 
-                    //==============Prep=============
-
-                    GestureDetector(
+                    //============== Prep ==============
+                    _buildTabPill(
+                      index: 3,
+                      label: AppStrings.prep.tr.toUpperCase(),
+                      hasDropdown: false,
                       onTap: () {
                         setState(() {
                           selectedIndex = 3;
                         });
                       },
-                      child: CustomText(
-                        text: AppStrings.prep.tr.toUpperCase(),
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.w600,
-                        color: selectedIndex == 3
-                            ? AppColors.green
-                            : AppColors.black500,
-                        right: 8.w,
-                      ),
                     ),
                   ],
                 ),
@@ -248,6 +186,67 @@ class _MealPlanSectionState extends State<MealPlanSection> {
               SizedBox(width: double.infinity, child: _buildTabContent()),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTabPill({
+    required int index,
+    required String label,
+    required VoidCallback onTap,
+    bool hasDropdown = true,
+    Widget? icon,
+  }) {
+    final isSelected = selectedIndex == index;
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.bottomNabColor
+              : const Color(0xFFF1F5F9),
+          borderRadius: BorderRadius.circular(20.r),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.bottomNabColor.withValues(alpha: 0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
+          border: Border.all(
+            color: isSelected
+                ? AppColors.bottomNabColor
+                : const Color(0xFFE2E8F0),
+            width: 1.w,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (icon != null) ...[
+              icon,
+              SizedBox(width: 4.w),
+            ],
+            CustomText(
+              text: label,
+              fontSize: 12.sp,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+              color: isSelected ? Colors.white : const Color(0xFF475569),
+            ),
+            if (hasDropdown) ...[
+              SizedBox(width: 2.w),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 18.sp,
+                color: isSelected ? Colors.white : const Color(0xFF64748B),
+              ),
+            ],
+          ],
         ),
       ),
     );

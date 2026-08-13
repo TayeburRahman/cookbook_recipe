@@ -303,23 +303,65 @@ const getAllRecipes = async (user: IReqUser, query: any, payload: any) => {
 
   allowedFilters.forEach((key) => {
     if (query[key]) {
-      if (Array.isArray(query[key])) {
-        filterQuery[key] = { $in: query[key] };
-      } else if (typeof query[key] === 'string' && query[key].startsWith('[')) {
-        try {
-          const parsed = JSON.parse(query[key]);
-          if (Array.isArray(parsed)) {
-            filterQuery[key] = { $in: parsed };
+      if (key === "category") {
+        let rawVal = query[key];
+        let catValues: string[] = [];
+        if (Array.isArray(rawVal)) {
+          catValues = rawVal;
+        } else if (typeof rawVal === 'string' && rawVal.startsWith('[')) {
+          try {
+            const parsed = JSON.parse(rawVal);
+            catValues = Array.isArray(parsed) ? parsed : [rawVal];
+          } catch {
+            catValues = [rawVal];
+          }
+        } else if (typeof rawVal === 'string' && rawVal.includes(',')) {
+          catValues = rawVal.split(',');
+        } else if (typeof rawVal === 'string') {
+          catValues = [rawVal];
+        }
+
+        const expandedCats = new Set<string>();
+        for (const cat of catValues) {
+          if (!cat) continue;
+          const lower = cat.trim().toLowerCase();
+          if (lower === 'jams/marmalades' || lower === 'jams' || lower === 'marmalades' || lower === 'jams-marmalades') {
+            expandedCats.add('jams/marmalades');
+            expandedCats.add('jams');
+            expandedCats.add('marmalades');
+          } else if (lower === 'dressing' || lower === 'dressings' || lower === 'salad-dressings' || lower === 'salad dressings') {
+            expandedCats.add('salad-dressings');
+            expandedCats.add('dressing');
+            expandedCats.add('dressings');
+          } else if (lower === 'smoothies/shakes' || lower === 'smoothies' || lower === 'shakes') {
+            expandedCats.add('smoothies/shakes');
+            expandedCats.add('smoothies');
+            expandedCats.add('shakes');
           } else {
+            expandedCats.add(cat.trim());
+          }
+        }
+
+        filterQuery[key] = { $in: Array.from(expandedCats) };
+      } else {
+        if (Array.isArray(query[key])) {
+          filterQuery[key] = { $in: query[key] };
+        } else if (typeof query[key] === 'string' && query[key].startsWith('[')) {
+          try {
+            const parsed = JSON.parse(query[key]);
+            if (Array.isArray(parsed)) {
+              filterQuery[key] = { $in: parsed };
+            } else {
+              filterQuery[key] = query[key];
+            }
+          } catch (err) {
             filterQuery[key] = query[key];
           }
-        } catch (err) {
+        } else if (typeof query[key] === 'string' && query[key].includes(',')) {
+          filterQuery[key] = { $in: query[key].split(',') };
+        } else {
           filterQuery[key] = query[key];
         }
-      } else if (typeof query[key] === 'string' && query[key].includes(',')) {
-        filterQuery[key] = { $in: query[key].split(',') };
-      } else {
-        filterQuery[key] = query[key];
       }
     }
   });
@@ -862,7 +904,7 @@ const parseNutrition = (value: string) => {
 
 
 const VALID_CATEGORIES = new Set([
-  'muscle-gain', 'weight-loss', 'lunches-and-dinners', 'ethnic', 'arabic', 'seafood', 'wraps', 'sandwiches', 'rice', 'stews', 'stir-fry', 'whole-foods', 'smoothies/shakes', 'salads', 'greek', 'thai', 'mexican', 'plant-based', 'oil-free', 'salad-dressings', 'japanese', 'indian', 'appetizers', 'sides', 'soups', 'pasta', 'gyro', 'breakfast', 'desserts', 'noodles', 'maintain-weight', 'backyard-barbecue', 'subs', 'southern-comfort', 'chinese', 'vegan', 'snacks', 'casseroles', 'french', 'spicy', 'pizza', 'italian', 'tacos', 'bowls', 'burgers', 'paleo', 'southern', 'grill', 'curries', 'asian', 'flatbread', 'variety', 'condiments', 'dressings', 'sauces', 'spreads', 'jams', 'marmalades', 'animal-protein', 'vegetarian', 'holiday'
+  'muscle-gain', 'weight-loss', 'lunches-and-dinners', 'ethnic', 'arabic', 'seafood', 'wraps', 'sandwiches', 'rice', 'stews', 'stir-fry', 'whole-foods', 'smoothies/shakes', 'salads', 'greek', 'thai', 'mexican', 'plant-based', 'oil-free', 'salad-dressings', 'dressing', 'jams/marmalades', 'japanese', 'indian', 'appetizers', 'sides', 'soups', 'pasta', 'gyro', 'breakfast', 'desserts', 'noodles', 'maintain-weight', 'backyard-barbecue', 'subs', 'southern-comfort', 'chinese', 'vegan', 'snacks', 'casseroles', 'french', 'spicy', 'pizza', 'italian', 'tacos', 'bowls', 'burgers', 'paleo', 'southern', 'grill', 'curries', 'asian', 'flatbread', 'variety', 'condiments', 'dressings', 'sauces', 'spreads', 'jams', 'marmalades', 'animal-protein', 'vegetarian', 'holiday'
 ]);
 
 const normalizeCategory = (value: string) => {
@@ -881,10 +923,16 @@ const normalizeCategory = (value: string) => {
 
   for (const cat of list) {
     if (cat && typeof cat === 'string') {
-      const normalizedCat = cat.trim().toLowerCase().replace(/\s+/g, '-');
-      if (VALID_CATEGORIES.has(normalizedCat)) {
+      const rawLower = cat.trim().toLowerCase();
+      const normalizedCat = rawLower.replace(/\s+/g, '-');
+      if (rawLower === 'jams/marmalades' || normalizedCat === 'jams-marmalades' || normalizedCat === 'jams' || normalizedCat === 'marmalades') {
+        resultCategories.push('jams/marmalades');
+      } else if (normalizedCat === 'salad-dressings' || normalizedCat === 'dressing' || normalizedCat === 'dressings') {
+        resultCategories.push('salad-dressings');
+        resultCategories.push('dressing');
+      } else if (VALID_CATEGORIES.has(normalizedCat)) {
         resultCategories.push(normalizedCat);
-      } else if (normalizedCat === "smoothies-shakes" || normalizedCat === "smoothies" || normalizedCat === "shakes") {
+      } else if (normalizedCat === "smoothies-shakes" || normalizedCat === "smoothies" || normalizedCat === "shakes" || rawLower === "smoothies/shakes") {
         resultCategories.push("smoothies/shakes");
       }
     }

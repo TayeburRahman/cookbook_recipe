@@ -21,50 +21,38 @@ class _CustomNavBarState extends State<CustomNavBar> {
   final List<
       ({
         String route,
-        Widget selectedIcon,
-        Widget unselectedIcon,
+        Widget Function(Color color) iconBuilder,
         String label
       })> _navItems = [
     (
       route: RoutePath.homeScreen,
-      selectedIcon: Assets.images.homeSelected.image(color: AppColors.white),
-      unselectedIcon:
-          Assets.images.homeUnselected.image(color: AppColors.black),
+      iconBuilder: (color) =>
+          Assets.images.homeSelected.image(color: color, height: 22.r, width: 22.r),
       label: AppStrings.home.tr,
     ),
     (
       route: RoutePath.mealPlanSection,
-      selectedIcon: Assets.images.mealSelected.image(color: AppColors.white),
-      unselectedIcon:
-          Assets.images.mealUnselected.image(color: AppColors.black),
+      iconBuilder: (color) =>
+          Assets.images.mealSelected.image(color: color, height: 22.r, width: 22.r),
       label: AppStrings.mealPlan.tr,
     ),
     (
       route: RoutePath.groceryScreen,
-      selectedIcon: Assets.images.grocerySelected.image(color: AppColors.white),
-      unselectedIcon:
-          Assets.images.groceryUnselected.image(color: AppColors.black),
+      iconBuilder: (color) =>
+          Assets.images.grocerySelected.image(color: color, height: 22.r, width: 22.r),
       label: AppStrings.grocery.tr,
     ),
     (
       route: RoutePath.weekendPrep,
-      selectedIcon: Assets.icons.calender.svg(color: AppColors.white),
-      unselectedIcon: Assets.icons.calender.svg(color: AppColors.black),
+      iconBuilder: (color) =>
+          Assets.icons.calender.svg(color: color, height: 22.r, width: 22.r),
       label: AppStrings.weekendPrep.tr,
     ),
     (
       route: RoutePath.profileScreen,
-      selectedIcon: Assets.images.profileSelected.image(color: AppColors.white),
-      unselectedIcon:
-          Assets.images.profileUnselected.image(color: AppColors.black),
+      iconBuilder: (color) =>
+          Assets.images.profileSelected.image(color: color, height: 22.r, width: 22.r),
       label: AppStrings.settings.tr,
-    ),
-    (
-      route: RoutePath.recipeBox,
-      selectedIcon: Assets.images.profileSelected.image(color: AppColors.white),
-      unselectedIcon:
-          Assets.images.profileUnselected.image(color: AppColors.black),
-      label: AppStrings.recipeBox.tr,
     ),
   ];
 
@@ -76,39 +64,92 @@ class _CustomNavBarState extends State<CustomNavBar> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        decoration: const BoxDecoration(color: AppColors.bottomNabColor),
-        height: 88.h,
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 0.w, vertical: 13.5.h),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(
-            5, // Only show the first 5 items (Home, Meal Plan, Grocery, Weekend Prep, Profile)
-            (index) => Expanded(
-              child: InkWell(
-                onTap: () => _onTap(index),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    bottomNavIndex == index
-                        ? _navItems[index].selectedIcon
-                        : _navItems[index].unselectedIcon,
-                    SizedBox(height: 4.h),
-                    CustomText(
-                      text: _navItems[index].label.tr,
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w400,
-                      color: bottomNavIndex == index
-                          ? AppColors.white
-                          : AppColors.black500,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+    final activeGreen = AppColors.bottomNabColor; // Color(0xff016445)
+    final inactiveGrey = const Color(0xFF94A3B8);
+
+    return Container(
+      color: Colors.transparent,
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: EdgeInsets.only(left: 14.w, right: 14.w, bottom: 12.h, top: 4.h),
+          child: Container(
+            height: 68.h,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.12),
+                  blurRadius: 24,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 8),
                 ),
+                BoxShadow(
+                  color: activeGreen.withValues(alpha: 0.08),
+                  blurRadius: 10,
+                  spreadRadius: 0,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+              border: Border.all(
+                color: const Color(0xFFF1F5F9),
+                width: 1.5.w,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 4.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: List.generate(
+                5,
+                (index) {
+                  final isSelected = bottomNavIndex == index;
+
+                  return Expanded(
+                    child: InkWell(
+                      onTap: () => _onTap(index),
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 280),
+                        curve: Curves.easeOutCubic,
+                        padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 2.w),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? activeGreen.withValues(alpha: 0.12)
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(22.r),
+                          border: isSelected
+                              ? Border.all(
+                                  color: activeGreen.withValues(alpha: 0.25),
+                                  width: 1.w,
+                                )
+                              : null,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _navItems[index].iconBuilder(
+                              isSelected ? activeGreen : inactiveGrey,
+                            ),
+                            SizedBox(height: 3.h),
+                            CustomText(
+                              text: _navItems[index].label,
+                              fontSize: 10.sp,
+                              fontWeight:
+                                  isSelected ? FontWeight.w700 : FontWeight.w500,
+                              color: isSelected ? activeGreen : const Color(0xFF64748B),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),

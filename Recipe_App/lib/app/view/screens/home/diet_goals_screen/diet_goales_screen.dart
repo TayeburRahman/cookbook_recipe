@@ -151,7 +151,7 @@ class _CategoryScreenState extends State<DietGoalesScreen> {
                           RoutePath.recipeDetails,
                           extra: {
                             "id": data.id ?? "",
-                            "isExist": true,
+                            "isExist": myRecipeController.favorites[data.id]?.value ?? (data.favorite ?? false),
                             // "planName": planName ?? "",
                             // "planId": planId ?? "",
                             // "day": day ?? "",

@@ -20,36 +20,30 @@ class CustomDietCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 8.w),
+      padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 8.w),
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
             spreadRadius: 0,
             offset: const Offset(0, 4),
           ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.01),
-            blurRadius: 2,
-            spreadRadius: 0,
-            offset: const Offset(0, 1),
-          ),
         ],
         border: Border.all(
-          color: AppColors.greyLight.withValues(alpha: 0.3),
-          width: 0.5,
+          color: const Color(0xFFF1F5F9),
+          width: 1.w,
         ),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: EdgeInsets.all(8.r),
+            padding: EdgeInsets.all(10.r),
             decoration: BoxDecoration(
-              color: AppColors.bg500.withValues(alpha: 0.5),
+              color: AppColors.bottomNabColor.withValues(alpha: 0.08),
               shape: BoxShape.circle,
             ),
             child: SizedBox(
@@ -58,20 +52,19 @@ class CustomDietCard extends StatelessWidget {
               child: Center(
                 child: Image.asset(
                   icon,
-                  height: 30.h,
-                  width: 30.w,
+                  height: 28.h,
+                  width: 28.w,
                 ),
               ),
-              // child: Center(child: icon),
             ),
           ),
-          SizedBox(height: 6.h),
+          SizedBox(height: 8.h),
           CustomText(
             maxLines: 2,
             text: title,
             fontSize: 11.sp,
             fontWeight: FontWeight.w600,
-            color: AppColors.black,
+            color: const Color(0xFF1E293B),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
           ),

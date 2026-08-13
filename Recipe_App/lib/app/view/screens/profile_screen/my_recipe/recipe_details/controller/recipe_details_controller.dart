@@ -21,12 +21,13 @@ class RecipeDetailsController extends GetxController {
 
   Future<void> detailsRecipe({required String id}) async {
     setRxRequestStatus(Status.loading);
+    detailsData.value = DetailsData();
     refresh();
     var response = await ApiClient.getData(ApiUrl.recipeDetails(id: id));
-    setRxRequestStatus(Status.completed);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 && response.body != null && response.body["data"] != null) {
       detailsData.value = DetailsData.fromJson(response.body["data"]);
+      setRxRequestStatus(Status.completed);
       refresh();
     } else {
       if (response.statusText == ApiClient.noInternetMessage) {
@@ -43,23 +44,15 @@ class RecipeDetailsController extends GetxController {
   RxList<ReviewList> reviewList = <ReviewList>[].obs;
 
   getReview({required String id}) async {
-    setRxRequestStatus(Status.loading);
-    refresh();
+    reviewList.clear();
     var response = await ApiClient.getData(ApiUrl.getReview(id: id));
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 && response.body != null && response.body["data"] != null) {
       reviewList.value = List<ReviewList>.from(
           response.body["data"].map((x) => ReviewList.fromJson(x)));
       debugPrint("reviewList=================${reviewList.length}");
-
-      setRxRequestStatus(Status.completed);
       refresh();
     } else {
-      if (response.statusText == ApiClient.noInternetMessage) {
-        setRxRequestStatus(Status.internetError);
-      } else {
-        setRxRequestStatus(Status.error);
-      }
       ApiChecker.checkApi(response);
     }
   }

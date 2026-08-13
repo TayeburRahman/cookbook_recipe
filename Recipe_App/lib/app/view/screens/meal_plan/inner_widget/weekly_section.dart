@@ -14,6 +14,7 @@ import '../../../common_widgets/weekly_recipe_card/weekly_recipe_card.dart';
 import '../../../common_widgets/custom_dialoge_alart/custom_dialoge_alart.dart';
 import '../../../common_widgets/custom_loader/custom_loader.dart';
 import '../controller/meal_plan_controller.dart';
+import 'package:recipe_app/app/view/screens/profile_screen/my_recipe/controller/my_recipe_controller.dart';
 import '../models/weekly_meal_plan_model.dart';
 
 class WeeklySection extends StatelessWidget {
@@ -381,11 +382,12 @@ class WeeklySection extends StatelessWidget {
                                           recipe.category?.join(", ") ?? "",
                                       rating: recipe.ratting ?? 0.0,
                                       onCardTap: () {
+                                        final myRecipeController = Get.find<MyRecipeController>();
                                         context.pushNamed(
                                           RoutePath.recipeDetails,
                                           extra: {
                                             "id": recipe.id ?? "",
-                                            "isExist": true,
+                                            "isExist": myRecipeController.favorites[recipe.id]?.value ?? false,
                                           },
                                         );
                                       },

@@ -123,7 +123,7 @@ class _SearchRecipeState extends State<SearchRecipe> {
                 RoutePath.recipeDetails,
                 extra: {
                   "id": data.id ?? "",
-                  "isExist": true,
+                  "isExist": myRecipeController.favorites[data.id]?.value ?? (data.favorite ?? false),
                 },
               );
             },

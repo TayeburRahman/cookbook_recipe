@@ -135,8 +135,8 @@ const RecipeSchema = new Schema<IRecipe>({
             'tacos', 'bowls', 'burgers',
             'paleo', 'southern', 'grill',
             'curries', 'asian', 'flatbread',
-            'variety', 'condiments', 'dressings',
-            'sauces', 'spreads', 'jams',
+            'variety', 'condiments', 'dressings', 'dressing',
+            'sauces', 'spreads', 'jams', 'jams/marmalades',
             'marmalades', 'animal-protein', 'vegetarian', 'holiday'
         ]
     },

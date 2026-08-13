@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:recipe_app/app/utils/app_colors/app_colors.dart';
 import '../custom_network_image/custom_network_image.dart';
 import '../custom_text/custom_text.dart';
 import '../rating_star/rating_star.dart';
@@ -8,7 +9,6 @@ class WeeklyRecipeCard extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String category;
-  // final String? dayNutrition;
   final String? protein;
   final String? carbs;
   final String? fat;
@@ -25,7 +25,6 @@ class WeeklyRecipeCard extends StatelessWidget {
     this.rating,
     required this.onCardTap,
     required this.onMoreTap,
-    // this.dayNutrition,
     this.protein,
     this.carbs,
     this.fat,
@@ -36,152 +35,115 @@ class WeeklyRecipeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onCardTap,
+      borderRadius: BorderRadius.circular(16.r),
       child: Container(
-        // height: 110.h,
-        padding: EdgeInsets.symmetric(vertical: 4.h),
+        padding: EdgeInsets.all(8.r),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.r),
+          borderRadius: BorderRadius.circular(16.r),
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 10,
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 12,
               spreadRadius: 0,
               offset: const Offset(0, 4),
             ),
           ],
-          border: Border.all(color: const Color(0xffEEEEEE)),
+          border: Border.all(color: const Color(0xFFF1F5F9), width: 1.w),
         ),
         child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12.r),
-                  bottomLeft: Radius.circular(12.r),
-                ),
+                borderRadius: BorderRadius.circular(12.r),
                 child: CustomNetworkImage(
                   imageUrl: Uri.encodeFull(imageUrl),
                   height: double.infinity,
-                  width: 100.w,
+                  width: 95.w,
+                  fit: BoxFit.cover,
                 ),
               ),
-              SizedBox(width: 10.w),
-              Flexible(
+              SizedBox(width: 12.w),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(height: 2.h),
-                    // () {
-                    //   final categories = category
-                    //       .split(', ')
-                    //       .where((s) => s.isNotEmpty)
-                    //       .toList();
-                    //   final displayedCategories = categories.take(2).toList();
-                    //   final remainingCount =
-                    //       categories.length - displayedCategories.length;
-
-                    //   return Wrap(
-                    //     spacing: 4.w,
-                    //     runSpacing: 4.h,
-                    //     children: [
-                    //       ...displayedCategories.map((cat) => Container(
-                    //             padding: EdgeInsets.symmetric(
-                    //                 horizontal: 8.w, vertical: 2.h),
-                    //             decoration: BoxDecoration(
-                    //               color: AppColors.green.withValues(alpha: 0.1),
-                    //               borderRadius: BorderRadius.circular(10.r),
-                    //               border: Border.all(
-                    //                   color: AppColors.green
-                    //                       .withValues(alpha: 0.2)),
-                    //             ),
-                    //             child: CustomText(
-                    //               text: cat
-                    //                       .replaceAll('-', ' ')
-                    //                       .replaceAll('_', ' ')
-                    //                       .capitalizeFirst ??
-                    //                   cat,
-                    //               fontWeight: FontWeight.w700,
-                    //               fontSize: 8.sp,
-                    //               color: AppColors.green,
-                    //             ),
-                    //           )),
-                    //       if (remainingCount > 0)
-                    //         Container(
-                    //           padding: EdgeInsets.symmetric(
-                    //               horizontal: 8.w, vertical: 2.h),
-                    //           decoration: BoxDecoration(
-                    //             color: Colors.black.withValues(alpha: 0.05),
-                    //             borderRadius: BorderRadius.circular(10.r),
-                    //             border: Border.all(
-                    //                 color: Colors.black.withValues(alpha: 0.1)),
-                    //           ),
-                    //           child: CustomText(
-                    //             text: "+$remainingCount more",
-                    //             fontWeight: FontWeight.w700,
-                    //             fontSize: 8.sp,
-                    //             color: Colors.black,
-                    //           ),
-                    //         ),
-                    //     ],
-                    //   );
-                    // }(),
-                    SizedBox(height: 4.h),
-                    CustomText(
-                      text: title.toString(),
-                      color: const Color(0xff1B3B4A),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13.sp,
-                      maxLines: 3,
-                      textAlign: TextAlign.start,
-                      overflow: TextOverflow.ellipsis,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (category.isNotEmpty) ...[
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.bottomNabColor.withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(8.r),
+                            ),
+                            child: CustomText(
+                              text: category,
+                              fontSize: 9.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.bottomNabColor,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(height: 4.h),
+                        ],
+                        CustomText(
+                          text: title.toString(),
+                          color: const Color(0xFF0F172A),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13.sp,
+                          maxLines: 2,
+                          textAlign: TextAlign.start,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 8.h),
-                    if (protein != null &&
-                        carbs != null &&
-                        fat != null &&
-                        fiver != null)
-                      CustomText(
-                        text:
-                            "🥩 ${protein ?? ""} 🍞 ${carbs ?? ""}\n🧈 ${fat ?? ""} 🌿 ${fiver ?? ""}",
-                        color: Colors.black,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 9.sp,
-                        maxLines: 2,
-                        textAlign: TextAlign.start,
-                        overflow: TextOverflow.ellipsis,
+                    if (protein != null && carbs != null && fat != null && fiver != null) ...[
+                      SizedBox(height: 6.h),
+                      Wrap(
+                        spacing: 4.w,
+                        runSpacing: 4.h,
+                        children: [
+                          _buildMacroBadge("🥩", protein!),
+                          _buildMacroBadge("🍞", carbs!),
+                          _buildMacroBadge("🧈", fat!),
+                          _buildMacroBadge("🌿", fiver!),
+                        ],
                       ),
-                    const Spacer(),
+                    ],
+                    SizedBox(height: 6.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         RatingStar(
                           rating: rating,
-                          textColor: Colors.black,
+                          textColor: const Color(0xFF475569),
                         ),
                         GestureDetector(
                           onTap: onMoreTap,
                           child: Container(
-                            padding: EdgeInsets.all(2.r),
+                            padding: EdgeInsets.all(4.r),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              border:
-                                  Border.all(color: const Color(0xffBDC7CD)),
-                              color: Colors.white,
+                              color: const Color(0xFFF8FAFC),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
                             ),
-                            child: const Icon(Icons.more_horiz,
-                                color: Color(0xffBDC7CD), size: 18),
+                            child: const Icon(
+                              Icons.more_horiz,
+                              color: Color(0xFF64748B),
+                              size: 18,
+                            ),
                           ),
-                        )
+                        ),
                       ],
                     ),
-                    SizedBox(height: 2.h),
                   ],
                 ),
               ),
-              SizedBox(width: 10.w),
             ],
           ),
         ),
@@ -189,20 +151,21 @@ class WeeklyRecipeCard extends StatelessWidget {
     );
   }
 
-  // Widget _buildNutritionText(String emoji, String value) {
-  //   return Row(
-  //     children: [
-  //       Text(
-  //         emoji,
-  //         style: TextStyle(fontSize: 14.sp),
-  //       ),
-  //       SizedBox(width: 4.w),
-  //       CustomText(
-  //         text: value,
-  //         fontSize: 12.sp,
-  //         color: Colors.white,
-  //       ),
-  //     ],
-  //   );
-  // }
+  Widget _buildMacroBadge(String emoji, String value) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF1F5F9),
+        borderRadius: BorderRadius.circular(6.r),
+      ),
+      child: Text(
+        "$emoji $value",
+        style: TextStyle(
+          fontSize: 9.sp,
+          fontWeight: FontWeight.w500,
+          color: const Color(0xFF334155),
+        ),
+      ),
+    );
+  }
 }

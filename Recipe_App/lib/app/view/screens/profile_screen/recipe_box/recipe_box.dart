@@ -343,7 +343,7 @@ class _RecipeBoxState extends State<RecipeBox> {
                                         RoutePath.recipeDetails,
                                         extra: {
                                           "id": data?.id ?? "",
-                                          "isExist": false,
+                                          "isExist": myRecipeController.favorites[data?.id]?.value ?? (data?.favorite ?? false),
                                           "planName": planName ?? "",
                                           "planId": planId ?? "",
                                           "day": day ?? "",
