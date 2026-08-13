@@ -73,40 +73,48 @@ class PrepSection extends StatelessWidget {
                 bottom: 10.h,
               ),
               const Spacer(),
-              if (selectedIndexBeforePrep == 1)
-                Padding(
-                  padding: EdgeInsets.only(bottom: 10.h),
-                  child: GestureDetector(
-                    onTap: () {
-                      context.pushNamed(RoutePath.prepPreview, extra: {
-                        'plan': controller.selectedCustomPlanList,
-                        'meals': weeklyMealPlan.data,
-                      });
-                    },
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                      decoration: BoxDecoration(
-                        color: AppColors.green,
-                        borderRadius: BorderRadius.circular(20.r),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.print,
-                              color: Colors.white, size: 16),
-                          SizedBox(width: 4.w),
-                          CustomText(
-                            text: AppStrings.printPrepPlan.tr.toUpperCase(),
-                            color: Colors.white,
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ],
-                      ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 10.h),
+                child: GestureDetector(
+                  onTap: () {
+                    dynamic currentPlanObj;
+                    if (selectedIndexBeforePrep == 0) {
+                      currentPlanObj = controller.selectedPlan;
+                    } else if (selectedIndexBeforePrep == 1) {
+                      currentPlanObj = controller.selectedCustomPlanList;
+                    } else if (selectedIndexBeforePrep == 2) {
+                      currentPlanObj = controller.selectedFeaturePlanList;
+                    }
+
+                    context.pushNamed(RoutePath.prepPreview, extra: {
+                      'plan': currentPlanObj,
+                      'meals': weeklyMealPlan.data,
+                    });
+                  },
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: AppColors.bottomNabColor,
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.print,
+                            color: Colors.white, size: 16),
+                        SizedBox(width: 4.w),
+                        CustomText(
+                          text: AppStrings.printPrepPlan.tr.toUpperCase(),
+                          color: Colors.white,
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ],
                     ),
                   ),
                 ),
+              ),
             ],
           ),
           const Divider(),

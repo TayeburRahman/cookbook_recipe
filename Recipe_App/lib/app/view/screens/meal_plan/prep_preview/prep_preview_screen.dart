@@ -359,26 +359,25 @@ class PrepPreviewScreen extends StatelessWidget {
       [dynamic weekendPrepData]) async {
     final pdf = pw.Document();
 
-    // Load the logo image
-    final ByteData logoData =
-        await rootBundle.load('assets/icons/cover image-01.jpg');
-    final Uint8List logoBytes = logoData.buffer.asUint8List();
-    final pw.MemoryImage logoImage = pw.MemoryImage(logoBytes);
+    pw.MemoryImage? logoImage;
+    try {
+      final ByteData logoData =
+          await rootBundle.load('assets/icons/cover image-01.jpg');
+      final Uint8List logoBytes = logoData.buffer.asUint8List();
+      logoImage = pw.MemoryImage(logoBytes);
+    } catch (e) {
+      debugPrint("Logo asset load error for PDF: $e");
+    }
 
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(32),
         footer: (pw.Context context) {
+          if (logoImage == null) return pw.SizedBox();
           return pw.Container(
             alignment: pw.Alignment.centerRight,
-            child: pw.Column(
-              mainAxisSize: pw.MainAxisSize.min,
-              crossAxisAlignment: pw.CrossAxisAlignment.end,
-              children: [
-                pw.Image(logoImage, width: 100, height: 100),
-              ],
-            ),
+            child: pw.Image(logoImage, width: 80, height: 80),
           );
         },
         build: (pw.Context context) {

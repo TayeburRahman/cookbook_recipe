@@ -235,21 +235,37 @@ class _RecipeBoxCardState extends State<RecipeBoxCard> {
                               const Spacer(),
                               // ✅ Favorite Icon Button
                               if (widget.showFavoriteIcon)
-                                IconButton(
-                                  onPressed: toggleFavorite,
-                                  icon: Container(
-                                    padding: EdgeInsets.all(4.r),
-                                    decoration: const BoxDecoration(
+                                GestureDetector(
+                                  onTap: toggleFavorite,
+                                  child: Container(
+                                    padding: EdgeInsets.all(6.r),
+                                    decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: AppColors.green,
+                                      color: isFavorite
+                                          ? const Color(0xFFFFEBEE)
+                                          : const Color(0xFFF8FAFC),
+                                      border: Border.all(
+                                        color: isFavorite
+                                            ? const Color(0xFFFFCDD2)
+                                            : const Color(0xFFE2E8F0),
+                                        width: 1,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.04),
+                                          blurRadius: 6,
+                                          offset: const Offset(0, 2),
+                                        ),
+                                      ],
                                     ),
                                     child: Icon(
                                       isFavorite
                                           ? Icons.favorite
                                           : Icons.favorite_border,
+                                      size: 18.r,
                                       color: isFavorite
-                                          ? Colors.red
-                                          : Colors.white,
+                                          ? const Color(0xFFE53935)
+                                          : const Color(0xFF64748B),
                                     ),
                                   ),
                                 ),

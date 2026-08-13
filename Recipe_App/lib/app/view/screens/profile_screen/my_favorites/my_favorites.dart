@@ -103,7 +103,7 @@ class _MyFavoritesState extends State<MyFavorites> {
                             RoutePath.recipeDetails,
                             extra: {
                               "id": data.id ?? "",
-                              "isExist": true, // ✅ pass this flag
+                              "isExist": controller.favorites[data.id]?.value ?? true,
                             },
                           );
                         },

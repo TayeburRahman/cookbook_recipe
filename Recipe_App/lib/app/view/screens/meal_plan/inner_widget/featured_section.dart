@@ -15,6 +15,7 @@ import '../../../common_widgets/custom_text/custom_text.dart';
 import '../../../common_widgets/custom_dialoge_alart/custom_dialoge_alart.dart';
 import '../../../common_widgets/custom_loader/custom_loader.dart';
 import '../controller/meal_plan_controller.dart';
+import 'package:recipe_app/app/view/screens/profile_screen/my_recipe/controller/my_recipe_controller.dart';
 
 class FeaturedSection extends StatelessWidget {
   const FeaturedSection({
@@ -294,11 +295,12 @@ class FeaturedSection extends StatelessWidget {
                                       category: recipe.category ?? "",
                                       rating: recipe.ratting ?? 0.0,
                                       onCardTap: () {
+                                        final myRecipeController = Get.find<MyRecipeController>();
                                         context.pushNamed(
                                           RoutePath.recipeDetails,
                                           extra: {
                                             "id": recipe.id ?? "",
-                                            "isExist": true,
+                                            "isExist": myRecipeController.favorites[recipe.id]?.value ?? false,
                                           },
                                         );
                                       },

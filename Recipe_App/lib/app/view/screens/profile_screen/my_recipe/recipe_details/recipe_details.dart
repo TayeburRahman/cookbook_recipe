@@ -11,6 +11,7 @@ import 'package:recipe_app/app/view/common_widgets/custom_text/custom_text.dart'
 import 'package:recipe_app/app/view/screens/meal_plan/controller/meal_plan_controller.dart';
 import 'package:recipe_app/app/view/screens/profile_screen/my_recipe/recipe_details/controller/recipe_details_controller.dart';
 import 'package:recipe_app/app/view/screens/profile_screen/my_recipe/controller/my_recipe_controller.dart';
+import 'package:recipe_app/app/utils/enums/status.dart';
 import '../../../../common_widgets/custom_button/custom_button.dart';
 import '../../../../common_widgets/review_tile/review_title.dart';
 import 'inner_widgets/ingredient_section.dart';
@@ -26,7 +27,8 @@ class _RecipeDetailsState extends State<RecipeDetails> {
   final RecipeDetailsController controller =
       Get.find<RecipeDetailsController>();
   final MealPlanController mealPlanController = Get.find<MealPlanController>();
-  final MyRecipeController myRecipeController = Get.put(MyRecipeController());
+  final MyRecipeController myRecipeController =
+      Get.find<MyRecipeController>();
 
   String? id;
   bool _isInitialized = false;
@@ -49,8 +51,10 @@ class _RecipeDetailsState extends State<RecipeDetails> {
         planId = extra['planId'] as String?;
         day = extra['day'] as String?;
 
-        controller.detailsRecipe(id: id ?? "");
-        controller.getReview(id: id ?? "");
+        if (id != null && id!.isNotEmpty) {
+          controller.detailsRecipe(id: id!);
+          controller.getReview(id: id!);
+        }
 
         debugPrint("Id======================$id");
         debugPrint("isExist=================$isExist");
@@ -58,7 +62,7 @@ class _RecipeDetailsState extends State<RecipeDetails> {
         debugPrint("planID==================$planId");
         debugPrint("day=====================$day");
 
-        if (id != null) {
+        if (id != null && id!.isNotEmpty) {
           myRecipeController.initFavorite(id!, isExist);
         }
         _isInitialized = true;
@@ -73,7 +77,43 @@ class _RecipeDetailsState extends State<RecipeDetails> {
     return Scaffold(
       backgroundColor: AppColors.white,
       body: Obx(() {
+        final status = controller.rxRequestStatus.value;
         final data = controller.detailsData.value;
+
+        if (status == Status.loading || (id != null && data.id != id)) {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.black,
+            ),
+          );
+        }
+
+        if (status == Status.error || status == Status.internetError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomText(
+                  text: status == Status.internetError
+                      ? "No Internet Connection"
+                      : "Failed to load recipe details",
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                ),
+                SizedBox(height: 12.h),
+                ElevatedButton(
+                  onPressed: () {
+                    if (id != null && id!.isNotEmpty) {
+                      controller.detailsRecipe(id: id!);
+                      controller.getReview(id: id!);
+                    }
+                  },
+                  child: const Text("Retry"),
+                ),
+              ],
+            ),
+          );
+        }
 
         if (data.image == null) {
           return const Center(
@@ -101,20 +141,33 @@ class _RecipeDetailsState extends State<RecipeDetails> {
               actions: [
                 Obx(() {
                   final isFav =
-                      myRecipeController.favorites[id]?.value ?? false;
-                  return IconButton(
-                    icon: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(
-                        isFav ? Icons.favorite : Icons.favorite_border,
-                        color: isFav ? Colors.red : Colors.black,
-                      ),
-                    ),
-                    onPressed: () {
+                      myRecipeController.favorites[id]?.value ?? isExist;
+                  return GestureDetector(
+                    onTap: () {
                       if (id != null) {
                         myRecipeController.favoriteAdd(id!);
                       }
                     },
+                    child: Container(
+                      margin: EdgeInsets.only(right: 16.w),
+                      padding: EdgeInsets.all(8.r),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: isFav ? const Color(0xFFFFEBEE) : Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.12),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Icon(
+                        isFav ? Icons.favorite : Icons.favorite_border,
+                        color: isFav ? const Color(0xFFE53935) : const Color(0xFF334155),
+                        size: 22.r,
+                      ),
+                    ),
                   );
                 }),
               ],

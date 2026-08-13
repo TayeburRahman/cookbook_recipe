@@ -331,18 +331,32 @@ class _WeekendPrepScreenState extends State<WeekendPrepScreen> {
   Widget _buildSectionHeader(String title, IconData icon) {
     return Container(
       width: double.infinity,
-      color: const Color(0xffF3F3F3),
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      decoration: BoxDecoration(
+        color: AppColors.bottomNabColor.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(
+          color: AppColors.bottomNabColor.withValues(alpha: 0.15),
+          width: 1.w,
+        ),
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           CustomText(
             text: title.toUpperCase(),
-            color: const Color(0xff1B3B4A),
+            color: AppColors.bottomNabColor,
             fontWeight: FontWeight.w700,
-            fontSize: 14.sp,
+            fontSize: 13.sp,
           ),
-          Icon(icon, color: const Color(0xff1B3B4A), size: 20.sp),
+          Container(
+            padding: EdgeInsets.all(4.r),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: AppColors.bottomNabColor, size: 16.sp),
+          ),
         ],
       ),
     );
@@ -350,34 +364,64 @@ class _WeekendPrepScreenState extends State<WeekendPrepScreen> {
 
   Widget _buildTab(String title, int index, VoidCallback onTap,
       {bool isWeekly = false, bool isSelect = false}) {
+    final isSelected = selectedIndex == index;
     return GestureDetector(
       onTap: onTap,
-      child: Row(
-        children: [
-          if (isWeekly)
-            Assets.icons.calender.svg(
-              colorFilter: ColorFilter.mode(
-                selectedIndex == index ? AppColors.green : AppColors.black500,
-                BlendMode.srcIn,
-              ),
-            ),
-          CustomText(
-            left: isWeekly ? 4 : 0,
-            text: title.toUpperCase(),
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w600,
-            color:
-                selectedIndex == index ? AppColors.green : AppColors.black500,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        margin: EdgeInsets.only(right: 8.w),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.bottomNabColor
+              : const Color(0xFFF1F5F9),
+          borderRadius: BorderRadius.circular(20.r),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.bottomNabColor.withValues(alpha: 0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
+          border: Border.all(
+            color: isSelected
+                ? AppColors.bottomNabColor
+                : const Color(0xFFE2E8F0),
+            width: 1.w,
           ),
-          if (isWeekly || isSelect)
-            Icon(
-              Icons.arrow_drop_down,
-              size: 20.sp,
-              color:
-                  selectedIndex == index ? AppColors.green : AppColors.black500,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (isWeekly) ...[
+              Assets.icons.calender.svg(
+                height: 16.r,
+                width: 16.r,
+                colorFilter: ColorFilter.mode(
+                  isSelected ? Colors.white : const Color(0xFF64748B),
+                  BlendMode.srcIn,
+                ),
+              ),
+              SizedBox(width: 4.w),
+            ],
+            CustomText(
+              text: title.toUpperCase(),
+              fontSize: 12.sp,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+              color: isSelected ? Colors.white : const Color(0xFF475569),
             ),
-          SizedBox(width: 12.w),
-        ],
+            if (isWeekly || isSelect) ...[
+              SizedBox(width: 2.w),
+              Icon(
+                Icons.keyboard_arrow_down_rounded,
+                size: 18.sp,
+                color: isSelected ? Colors.white : const Color(0xFF64748B),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

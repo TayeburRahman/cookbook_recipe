@@ -173,7 +173,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           RoutePath.recipeDetails,
                           extra: {
                             "id": data.id ?? "",
-                            "isExist": true,
+                            "isExist": myRecipeController.favorites[data.id]?.value ?? (data.favorite ?? false),
                           },
                         );
                       },

@@ -19,6 +19,7 @@ import 'package:recipe_app/app/view/screens/home/controller/home_controller.dart
 import 'package:recipe_app/app/view/screens/home/widgets/diet_goals_widgets.dart';
 import 'package:recipe_app/app/view/screens/home/widgets/sliders_widgets.dart';
 import 'package:recipe_app/app/view/screens/profile_screen/personal_info/controller/profile_controller.dart';
+import 'package:recipe_app/app/view/screens/profile_screen/my_recipe/controller/my_recipe_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,6 +31,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final homeController = Get.find<HomeController>();
   final profileController = Get.find<ProfileController>();
+  final myRecipeController = Get.find<MyRecipeController>();
   final _scaffoldKey =
       GlobalKey<ScaffoldState>(); // Create once, not on every rebuild
 
@@ -118,17 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             //===================== Diet goals Title =====================
             SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                child: CustomText(
-                  textAlign: TextAlign.start,
-                  text: AppStrings.dietGoals.tr,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.black500,
-                  bottom: 12.h,
-                ),
-              ),
+              child: _buildSectionHeader(AppStrings.dietGoals.tr),
             ),
 
             //===================== Diet goals Widget =====================
@@ -137,26 +129,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
             SliverToBoxAdapter(
-              child: SizedBox(height: 10.h),
-            ),
-
-            SliverToBoxAdapter(
-              child: SizedBox(height: 20.h),
+              child: SizedBox(height: 16.h),
             ),
 
             //===================== Recipes for you Title =====================
             SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.h, vertical: 10.w),
-                child: CustomText(
-                  textAlign: TextAlign.start,
-                  text: AppStrings.recipesForYou.tr,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.black500,
-                  bottom: 12.h,
-                ),
-              ),
+              child: _buildSectionHeader(AppStrings.recipesForYou.tr),
             ),
 
             //===================== Recipes for you List =====================
@@ -168,33 +146,30 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: EdgeInsets.symmetric(vertical: 20.h),
                       child: CustomText(
                         text: AppStrings.noRecipesFound.tr,
-                        fontSize: 20.sp,
-                        color: AppColors.black,
+                        fontSize: 16.sp,
+                        color: const Color(0xFF64748B),
                       ),
                     ),
                   );
                 }
 
-                // This makes it horizontal without a rigid fixed height.
-                // The height is defined by the tallest item in the ListView.
                 return SizedBox(
-                  height: 220
-                      .h, // Adjusted height to accommodate card content + padding
+                  height: 225.h,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    padding: EdgeInsets.symmetric(horizontal: 16.w),
                     itemCount: homeController.recipeForYouList.length,
                     itemBuilder: (context, index) {
                       final data = homeController.recipeForYouList[index];
                       return Padding(
-                        padding: EdgeInsets.only(right: 15.w),
+                        padding: EdgeInsets.only(right: 14.w),
                         child: GestureDetector(
                           onTap: () {
                             context.pushNamed(
                               RoutePath.recipeDetails,
                               extra: {
                                 "id": data.id ?? "",
-                                "isExist": true,
+                                "isExist": myRecipeController.favorites[data.id]?.value ?? false,
                               },
                             );
                           },
@@ -212,19 +187,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }),
             ),
+
+            SliverToBoxAdapter(
+              child: SizedBox(height: 12.h),
+            ),
+
             //===================== Category Title =====================
             SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.only(
-                    left: 20.h, right: 20.h, top: 0.w, bottom: 10.h),
-                child: CustomText(
-                  textAlign: TextAlign.start,
-                  text: AppStrings.category.tr,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.black500,
-                ),
-              ),
+              child: _buildSectionHeader(AppStrings.category.tr),
             ),
 
             // ===================== Category Grid =====================
@@ -297,6 +267,32 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+      child: Row(
+        children: [
+          Container(
+            width: 4.w,
+            height: 18.h,
+            decoration: BoxDecoration(
+              color: AppColors.bottomNabColor,
+              borderRadius: BorderRadius.circular(4.r),
+            ),
+          ),
+          SizedBox(width: 8.w),
+          CustomText(
+            textAlign: TextAlign.start,
+            text: title,
+            fontSize: 17.sp,
+            fontWeight: FontWeight.w700,
+            color: const Color(0xFF0F172A),
+          ),
+        ],
       ),
     );
   }

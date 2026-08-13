@@ -84,7 +84,7 @@ class _MyRecipeScreenState extends State<MyRecipeScreen> {
                             RoutePath.recipeDetails,
                             extra: {
                               "id": data.id ?? "",
-                              "isExist": true,
+                              "isExist": controller.favorites[data.id]?.value ?? false,
                             },
                           );
                         },
