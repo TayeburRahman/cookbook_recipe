@@ -4,7 +4,7 @@ A comprehensive, full-stack AI-powered Meal Planning, Recipe Management, and Sma
 
 ---
 
-## 🚀 System Architecture & Overview
+## System Architecture & Overview
 
 The project is structured as a unified monorepo containing three core applications:
 
