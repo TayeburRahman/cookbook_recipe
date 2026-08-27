@@ -1,4 +1,4 @@
-# 🍳 Cookbook & AI Meal Planner System
+# Cookbook & AI Meal Planner System
 
 A comprehensive, full-stack AI-powered Meal Planning, Recipe Management, and Smart Grocery System consisting of a **Flutter Mobile App**, a **TypeScript Node.js/Express Backend**, and a **Vite/React Web Platform**.
 
